@@ -346,6 +346,10 @@
       overflow: hidden;
     }
 
+    .cyber-btn > *, .map-icon-btn > *, .search-action-btn > *, .auto-action-btn > * {
+      pointer-events: none;
+    }
+
     .cyber-btn:hover {
       border-color: var(--neon-yellow);
       color: #fff;
@@ -367,6 +371,50 @@
       color: #fff;
       border-color: var(--neon-pink);
       box-shadow: var(--glow-pink);
+    }
+
+    .cyber-btn.muted {
+      border-color: rgba(255, 85, 119, 0.5) !important;
+      color: #ff6b8b !important;
+      background: rgba(40, 10, 20, 0.85) !important;
+      box-shadow: 0 0 8px rgba(255, 0, 85, 0.3) !important;
+    }
+
+    /* Floating HUD Toast Notification */
+    .hud-toast {
+      position: fixed;
+      top: 62px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-25px);
+      background: rgba(6, 10, 18, 0.96);
+      border: 1.5px solid var(--neon-cyan);
+      box-shadow: 0 0 20px rgba(0, 240, 255, 0.5), 0 4px 25px rgba(0,0,0,0.85);
+      color: #fff;
+      font-family: var(--font-display);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      padding: 7px 18px;
+      border-radius: 4px;
+      pointer-events: none;
+      z-index: 10000;
+      opacity: 0;
+      transition: all 0.25s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+      white-space: nowrap;
+    }
+    .hud-toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+    .hud-toast.active {
+      border-color: var(--neon-cyan);
+      box-shadow: 0 0 20px rgba(0, 240, 255, 0.6);
+      color: var(--neon-cyan);
+    }
+    .hud-toast.muted {
+      border-color: var(--neon-pink);
+      box-shadow: 0 0 20px rgba(255, 0, 85, 0.6);
+      color: #ff6b8b;
     }
 
     /* ==========================================================================
@@ -430,6 +478,14 @@
       transition: color 0.2s;
     }
     .search-action-btn:hover { color: var(--neon-yellow); }
+    .search-action-btn.listening {
+      color: #ff0055 !important;
+      animation: pulse-mic 0.9s infinite alternate;
+    }
+    @keyframes pulse-mic {
+      0% { transform: scale(1); filter: drop-shadow(0 0 2px #ff0055); }
+      100% { transform: scale(1.22); filter: drop-shadow(0 0 9px #ff0055); }
+    }
 
     /* Filter Chips */
     .filter-chips { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 2px; }
@@ -2376,13 +2432,17 @@
 
     <div class="hud-actions">
       <button class="cyber-btn" id="btn-toggle-audio" data-tip="Toggle Procedural Synthesizer SFX">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+        <span id="audio-btn-icon">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+        </span>
         <span id="audio-btn-text">AUDIO: ON</span>
       </button>
 
       <button class="cyber-btn" id="btn-toggle-voice" data-tip="Toggle Voice Navigation AI">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
-        <span id="voice-btn-text">VOICE: ON</span>
+        <span id="voice-btn-icon">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
+        </span>
+        <span id="voice-btn-text">MIC: ON</span>
       </button>
 
       <button class="cyber-btn" id="btn-open-terminal" data-tip="Netrunner CLI Console (~)">
@@ -2397,6 +2457,9 @@
     </div>
   </header>
 
+  <!-- High-Tech HUD Toast Banner -->
+  <div class="hud-toast" id="hud-toast"></div>
+
   <!-- ==========================================================================
        FLOATING SEARCH (PHOTON ENGINE)
        ========================================================================== -->
@@ -2406,6 +2469,9 @@
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
       </div>
       <input type="text" class="search-input" id="search-box" placeholder="Search cities, streets, or Night City POIs (Photon API)..." autocomplete="off" />
+      <button class="search-action-btn" id="btn-mic-search" title="Voice Search (Mic)">
+        <svg id="search-mic-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
+      </button>
       <button class="search-action-btn" id="btn-clear-search" title="Clear">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
       </button>
@@ -2525,9 +2591,12 @@
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
       </button>
 
-
       <button class="map-icon-btn" id="btn-layers" data-tip="Base Geomatrix Layers">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
+      </button>
+
+      <button class="map-icon-btn" id="btn-fullscreen" data-tip="Toggle Fullscreen">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
       </button>
     </div>
 
@@ -2560,10 +2629,6 @@
 
       <button class="map-icon-btn" id="btn-reset-north" data-tip="Reset Bearing to North">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 19 21 12 17 5 21 12 2"></polygon></svg>
-      </button>
-
-      <button class="map-icon-btn" id="btn-fullscreen" data-tip="Toggle Fullscreen">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
       </button>
     </div>
   </aside>
@@ -3001,6 +3066,9 @@
 
       toggle() {
         this.enabled = !this.enabled;
+        if (!this.enabled && this.synth) {
+          try { this.synth.cancel(); } catch(e) {}
+        }
         return this.enabled;
       }
     }
@@ -3069,6 +3137,77 @@
     }
 
     const cyberAudio = new CyberAudioEngine();
+
+    /* High-Tech Cyberpunk HUD Toast Notifications */
+    let toastTimeout = null;
+    function showCyberToast(msg, type = 'info') {
+      const toast = document.getElementById('hud-toast');
+      if (!toast) return;
+      toast.innerText = msg;
+      toast.className = 'hud-toast show';
+      if (type === 'muted' || type === 'warning' || type === 'danger') {
+        toast.classList.add('muted');
+      } else {
+        toast.classList.add('active');
+      }
+      clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => {
+        toast.classList.remove('show');
+      }, 2400);
+    }
+
+    function updateAudioUI(state, userTap = false) {
+      const btn = document.getElementById('btn-toggle-audio');
+      const text = document.getElementById('audio-btn-text');
+      const icon = document.getElementById('audio-btn-icon');
+      if (btn) btn.classList.toggle('muted', !state);
+      if (text) text.innerText = state ? 'AUDIO: ON' : 'AUDIO: OFF';
+      if (icon) {
+        icon.innerHTML = state
+          ? `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>`
+          : `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>`;
+      }
+      if (userTap) {
+        showCyberToast(state ? '[SYNTH SFX AUDIO: ONLINE]' : '[SYNTH SFX AUDIO: MUTED]', state ? 'active' : 'muted');
+        if (state) cyberAudio.playConfirm();
+      }
+    }
+
+    function updateVoiceUI(state, userTap = false) {
+      const btn = document.getElementById('btn-toggle-voice');
+      const text = document.getElementById('voice-btn-text');
+      const ind = document.getElementById('voice-indicator');
+      const icon = document.getElementById('voice-btn-icon');
+      if (btn) btn.classList.toggle('muted', !state);
+      if (text) text.innerText = state ? 'MIC: ON' : 'MIC: OFF';
+      if (ind) {
+        ind.innerText = state ? 'ACTIVE' : 'MUTED';
+        ind.style.color = state ? 'var(--neon-green)' : 'var(--text-muted)';
+      }
+      if (icon) {
+        icon.innerHTML = state
+          ? `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>`
+          : `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="1" y1="1" x2="23" y2="23"></line><path d="M9 9v3a3 3 0 0 0 5.12 2.12M15 9.34V4a3 3 0 0 0-5.94-.6"></path><path d="M17 16.95A7 7 0 0 1 5 12v-2m14 0v2a7 7 0 0 1-.11 1.23"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>`;
+      }
+
+      // Sync auto nav panel icons
+      const autoLabel = document.getElementById('auto-voice-label');
+      const autoIcon = document.getElementById('auto-voice-icon');
+      if (autoLabel) autoLabel.innerText = state ? 'VOICE ON' : 'MUTED';
+      if (autoIcon) {
+        autoIcon.innerHTML = state
+          ? `<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>`
+          : `<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line>`;
+      }
+
+      if (userTap) {
+        showCyberToast(state ? '[CYBER VOICE AI: ACTIVE]' : '[CYBER VOICE AI: MUTED]', state ? 'active' : 'muted');
+        if (state) {
+          cyberAudio.playConfirm();
+          cyberVoice.speak("Cyber voice guidance active.");
+        }
+      }
+    }
 
     /* ==========================================================================
        3. MAPLIBRE GL JS INITIALIZATION (GPU-ACCELERATED VECTOR ENGINE)
@@ -3898,15 +4037,7 @@
 
       toggleVoice() {
         const state = cyberVoice.toggle();
-        const icon = document.getElementById('auto-voice-icon');
-        const label = document.getElementById('auto-voice-label');
-        if (label) label.innerText = state ? 'VOICE ON' : 'MUTED';
-        if (icon) {
-          icon.innerHTML = state
-            ? `<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>`
-            : `<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line>`;
-        }
-        cyberAudio.playConfirm();
+        updateVoiceUI(state, true);
       }
 
       toggleDriveSim() {
@@ -4174,6 +4305,68 @@
       suggestionsDropdown.style.display = 'none';
     });
 
+    // Voice Search Microphone (Web Speech Recognition API)
+    const micSearchBtn = document.getElementById('btn-mic-search');
+    let speechRecognition = null;
+    let isListeningSpeech = false;
+    const SpeechRecCls = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    if (SpeechRecCls && micSearchBtn) {
+      speechRecognition = new SpeechRecCls();
+      speechRecognition.continuous = false;
+      speechRecognition.interimResults = false;
+      speechRecognition.lang = 'en-US';
+
+      speechRecognition.onstart = () => {
+        isListeningSpeech = true;
+        micSearchBtn.classList.add('listening');
+        searchBox.placeholder = '🎙️ Listening... Speak destination...';
+        cyberAudio.playRadarPing();
+        showCyberToast('[VOICE MIC: LISTENING... SPEAK DESTINATION]', 'info');
+      };
+
+      speechRecognition.onresult = (e) => {
+        const transcript = e.results[0][0].transcript;
+        searchBox.value = transcript;
+        showCyberToast(`[VOICE INPUT: "${transcript.toUpperCase()}"]`, 'success');
+        cyberVoice.speak(`Scanning geomatrix for ${transcript}`);
+        performPhotonSearch(transcript);
+      };
+
+      speechRecognition.onerror = (e) => {
+        console.warn("Speech recognition error:", e.error);
+        showCyberToast(`[MIC RECOGNITION: ${e.error ? e.error.toUpperCase() : 'ERROR'}]`, 'warning');
+      };
+
+      speechRecognition.onend = () => {
+        isListeningSpeech = false;
+        micSearchBtn.classList.remove('listening');
+        searchBox.placeholder = 'Search cities, streets, or Night City POIs (Photon API)...';
+      };
+
+      micSearchBtn.addEventListener('click', () => {
+        if (!cyberVoice.enabled) {
+          cyberVoice.toggle();
+          updateVoiceUI(true);
+        }
+        if (isListeningSpeech) {
+          speechRecognition.stop();
+        } else {
+          try {
+            speechRecognition.start();
+          } catch(err) {
+            console.warn("Speech recognition start failed:", err);
+            showCyberToast('[MIC RECORDING RE-INITIALIZING...]', 'info');
+          }
+        }
+      });
+    } else if (micSearchBtn) {
+      micSearchBtn.addEventListener('click', () => {
+        showCyberToast('[VOICE RECOGNITION REQUIRES HTTPS OR COMPATIBLE BROWSER]', 'warning');
+        cyberAudio.playBeep(350, 0.1);
+      });
+    }
+
     /* ==========================================================================
        7. REAL-TIME AIR TRAFFIC (AVs & DRONES IN MAPLIBRE)
        ========================================================================== */
@@ -4280,6 +4473,10 @@
         this.haloEl = null;
         this.headingConeEl = null;
         this.animFrameId = null;
+
+        // Fast recenter lock & fallback flags
+        this.isRecentering = false;
+        this.lowAccuracyTried = false;
       }
 
       init() {
@@ -4407,7 +4604,12 @@
         if (navigator.permissions && navigator.permissions.query) {
           navigator.permissions.query({ name: 'geolocation' }).then(perm => {
             this.updatePermissionUI(perm.state);
-            perm.onchange = () => this.updatePermissionUI(perm.state);
+            perm.onchange = () => {
+              this.updatePermissionUI(perm.state);
+              if (perm.state === 'granted') {
+                this.startWatching();
+              }
+            };
           }).catch(() => {});
         }
       }
@@ -4420,8 +4622,13 @@
           el.className = 'gps-status-pill online';
           el.innerText = 'GPS: LOCKED';
         } else if (state === 'denied') {
-          el.className = 'gps-status-pill offline';
-          el.innerText = 'GPS: DENIED';
+          if (this.firstFixAcquired) {
+            el.className = 'gps-status-pill online';
+            el.innerText = 'GPS: NET-LOCK';
+          } else {
+            el.className = 'gps-status-pill offline';
+            el.innerText = 'GPS: NET-FALLBACK';
+          }
         } else {
           el.className = 'gps-status-pill';
           el.innerText = 'GPS: PROMPT';
@@ -4432,13 +4639,21 @@
         if (!navigator.geolocation) {
           this.updatePermissionUI('denied');
           document.getElementById('gps-address-text').innerText = 'Geolocation API Unsupported';
+          this.fetchIPLocationFallback('API Unsupported');
           return;
+        }
+
+        // On mobile phones accessed over LAN HTTP (insecure context), browsers automatically block GPS
+        const isInsecure = !window.isSecureContext && location.protocol !== 'https:' && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1';
+        if (isInsecure && !this.firstFixAcquired) {
+          console.warn("[GPS] Insecure mobile context detected. Pre-fetching cellular/IP Geomatrix fix.");
+          this.fetchIPLocationFallback('Mobile LAN HTTP');
         }
 
         const opts = {
           enableHighAccuracy: true,
-          timeout: 12000,
-          maximumAge: 1000
+          timeout: 10000,
+          maximumAge: 2000
         };
 
         if (this.watchId) navigator.geolocation.clearWatch(this.watchId);
@@ -4516,7 +4731,7 @@
           this.firstFixAcquired = true;
           this.currentPos = [lng, lat];
           if (this.marker) this.marker.setLngLat(this.currentPos);
-          this.map.flyTo({ center: [lng, lat], zoom: 16, pitch: 45, duration: 1500 });
+          this.map.easeTo({ center: [lng, lat], zoom: 16.5, pitch: 45, duration: 800 });
           document.getElementById('route-origin').value = 'Current GPS Location';
           cyberVoice.speak("GPS Uplink online. Coordinates synchronized.");
         }
@@ -4524,26 +4739,146 @@
 
       handlePositionError(err) {
         console.warn("[GPS] Position Watch Error:", err);
-        if (err.code === 1) {
-          this.updatePermissionUI('denied');
-          document.getElementById('gps-address-text').innerText = 'Location Permission Denied';
-          const badge = document.getElementById('gps-accuracy-badge');
-          if (badge) {
-            badge.className = 'gps-accuracy-badge gps-low';
-            badge.innerText = 'NO ACCESS';
+        if (err.code === 1) { // PERMISSION_DENIED
+          // On mobile phones over local Wi-Fi / HTTP or when user restricted high-precision GPS:
+          if (!this.firstFixAcquired) {
+            this.fetchIPLocationFallback('Mobile Browser Security / LAN HTTP');
+          } else {
+            const el = document.getElementById('gps-perm-status');
+            if (el && !this.firstFixAcquired) {
+              el.className = 'gps-status-pill offline';
+              el.innerText = 'GPS: DENIED';
+            }
           }
-        } else {
-          // Recovery after temporary GPS loss (code 2 = unavailable, code 3 = timeout)
-          const badge = document.getElementById('gps-accuracy-badge');
-          if (badge) {
-            badge.className = 'gps-accuracy-badge gps-stale';
-            badge.innerText = 'RECONNECTING...';
+        } else if (err.code === 3 || err.code === 2) {
+          // Timeout or Unavailable (indoor signal loss)
+          if (!this.lowAccuracyTried) {
+            this.lowAccuracyTried = true;
+            navigator.geolocation.getCurrentPosition(
+              pos => this.handlePositionSuccess(pos),
+              () => {
+                if (!this.firstFixAcquired) this.fetchIPLocationFallback('Low Satellite Reception');
+              },
+              { enableHighAccuracy: false, timeout: 8000 }
+            );
+          } else if (!this.firstFixAcquired) {
+            this.fetchIPLocationFallback('Low Satellite Reception');
+          } else {
+            const badge = document.getElementById('gps-accuracy-badge');
+            if (badge) {
+              badge.className = 'gps-accuracy-badge gps-stale';
+              badge.innerText = 'RECONNECTING...';
+            }
+            if (this.recoveryTimer) clearTimeout(this.recoveryTimer);
+            this.recoveryTimer = setTimeout(() => {
+              this.startWatching();
+            }, 4000);
           }
-          if (this.recoveryTimer) clearTimeout(this.recoveryTimer);
-          this.recoveryTimer = setTimeout(() => {
-            this.startWatching();
-          }, 3000);
         }
+      }
+
+      async fetchIPLocationFallback(reason = 'Network Lock') {
+        try {
+          let data = null;
+          try {
+            const r1 = await fetch('https://ipwho.is/');
+            if (r1.ok) {
+              const j1 = await r1.json();
+              if (j1.success !== false && j1.latitude && j1.longitude) {
+                data = { lat: j1.latitude, lng: j1.longitude, city: j1.city, country: j1.country };
+              }
+            }
+          } catch(e) {}
+
+          if (!data) {
+            try {
+              const r2 = await fetch('https://ipapi.co/json/');
+              if (r2.ok) {
+                const j2 = await r2.json();
+                if (j2.latitude && j2.longitude) {
+                  data = { lat: j2.latitude, lng: j2.longitude, city: j2.city, country: j2.country_name };
+                }
+              }
+            } catch(e) {}
+          }
+
+          if (data && data.lat && data.lng) {
+            const lng = parseFloat(data.lng);
+            const lat = parseFloat(data.lat);
+            const city = data.city || 'Night City';
+            const country = data.country || '';
+
+            this.targetPos = [lng, lat];
+            this.currentPos = [lng, lat];
+            this.accuracy = 1800;
+            routeOrigin = [lng, lat];
+
+            if (this.marker) this.marker.setLngLat(this.currentPos);
+
+            const permEl = document.getElementById('gps-perm-status');
+            if (permEl) {
+              permEl.className = 'gps-status-pill online';
+              permEl.innerText = 'GPS: NET-LOCK';
+            }
+
+            const badge = document.getElementById('gps-accuracy-badge');
+            if (badge) {
+              badge.className = 'gps-accuracy-badge gps-med';
+              badge.innerText = 'CELL / IP LOCK';
+            }
+
+            const addrEl = document.getElementById('gps-address-text');
+            if (addrEl) {
+              addrEl.innerText = `${city}, ${country} (Netrunner Grid)`;
+            }
+            this.currentAddress = `${city}, ${country}`;
+
+            this.updateCoordsUI(lng, lat);
+
+            if (!this.firstFixAcquired) {
+              this.firstFixAcquired = true;
+              this.map.easeTo({ center: [lng, lat], zoom: 14.5, duration: 450 });
+              const originInput = document.getElementById('route-origin');
+              if (originInput) originInput.value = `${city} (Network Fix)`;
+              cyberVoice.speak(`Network geomatrix synchronized to ${city}.`);
+            }
+            showCyberToast(`[GEOMATRIX LOCKED: ${city.toUpperCase()} (${reason})]`, 'success');
+            return true;
+          }
+        } catch(e) {
+          console.warn("IP Fallback failed:", e);
+        }
+        return false;
+      }
+
+      requestDirectGPS() {
+        showCyberToast('[ATTEMPTING SATELLITE GPS RE-LOCK...]', 'info');
+        if (!navigator.geolocation) {
+          this.fetchIPLocationFallback('API Unsupported');
+          return;
+        }
+
+        navigator.geolocation.getCurrentPosition(
+          pos => {
+            this.handlePositionSuccess(pos);
+            showCyberToast('[GPS SATELLITE LOCK ACQUIRED!]', 'success');
+          },
+          err => {
+            console.warn("[GPS] Direct request failed, trying low accuracy:", err);
+            navigator.geolocation.getCurrentPosition(
+              pos2 => {
+                this.handlePositionSuccess(pos2);
+                showCyberToast('[CELLULAR TOWER LOCK ACQUIRED!]', 'success');
+              },
+              err2 => {
+                console.warn("[GPS] Cellular lock failed, using IP geomatrix:", err2);
+                this.fetchIPLocationFallback('Insecure Context / No Satellites');
+              },
+              { enableHighAccuracy: false, timeout: 6000 }
+            );
+          },
+          { enableHighAccuracy: true, timeout: 6000 }
+        );
       }
 
       startStaleWatchdog() {
@@ -4562,10 +4897,11 @@
       }
 
       startRenderLoop() {
-        const render = () => {
+        let lastFollowTime = 0;
+        const render = (timestamp) => {
           // LERP Position interpolation (smoothing jitter filter)
-          this.currentPos[0] += (this.targetPos[0] - this.currentPos[0]) * 0.12;
-          this.currentPos[1] += (this.targetPos[1] - this.currentPos[1]) * 0.12;
+          this.currentPos[0] += (this.targetPos[0] - this.currentPos[0]) * 0.16;
+          this.currentPos[1] += (this.targetPos[1] - this.currentPos[1]) * 0.16;
 
           if (this.marker) {
             this.marker.setLngLat(this.currentPos);
@@ -4580,9 +4916,12 @@
             this.headingConeEl.style.transform = `translateX(-50%) rotate(${this.heading}deg)`;
           }
 
-          // Mobile Navigation Camera Follow
-          if (this.isFollowEnabled) {
-            this.updateCameraFollow();
+          // Mobile Navigation Camera Follow - Throttled to prevent GPU thrashing and recenter collision
+          if (this.isFollowEnabled && !this.isRecentering) {
+            if (timestamp - lastFollowTime > 120) {
+              lastFollowTime = timestamp;
+              this.updateCameraFollow();
+            }
           }
 
           this.animFrameId = requestAnimationFrame(render);
@@ -4591,11 +4930,13 @@
       }
 
       updateCameraFollow() {
+        if (!this.map || this.isRecentering) return;
+
         // Dynamic speed-based zoom
-        let targetZoom = 17.5;
+        let targetZoom = 17.2;
         if (this.speed > 80) targetZoom = 14.5;
         else if (this.speed > 45) targetZoom = 15.6;
-        else if (this.speed > 15) targetZoom = 16.6;
+        else if (this.speed > 15) targetZoom = 16.5;
 
         let targetBearing = 0;
         let targetPitch = 35;
@@ -4607,18 +4948,24 @@
           targetPitch = 48;
         }
 
-        // Keep user marker positioned near lower portion of screen (forward horizon view)
+        const mapCenter = this.map.getCenter();
+        const dist = this.getDistance([mapCenter.lng, mapCenter.lat], this.currentPos);
+        const bearingDiff = Math.abs((this.map.getBearing() - targetBearing + 180) % 360 - 180);
+
+        // Don't issue continuous camera easeTo if stationary (< 0.8m and heading unchanged)
+        if (dist < 0.8 && bearingDiff < 1.5) return;
+
         const cameraOpts = {
           center: this.currentPos,
           zoom: targetZoom,
           bearing: targetBearing,
           pitch: targetPitch,
-          duration: 200,
+          duration: 160,
           easing: t => t
         };
 
         if (this.navStatus === 'NAVIGATING' || this.isHeadingUp) {
-          cameraOpts.offset = [0, window.innerHeight * 0.16];
+          cameraOpts.offset = [0, window.innerHeight * 0.14];
         }
 
         this.map.easeTo(cameraOpts);
@@ -4665,6 +5012,7 @@
           this.autoRecenterTimer = null;
         }
         this.isFollowEnabled = true;
+        this.isRecentering = true;
 
         const followBtn = document.getElementById('btn-toggle-follow');
         if (followBtn) {
@@ -4675,21 +5023,28 @@
         const recenterBtn = document.getElementById('btn-recenter-gps');
         if (recenterBtn) recenterBtn.classList.remove('visible');
 
-        const targetPitch = this.isHeadingUp ? 55 : (this.navStatus === 'NAVIGATING' ? 48 : 40);
+        const targetPitch = this.isHeadingUp ? 55 : (this.navStatus === 'NAVIGATING' ? 48 : 35);
         const targetBearing = this.isHeadingUp ? this.heading : 0;
 
-        this.map.flyTo({
+        // Snappy, ultra-responsive 350ms cyber camera snap
+        this.map.easeTo({
           center: this.targetPos,
-          zoom: 16.5,
+          zoom: 16.6,
           pitch: targetPitch,
           bearing: targetBearing,
-          duration: 1200
+          duration: 350,
+          easing: t => 1 - Math.pow(1 - t, 3)
         });
+
+        setTimeout(() => {
+          this.isRecentering = false;
+        }, 380);
 
         // Only play sound and speak voice if explicitly triggered by user tap
         if (isUserTap) {
           cyberAudio.playConfirm();
           cyberVoice.speak("Target locked. Real-time follow engaged.");
+          showCyberToast("[TARGET LOCKED: REAL-TIME TRACKING]", "success");
         }
       }
 
@@ -4895,13 +5250,33 @@
         document.getElementById('btn-toggle-heading-mode')?.addEventListener('click', () => this.toggleHeadingMode());
         document.getElementById('btn-toggle-follow')?.addEventListener('click', () => this.toggleFollow());
         document.getElementById('btn-toggle-trail')?.addEventListener('click', () => this.toggleTrail());
-        document.getElementById('btn-recenter-gps')?.addEventListener('click', () => this.recenter());
-        document.getElementById('btn-recenter-hud')?.addEventListener('click', () => this.recenter());
+        document.getElementById('btn-recenter-gps')?.addEventListener('click', () => this.recenter(true));
+        document.getElementById('btn-recenter-hud')?.addEventListener('click', () => this.recenter(true));
         document.getElementById('btn-toggle-hud-collapse')?.addEventListener('click', () => {
           const card = document.getElementById('gps-hud-card');
           card.classList.toggle('collapsed');
           cyberAudio.playConfirm();
         });
+
+        // Direct tap on GPS status pill or accuracy badge to re-query hardware GPS / cellular lock
+        const permEl = document.getElementById('gps-perm-status');
+        if (permEl) {
+          permEl.style.cursor = 'pointer';
+          permEl.title = 'Tap to re-sync GPS satellite uplink';
+          permEl.addEventListener('click', () => {
+            cyberAudio.playConfirm();
+            this.requestDirectGPS();
+          });
+        }
+        const accBadge = document.getElementById('gps-accuracy-badge');
+        if (accBadge) {
+          accBadge.style.cursor = 'pointer';
+          accBadge.title = 'Tap to re-sync GPS satellite uplink';
+          accBadge.addEventListener('click', () => {
+            cyberAudio.playConfirm();
+            this.requestDirectGPS();
+          });
+        }
       }
 
       getDistance(c1, c2) {
@@ -4929,7 +5304,10 @@
 
     function locateUser() {
       if (window.gpsTracker) {
-        window.gpsTracker.recenter();
+        window.gpsTracker.recenter(true);
+        if (!window.gpsTracker.firstFixAcquired || window.gpsTracker.permissionState !== 'granted') {
+          window.gpsTracker.requestDirectGPS();
+        }
       }
     }
 
@@ -5112,17 +5490,28 @@
     document.getElementById('btn-locate').addEventListener('click', locateUser);
 
     // Audio & Voice Toggles
-    document.getElementById('btn-toggle-audio').addEventListener('click', () => {
-      const state = cyberAudio.toggle();
-      document.getElementById('audio-btn-text').innerText = state ? 'AUDIO: ON' : 'AUDIO: OFF';
-    });
+    const btnAudio = document.getElementById('btn-toggle-audio');
+    const btnVoice = document.getElementById('btn-toggle-voice');
 
-    document.getElementById('btn-toggle-voice').addEventListener('click', () => {
-      const state = cyberVoice.toggle();
-      document.getElementById('voice-btn-text').innerText = state ? 'VOICE: ON' : 'VOICE: OFF';
-      document.getElementById('voice-indicator').innerText = state ? 'ACTIVE' : 'MUTED';
-      document.getElementById('voice-indicator').style.color = state ? 'var(--neon-green)' : 'var(--text-muted)';
-    });
+    if (btnAudio) {
+      btnAudio.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const state = cyberAudio.toggle();
+        updateAudioUI(state, true);
+      });
+    }
+
+    if (btnVoice) {
+      btnVoice.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const state = cyberVoice.toggle();
+        updateVoiceUI(state, true);
+      });
+    }
+
+    // Initial state sync
+    updateAudioUI(cyberAudio.enabled, false);
+    updateVoiceUI(cyberVoice.enabled, false);
 
     // Navigation buttons
     document.getElementById('btn-open-directions').addEventListener('click', () => {
