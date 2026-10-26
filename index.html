@@ -2872,22 +2872,12 @@
         touch-action: manipulation;
       }
 
-      /* Recenter Target Lock Button: anchored bottom-left directly above coordinates */
-      .recenter-target-btn {
-        bottom: calc(50px + env(safe-area-inset-bottom));
-        left: 14px;
-        transform: translateY(12px);
-        padding: 8px 14px;
-        font-size: 10px;
-        letter-spacing: 1px;
-        touch-action: manipulation;
-      }
-      .recenter-target-btn.visible {
-        transform: translateY(0);
-      }
-      .gps-hud-card.collapsed ~ .recenter-target-btn {
-        bottom: calc(50px + env(safe-area-inset-bottom));
-        left: 14px;
+      /* In Mobile View: completely remove the floating recenter button */
+      .recenter-target-btn,
+      #btn-recenter-gps {
+        display: none !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
       }
 
       /* Terminal Modal on Mobile */
@@ -2942,9 +2932,9 @@
       .gps-street-pill {
         font-size: 9.5px;
       }
-      .recenter-target-btn {
-        bottom: calc(50px + env(safe-area-inset-bottom));
-        left: 14px;
+      .recenter-target-btn,
+      #btn-recenter-gps {
+        display: none !important;
       }
       .layer-selector-popup {
         right: 50px;
@@ -3244,45 +3234,16 @@
       font-weight: bold;
     }
 
-    /* FLOATING RECENTER BADGE IN NAVIGATION MODE (Compact icon-only reticle, placed safely above nav HUD) */
-    .auto-nav-floating-recenter-btn {
-      position: fixed;
-      bottom: calc(145px + env(safe-area-inset-bottom));
-      left: 14px;
-      width: 42px;
-      height: 42px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0;
-      background: rgba(6, 9, 15, 0.94);
-      backdrop-filter: blur(14px);
-      border: 1.5px solid var(--neon-cyan);
-      box-shadow: 0 0 24px rgba(0, 240, 255, 0.55), inset 0 0 14px rgba(0, 240, 255, 0.2);
-      color: var(--neon-cyan);
-      cursor: pointer;
-      z-index: 10005;
-      pointer-events: auto;
-      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-      animation: recenterPulse 2s infinite ease-in-out;
+    /* Pulse alert for right rail Recenter button when map is manually panned/unlocked during navigation */
+    .auto-rail-btn.highlight.pulse-warn {
+      border-color: var(--neon-yellow) !important;
+      color: var(--neon-yellow) !important;
+      box-shadow: 0 0 25px rgba(252, 238, 10, 0.75), inset 0 0 10px rgba(252, 238, 10, 0.3) !important;
+      animation: autoRailRecenterPulse 1.2s infinite ease-in-out !important;
     }
-
-    .auto-nav-floating-recenter-btn svg {
-      color: var(--neon-cyan);
-      filter: drop-shadow(0 0 8px var(--neon-cyan));
-    }
-
-    .auto-nav-floating-recenter-btn:hover {
-      background: rgba(0, 240, 255, 0.25);
-      border-color: #fff;
-      box-shadow: 0 0 35px rgba(0, 240, 255, 0.85);
-      transform: scale(1.08);
-    }
-
-    @keyframes recenterPulse {
-      0%, 100% { box-shadow: 0 0 16px rgba(0, 240, 255, 0.45); }
-      50% { box-shadow: 0 0 32px rgba(0, 240, 255, 0.9), 0 0 8px #ffffff; }
+    @keyframes autoRailRecenterPulse {
+      0%, 100% { transform: scale(1); box-shadow: 0 0 15px rgba(252, 238, 10, 0.5); }
+      50% { transform: scale(1.08); box-shadow: 0 0 30px rgba(252, 238, 10, 0.95), 0 0 8px #ffffff; }
     }
 
     /* BOTTOM NAVIGATION PANEL */
@@ -4591,16 +4552,6 @@
       </div>
     </aside>
 
-    <!-- FLOATING RECENTER BADGE (Visible when user drags/zooms map during navigation) -->
-    <button class="auto-nav-floating-recenter-btn" id="btn-auto-floating-recenter" style="display: none;" title="Recenter Vehicle & Lock Camera">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-        <circle cx="12" cy="12" r="7"></circle>
-        <line x1="12" y1="1" x2="12" y2="5"></line>
-        <line x1="12" y1="19" x2="12" y2="23"></line>
-        <line x1="1" y1="12" x2="5" y2="12"></line>
-        <line x1="19" y1="12" x2="23" y2="12"></line>
-      </svg>
-    </button>
 
     <!-- BOTTOM NAVIGATION PANEL (Metrics, Progress & Controls) -->
     <footer class="auto-nav-bottom-card">
@@ -6266,7 +6217,6 @@
         document.getElementById('btn-auto-repeat-voice')?.addEventListener('click', () => this.repeatVoice());
         document.getElementById('btn-auto-heading-toggle')?.addEventListener('click', () => this.toggleHeading());
         document.getElementById('btn-auto-recenter')?.addEventListener('click', () => this.recenter());
-        document.getElementById('btn-auto-floating-recenter')?.addEventListener('click', () => this.recenter());
         document.getElementById('btn-auto-gps-lock')?.addEventListener('click', () => this.recenter());
         document.getElementById('btn-auto-zoom-in')?.addEventListener('click', () => {
           handleManualMapExplore('zoom-btn');
@@ -6284,9 +6234,8 @@
 
           if (this.isCameraFollowLocked) {
             this.isCameraFollowLocked = false;
-            const floatRecenterBtn = document.getElementById('btn-auto-floating-recenter');
-            if (floatRecenterBtn) floatRecenterBtn.style.display = 'flex';
-            showCyberToast('[MAP UNLOCKED // ZOOM & PAN FREELY]', 'info');
+            document.getElementById('btn-auto-recenter')?.classList.add('pulse-warn');
+            showCyberToast('[MAP UNLOCKED // TAP RECENTER ON RIGHT TO LOCK]', 'info');
           }
           clearTimeout(this.autoRecenterTimer);
           this.autoRecenterTimer = setTimeout(() => {
@@ -6377,8 +6326,7 @@
         this.isSimulating = false;
         this.isCameraFollowLocked = true;
         clearTimeout(this.autoRecenterTimer);
-        const floatRecenterBtn = document.getElementById('btn-auto-floating-recenter');
-        if (floatRecenterBtn) floatRecenterBtn.style.display = 'none';
+        document.getElementById('btn-auto-recenter')?.classList.remove('pulse-warn');
 
         document.body.classList.add('nav-mode-active');
         document.getElementById('android-auto-nav').style.display = 'flex';
@@ -6535,17 +6483,36 @@
         }
       }
 
+      projectPointOnSegment(p, p1, p2) {
+        const x = p[0], y = p[1];
+        const x1 = p1[0], y1 = p1[1];
+        const x2 = p2[0], y2 = p2[1];
+        const dx = x2 - x1;
+        const dy = y2 - y1;
+        if (dx === 0 && dy === 0) return p1;
+        const t = Math.max(0, Math.min(1, ((x - x1) * dx + (y - y1) * dy) / (dx * dx + dy * dy)));
+        return [x1 + t * dx, y1 + t * dy];
+      }
+
       updateLivePosition(lng, lat, speed, heading) {
         if (!this.active) return;
         const curPos = [lng, lat];
-        if (this.vehicleMarker) this.vehicleMarker.setLngLat(curPos);
 
-        // Find closest point on route coords
+        // Route Snapping: find closest segment on active route to eliminate mobile GPS jitter
         let minD = Infinity;
         let closestIdx = 0;
-        for (let i = 0; i < this.coords.length; i++) {
-          const d = this.getDistance(curPos, this.coords[i]);
-          if (d < minD) { minD = d; closestIdx = i; }
+        let snappedPos = curPos;
+
+        if (this.coords && this.coords.length > 1) {
+          for (let i = 0; i < this.coords.length - 1; i++) {
+            const proj = this.projectPointOnSegment(curPos, this.coords[i], this.coords[i + 1]);
+            const d = this.getDistance(curPos, proj);
+            if (d < minD) {
+              minD = d;
+              closestIdx = i;
+              snappedPos = proj;
+            }
+          }
         }
 
         // Automatic Rerouting: deviations exceeding 20 meters trigger seamless recalculation
@@ -6570,26 +6537,30 @@
           return;
         }
 
+        // Snap vehicle marker and camera lock to road segment if within 20m tolerance
+        const effPos = (minD <= 20) ? snappedPos : curPos;
+        if (this.vehicleMarker) this.vehicleMarker.setLngLat(effPos);
+
         // Check arrival
         const destCoord = this.coords[this.coords.length - 1];
-        if (this.getDistance(curPos, destCoord) < 25) {
+        if (this.getDistance(effPos, destCoord) < 25) {
           this.onArrived();
           return;
         }
 
         const effHeading = (typeof heading === 'number' && !isNaN(heading) && heading > 0) ? heading : 
-          (this.coords[closestIdx + 1] ? this.calculateHeading(curPos, this.coords[closestIdx + 1]) : 0);
+          (this.coords[closestIdx + 1] ? this.calculateHeading(effPos, this.coords[closestIdx + 1]) : 0);
 
         const svgEl = this.vehicleMarker?.getElement().querySelector('svg');
         if (svgEl) svgEl.style.transform = `rotate(${effHeading}deg)`;
 
-        this.currentPos = curPos;
+        this.currentPos = effPos;
 
         if (!this.isOverview && this.isCameraFollowLocked) {
           if (this.isHeadingUp) {
-            this.map.easeTo({ center: curPos, bearing: effHeading, pitch: 55, duration: 400 });
+            this.map.easeTo({ center: effPos, bearing: effHeading, pitch: 55, duration: 400 });
           } else {
-            this.map.easeTo({ center: curPos, bearing: 0, pitch: 0, duration: 400 });
+            this.map.easeTo({ center: effPos, bearing: 0, pitch: 0, duration: 400 });
           }
         }
 
@@ -6616,8 +6587,7 @@
         this.active = false;
         this.isCameraFollowLocked = true;
         clearTimeout(this.autoRecenterTimer);
-        const floatBtn = document.getElementById('btn-auto-floating-recenter');
-        if (floatBtn) floatBtn.style.display = 'none';
+        document.getElementById('btn-auto-recenter')?.classList.remove('pulse-warn');
 
         if (this.vehicleMarker) { this.vehicleMarker.remove(); this.vehicleMarker = null; }
         if (this.turnMarker) { this.turnMarker.remove(); this.turnMarker = null; }
@@ -6672,8 +6642,7 @@
         this.isCameraFollowLocked = true;
         this.isProgrammaticEasing = true;
         clearTimeout(this.autoRecenterTimer);
-        const floatBtn = document.getElementById('btn-auto-floating-recenter');
-        if (floatBtn) floatBtn.style.display = 'none';
+        document.getElementById('btn-auto-recenter')?.classList.remove('pulse-warn');
         document.getElementById('btn-auto-overview')?.classList.remove('active');
         const pos = this.currentPos || window.gpsTracker?.currentPos || this.coords[0];
         const heading = (window.gpsTracker?.heading && window.gpsTracker.heading > 0) ? window.gpsTracker.heading : (this.coords[1] ? this.calculateHeading(this.coords[0], this.coords[1]) : 0);
@@ -7825,6 +7794,14 @@
         // Fast recenter lock & fallback flags
         this.isRecentering = false;
         this.lowAccuracyTried = false;
+        this.rawGpsPos = null;
+        this.lastCoarseToastTime = 0;
+        try {
+          const savedOffset = localStorage.getItem('cyber_gps_offset');
+          this.calibrationOffset = savedOffset ? JSON.parse(savedOffset) : null;
+        } catch(e) {
+          this.calibrationOffset = null;
+        }
       }
 
       init() {
@@ -8046,9 +8023,23 @@
       handlePositionSuccess(pos) {
         const coords = pos.coords;
         const now = Date.now();
-        const lng = coords.longitude;
-        const lat = coords.latitude;
+        this.rawGpsPos = [coords.longitude, coords.latitude];
+        let lng = coords.longitude;
+        let lat = coords.latitude;
         const accuracy = coords.accuracy || 10;
+
+        // Apply persistent mobile offset calibration vector if active
+        if (this.calibrationOffset) {
+          lng += this.calibrationOffset.dLng;
+          lat += this.calibrationOffset.dLat;
+        }
+
+        // Accuracy Warning Toast for Coarse Mobile Location (> 70m accuracy)
+        if (accuracy > 70 && !this.calibrationOffset && (now - this.lastCoarseToastTime > 45000)) {
+          this.lastCoarseToastTime = now;
+          showCyberToast(`[COARSE GPS ±${Math.round(accuracy)}m] Tap CALIBRATE in GPS HUD to pinpoint your street`, 'warning');
+          document.getElementById('btn-calibrate-hud')?.classList.add('pulse-warn');
+        }
 
         // If transitioning from rough IP fallback, clear previous fix so jitter check never rejects genuine GPS
         if (this.locationSource === 'ip_fallback') {
@@ -8271,6 +8262,13 @@
               address: addressName,
               timestamp: Date.now()
             }));
+            if (this.rawGpsPos) {
+              this.calibrationOffset = {
+                dLng: coords[0] - this.rawGpsPos[0],
+                dLat: coords[1] - this.rawGpsPos[1]
+              };
+              localStorage.setItem('cyber_gps_offset', JSON.stringify(this.calibrationOffset));
+            }
           } catch(e) {}
         }
 
@@ -8487,8 +8485,8 @@
 
       forceSatelliteRescan() {
         const btnText = document.getElementById('btn-satellite-rescan-text');
-        if (btnText) btnText.innerText = 'PROBING HARDWARE GNSS (PLEASE WAIT)...';
-        showCyberToast('[PROBING HARDWARE GPS SATELLITES (25s DEEP SCAN)]', 'info');
+        if (btnText) btnText.innerText = 'PROBING HARDWARE GNSS... [15s]';
+        showCyberToast('[PROBING HARDWARE GPS SATELLITES (15s DEEP LOCK)]', 'info');
 
         if (!navigator.geolocation) {
           if (btnText) btnText.innerText = 'GEOLOCATION API NOT SUPPORTED';
@@ -8496,39 +8494,66 @@
           return;
         }
 
-        const scanTimeout = setTimeout(() => {
-          if (btnText) btnText.innerText = 'SCAN GNSS SATELLITES (25s DEEP LOCK)';
-          showCyberToast('[SATELLITE WEAK]: Indoor signal low. Pinpoint on map above.', 'warning');
-        }, 25000);
+        let secondsRemaining = 15;
+        let bestFix = null;
+        let scanWatchId = null;
 
-        navigator.geolocation.getCurrentPosition(
-          pos => {
-            clearTimeout(scanTimeout);
-            if (btnText) btnText.innerText = 'SCAN GNSS SATELLITES (25s DEEP LOCK)';
-            this.handlePositionSuccess(pos);
+        const countdownInterval = setInterval(() => {
+          secondsRemaining--;
+          if (btnText && secondsRemaining > 0) {
+            btnText.innerText = `SCANNING SATELLITES... [${secondsRemaining}s] ${bestFix ? `(±${Math.round(bestFix.coords.accuracy)}m)` : ''}`;
+          }
+        }, 1000);
+
+        const finishScan = () => {
+          clearInterval(countdownInterval);
+          if (scanWatchId) navigator.geolocation.clearWatch(scanWatchId);
+          if (btnText) btnText.innerText = 'SCAN GNSS SATELLITES (25s DEEP LOCK)';
+
+          if (bestFix) {
+            this.handlePositionSuccess(bestFix);
             this.closeCalibrationModal();
-            showCyberToast('[HARDWARE SATELLITE LOCK CONFIRMED!]', 'success');
-          },
-          err => {
-            clearTimeout(scanTimeout);
-            if (btnText) btnText.innerText = 'SCAN GNSS SATELLITES (25s DEEP LOCK)';
-            console.warn("[GPS] Force rescan failed:", err);
-            if (err.code === 1) { // PERMISSION_DENIED
-              const insecureBox = document.getElementById('cal-insecure-box');
-              if (insecureBox) insecureBox.style.display = 'flex';
-              showCyberToast('[BROWSER BLOCKED GPS]: Insecure HTTP context on mobile. Use Pinpoint above.', 'danger');
-            } else {
-              showCyberToast(`[SATELLITE SCAN FAILED: ${err.message || 'TIMEOUT'}]`, 'warning');
+            showCyberToast(`[HARDWARE SATELLITE LOCK: ±${Math.round(bestFix.coords.accuracy)}m]`, 'success');
+          } else {
+            showCyberToast('[SATELLITE WEAK]: Indoor signal low. Pinpoint on map above.', 'warning');
+          }
+        };
+
+        const scanTimeout = setTimeout(finishScan, 15000);
+
+        scanWatchId = navigator.geolocation.watchPosition(
+          pos => {
+            if (!bestFix || pos.coords.accuracy < bestFix.coords.accuracy) {
+              bestFix = pos;
+            }
+            // If satellite lock achieved with high precision (<= 15m), lock immediately!
+            if (pos.coords.accuracy <= 15) {
+              clearTimeout(scanTimeout);
+              finishScan();
             }
           },
-          { enableHighAccuracy: true, timeout: 25000, maximumAge: 0 }
+          err => {
+            console.warn("[GPS] Force rescan fix error:", err);
+            if (err.code === 1) { // PERMISSION_DENIED
+              clearTimeout(scanTimeout);
+              clearInterval(countdownInterval);
+              if (scanWatchId) navigator.geolocation.clearWatch(scanWatchId);
+              if (btnText) btnText.innerText = 'SCAN GNSS SATELLITES (25s DEEP LOCK)';
+              const insecureBox = document.getElementById('cal-insecure-box');
+              if (insecureBox) insecureBox.style.display = 'flex';
+              showCyberToast('[BROWSER BLOCKED GPS]: Enable precise location in settings or use Pinpoint', 'danger');
+            }
+          },
+          { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
         );
       }
 
       resetCalibration() {
         try {
           localStorage.removeItem('cyber_calibrated_location');
+          localStorage.removeItem('cyber_gps_offset');
         } catch(e) {}
+        this.calibrationOffset = null;
         this.locationSource = 'uncalibrated';
         this.firstFixAcquired = false;
         this.closeCalibrationModal();
@@ -9477,10 +9502,12 @@
       else document.exitFullscreen();
     });
 
-    // Terminal
+    // Terminal Engine & Command Interpreter
     const termModal = document.getElementById('terminal-modal');
     const termInput = document.getElementById('terminal-cmd');
     const termOutput = document.getElementById('terminal-output');
+    const cmdHistory = [];
+    let cmdHistoryIdx = -1;
 
     document.getElementById('btn-open-terminal').addEventListener('click', () => {
       termModal.style.display = termModal.style.display === 'flex' ? 'none' : 'flex';
@@ -9495,25 +9522,347 @@
       }
     });
 
-    termInput.addEventListener('keydown', e => {
+    termInput.addEventListener('keydown', async e => {
+      if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        if (cmdHistory.length > 0) {
+          if (cmdHistoryIdx === -1) cmdHistoryIdx = cmdHistory.length - 1;
+          else if (cmdHistoryIdx > 0) cmdHistoryIdx--;
+          termInput.value = cmdHistory[cmdHistoryIdx];
+        }
+        return;
+      }
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        if (cmdHistory.length > 0 && cmdHistoryIdx !== -1) {
+          if (cmdHistoryIdx < cmdHistory.length - 1) {
+            cmdHistoryIdx++;
+            termInput.value = cmdHistory[cmdHistoryIdx];
+          } else {
+            cmdHistoryIdx = -1;
+            termInput.value = '';
+          }
+        }
+        return;
+      }
+
       if (e.key === 'Enter') {
-        const val = termInput.value.trim().toLowerCase();
+        const raw = termInput.value.trim();
+        if (!raw) return;
         termInput.value = '';
+        cmdHistory.push(raw);
+        cmdHistoryIdx = -1;
+
+        const val = raw.toLowerCase();
         const d = document.createElement('div');
-        d.innerHTML = `&gt; ${val}`;
+        d.innerHTML = `<span style="color: var(--neon-cyan);">&gt;</span> <span style="color: #ffffff;">${raw}</span>`;
         termOutput.appendChild(d);
 
-        if (val === 'help') {
-          termOutput.innerHTML += `<div>COMMANDS: goto [place], photon [status|test|set &lt;url&gt;|on|off], pitch [0-60], voice [on/off], clear</div>`;
+        const printMsg = (msg, color = 'var(--text-light)') => {
+          const out = document.createElement('div');
+          out.style.color = color;
+          out.innerHTML = msg;
+          termOutput.appendChild(out);
+        };
+
+        if (val === 'help' || val === '?' || val === 'commands') {
+          printMsg(`<div style="color: var(--neon-yellow); font-weight: bold; margin-bottom: 4px;">══ NETRUNNER CLI // ICE BREAKER COMMAND MATRIX ══</div>
+<div style="color: var(--neon-cyan); font-weight: bold;">[NAVIGATION &amp; ROUTING]</div>
+• <strong style="color:#fff;">route &lt;place&gt;</strong> or <strong style="color:#fff;">nav &lt;place&gt;</strong> : Calculate turn-by-turn route to destination
+• <strong style="color:#fff;">mode &lt;car|bike|walk&gt;</strong> : Switch travel costing profile
+• <strong style="color:#fff;">opt &lt;fastest|shortest&gt;</strong> : Switch route optimization
+• <strong style="color:#fff;">avoid &lt;tolls|highways|ferries|none&gt;</strong> : Toggle route penalty options
+• <strong style="color:#fff;">reroute</strong> : Trigger immediate off-route recalculation
+• <strong style="color:#fff;">nav stop</strong> / <strong style="color:#fff;">nav exit</strong> : Exit Android Auto turn-by-turn HUD
+<div style="color: var(--neon-cyan); font-weight: bold; margin-top: 6px;">[CAMERA &amp; OPTICS]</div>
+• <strong style="color:#fff;">goto &lt;place&gt;</strong> : Search and fly camera to target
+• <strong style="color:#fff;">zoom &lt;1-22&gt;</strong> : Set camera zoom level
+• <strong style="color:#fff;">pitch &lt;0-60&gt;</strong> : Set 3D tilt pitch angle
+• <strong style="color:#fff;">bearing &lt;0-360&gt;</strong> : Set compass heading rotation
+• <strong style="color:#fff;">flyto &lt;lng&gt; &lt;lat&gt; [zoom]</strong> : Teleport directly to coordinates
+• <strong style="color:#fff;">theme &lt;neon|synthwave|matrix|daylight&gt;</strong> : Switch visual style
+• <strong style="color:#fff;">night</strong> / <strong style="color:#fff;">day</strong> : Toggle daylight &amp; cyber midnight
+<div style="color: var(--neon-cyan); font-weight: bold; margin-top: 6px;">[GPS &amp; SENSORS]</div>
+• <strong style="color:#fff;">gps status</strong> : Print real-time sensor telemetry
+• <strong style="color:#fff;">gps recenter</strong> : Center camera on user position
+• <strong style="color:#fff;">trail &lt;on|off|clear&gt;</strong> : Toggle or clear breadcrumb laser trail
+• <strong style="color:#fff;">pinpoint</strong> : Launch tactical doorstep calibration reticle
+<div style="color: var(--neon-cyan); font-weight: bold; margin-top: 6px;">[METEO &amp; AUDIO]</div>
+• <strong style="color:#fff;">weather [city]</strong> : Real-time atmospheric telemetry &amp; air quality
+• <strong style="color:#fff;">scan</strong> : Radar ping and holographic pulse
+• <strong style="color:#fff;">voice &lt;on|off&gt;</strong> : Toggle Web Speech voice directions
+• <strong style="color:#fff;">speak &lt;text&gt;</strong> : Test voice synthesizer
+• <strong style="color:#fff;">audio &lt;on|off&gt;</strong> : Toggle procedural SFX
+<div style="color: var(--neon-cyan); font-weight: bold; margin-top: 6px;">[SYSTEM &amp; NETRUNNER]</div>
+• <strong style="color:#fff;">sysinfo</strong> : WebGL renderer, FPS, active coordinate matrix
+• <strong style="color:#fff;">mark &lt;label&gt;</strong> / <strong style="color:#fff;">marks</strong> : Save or list datashard bookmarks
+• <strong style="color:#fff;">photon &lt;status|test|on|off&gt;</strong> : Photon search engine management
+• <strong style="color:#fff;">clear</strong> : Flush terminal output buffer`);
+        } else if (val.startsWith('route ') || val.startsWith('nav ')) {
+          const destQuery = raw.replace(/^(route|nav)\s+/i, '').trim();
+          printMsg(`[ROUTING] Geocoding destination: "${destQuery}"...`, 'var(--neon-cyan)');
+          try {
+            const photonRes = await window.photonEngine?.search(destQuery, 1);
+            if (photonRes && photonRes.features && photonRes.features.length > 0) {
+              const feat = photonRes.features[0];
+              const c = feat.geometry.coordinates;
+              const name = feat.properties.name || feat.properties.city || destQuery;
+              document.getElementById('route-destination').value = name;
+              routeDestination = [c[0], c[1]];
+              printMsg(`[TARGET ACQUIRED] ${name} [${c[0].toFixed(4)}, ${c[1].toFixed(4)}]`, 'var(--neon-green)');
+              printMsg(`[VALHALLA] Calculating multi-route matrix...`, 'var(--neon-yellow)');
+              await calculateValhallaRoute();
+            } else {
+              printMsg(`[ERROR] Location "${destQuery}" not found in OpenStreetMap matrix.`, 'var(--neon-pink)');
+            }
+          } catch(err) {
+            printMsg(`[ERROR] Routing request failed: ${err.message}`, 'var(--neon-pink)');
+          }
+        } else if (val === 'nav stop' || val === 'nav exit' || val === 'stop nav') {
+          if (window.androidAutoNav && window.androidAutoNav.active) {
+            window.androidAutoNav.stop();
+            printMsg(`[NAVIGATION] Android Auto HUD closed. Geomatrix restored.`, 'var(--neon-green)');
+          } else {
+            printMsg(`[STATUS] No active turn-by-turn navigation session.`, 'var(--text-muted)');
+          }
+        } else if (val.startsWith('mode ')) {
+          const m = val.replace('mode ', '').trim();
+          if (m === 'car' || m === 'auto' || m === 'drive') {
+            document.getElementById('btn-cost-auto')?.click();
+            printMsg(`[MODE] Transport profile switched to CYBER-CAR (Driving).`, 'var(--neon-green)');
+          } else if (m === 'bike' || m === 'motorcycle') {
+            document.getElementById('btn-cost-motorcycle')?.click();
+            printMsg(`[MODE] Transport profile switched to YAIBA MOTORCYCLE (Motorbike).`, 'var(--neon-green)');
+          } else if (m === 'walk' || m === 'pedestrian') {
+            document.getElementById('btn-cost-pedestrian')?.click();
+            printMsg(`[MODE] Transport profile switched to STEALTH ON-FOOT (Walking).`, 'var(--neon-green)');
+          } else {
+            printMsg(`[ERROR] Unknown mode "${m}". Supported: car, bike, walk.`, 'var(--neon-pink)');
+          }
+        } else if (val.startsWith('opt ')) {
+          const o = val.replace('opt ', '').trim();
+          if (o === 'fastest' || o === 'fast') {
+            document.getElementById('btn-opt-fastest')?.click();
+            printMsg(`[OPTIMIZATION] Route profile: FASTEST (Time-optimized).`, 'var(--neon-green)');
+          } else if (o === 'shortest' || o === 'short') {
+            document.getElementById('btn-opt-shortest')?.click();
+            printMsg(`[OPTIMIZATION] Route profile: SHORTEST (Distance-optimized).`, 'var(--neon-green)');
+          } else {
+            printMsg(`[ERROR] Unknown optimization "${o}". Use: fastest, shortest.`, 'var(--neon-pink)');
+          }
+        } else if (val.startsWith('avoid ')) {
+          const a = val.replace('avoid ', '').trim();
+          if (a === 'tolls' || a === 'toll') {
+            document.getElementById('btn-avoid-tolls')?.click();
+            printMsg(`[AVOID] Toggled Avoid Toll Roads.`, 'var(--neon-yellow)');
+          } else if (a === 'highways' || a === 'highway') {
+            document.getElementById('btn-avoid-highways')?.click();
+            printMsg(`[AVOID] Toggled Avoid Highways.`, 'var(--neon-yellow)');
+          } else if (a === 'ferries' || a === 'ferry') {
+            document.getElementById('btn-avoid-ferries')?.click();
+            printMsg(`[AVOID] Toggled Avoid Ferries.`, 'var(--neon-yellow)');
+          } else if (a === 'none') {
+            activeAvoidances.clear();
+            document.querySelectorAll('.route-opt-chip[id^="btn-avoid-"]').forEach(btn => btn.classList.remove('active'));
+            printMsg(`[AVOID] All routing avoidance penalties cleared.`, 'var(--neon-green)');
+            if (routeOrigin && routeDestination) calculateValhallaRoute();
+          } else {
+            printMsg(`[ERROR] Unknown avoidance "${a}". Use: tolls, highways, ferries, none.`, 'var(--neon-pink)');
+          }
+        } else if (val === 'reroute') {
+          printMsg(`[REROUTING] Triggering immediate recalculation from current GPS fix...`, 'var(--neon-cyan)');
+          if (window.androidAutoNav && window.androidAutoNav.active) {
+            const userPos = window.gpsTracker?.currentPos || routeOrigin;
+            routeOrigin = [userPos[0], userPos[1]];
+            await calculateValhallaRoute(false);
+            if (currentRouteCoords.length > 1) {
+              window.androidAutoNav.coords = currentRouteCoords;
+              window.androidAutoNav.maneuvers = currentManeuvers;
+              window.androidAutoNav.updateHUDGuidance(0);
+              printMsg(`[OK] Route recalculated and HUD updated.`, 'var(--neon-green)');
+            }
+          } else {
+            await calculateValhallaRoute();
+          }
         } else if (val.startsWith('goto ')) {
-          performPhotonSearch(val.replace('goto ', '').trim());
+          const dest = raw.replace(/^goto\s+/i, '').trim();
+          printMsg(`[SEARCH] Scanning coordinates for "${dest}"...`, 'var(--neon-cyan)');
+          performPhotonSearch(dest);
+        } else if (val.startsWith('zoom ')) {
+          const z = parseFloat(val.replace('zoom ', ''));
+          if (!isNaN(z)) {
+            const clz = Math.min(22, Math.max(1, z));
+            map.flyTo({ zoom: clz, duration: 800 });
+            printMsg(`[OPTICS] Camera zoom adjusted to ${clz}.`, 'var(--neon-green)');
+          }
+        } else if (val.startsWith('pitch ')) {
+          const p = parseFloat(val.replace('pitch ', ''));
+          if (!isNaN(p)) {
+            const clp = Math.min(60, Math.max(0, p));
+            map.easeTo({ pitch: clp, duration: 600 });
+            printMsg(`[OPTICS] Perspective tilt adjusted to ${clp}°.`, 'var(--neon-green)');
+          }
+        } else if (val.startsWith('bearing ') || val.startsWith('heading ') || val.startsWith('rotate ')) {
+          const b = parseFloat(val.replace(/^(bearing|heading|rotate)\s+/, ''));
+          if (!isNaN(b)) {
+            const clb = (b + 360) % 360;
+            map.easeTo({ bearing: clb, duration: 600 });
+            printMsg(`[OPTICS] Map compass heading oriented to ${clb}°.`, 'var(--neon-green)');
+          }
+        } else if (val.startsWith('flyto ')) {
+          const parts = val.replace('flyto ', '').trim().split(/[\s,]+/);
+          if (parts.length >= 2) {
+            const lng = parseFloat(parts[0]);
+            const lat = parseFloat(parts[1]);
+            const zm = parts[2] ? parseFloat(parts[2]) : 16;
+            if (!isNaN(lng) && !isNaN(lat)) {
+              map.flyTo({ center: [lng, lat], zoom: zm, duration: 1200 });
+              printMsg(`[TELEPORT] Gliding to coordinates: [${lng}, ${lat}] @ z${zm}`, 'var(--neon-green)');
+            }
+          } else {
+            printMsg(`[ERROR] Syntax: flyto &lt;lng&gt; &lt;lat&gt; [zoom]`, 'var(--neon-pink)');
+          }
+        } else if (val.startsWith('theme ') || val.startsWith('style ')) {
+          const st = val.replace(/^(theme|style)\s+/, '').trim();
+          if (['neon', 'synthwave', 'matrix', 'daylight', 'tokyo', 'redline'].includes(st)) {
+            setBaseStyle(st);
+            printMsg(`[SHADER] Map style matrix switched to: ${st.toUpperCase()}`, 'var(--neon-green)');
+          } else {
+            printMsg(`[ERROR] Available themes: neon, synthwave, matrix, daylight, tokyo, redline`, 'var(--neon-pink)');
+          }
+        } else if (val === 'night') {
+          setBaseStyle('neon');
+          printMsg(`[THEME] Night City Cyber Midnight mode activated.`, 'var(--neon-green)');
+        } else if (val === 'day') {
+          setBaseStyle('daylight');
+          printMsg(`[THEME] Tactical Daylight high-visibility mode activated.`, 'var(--neon-green)');
+        } else if (val === 'gps' || val === 'gps status') {
+          const t = window.gpsTracker;
+          if (t && t.currentPos) {
+            printMsg(`[GPS TELEMETRY] Source: ${t.locationSource.toUpperCase()} | Lat: ${t.currentPos[1].toFixed(5)}°N | Lng: ${t.currentPos[0].toFixed(5)}°E | Acc: ±${Math.round(t.accuracy)}m | Speed: ${Math.round(t.speed)} km/h | Heading: ${Math.round(t.targetHeading)}° | Offset: ${t.calibrationOffset ? `[${t.calibrationOffset.dLng.toFixed(5)}, ${t.calibrationOffset.dLat.toFixed(5)}]` : 'NONE'}`, 'var(--neon-cyan)');
+          } else {
+            printMsg(`[GPS] Acquiring sensor lock...`, 'var(--neon-yellow)');
+          }
+        } else if (val === 'gps recenter' || val === 'recenter') {
+          window.gpsTracker?.recenterCamera();
+          printMsg(`[GPS] Camera recentered on current location.`, 'var(--neon-green)');
+        } else if (val.startsWith('trail ')) {
+          const arg = val.replace('trail ', '').trim();
+          if (arg === 'on') {
+            if (window.gpsTracker) window.gpsTracker.isTrailEnabled = true;
+            printMsg(`[TRAIL] GPS breadcrumb laser trails ENABLED.`, 'var(--neon-green)');
+          } else if (arg === 'off') {
+            if (window.gpsTracker) window.gpsTracker.isTrailEnabled = false;
+            printMsg(`[TRAIL] GPS breadcrumb laser trails DISABLED.`, 'var(--neon-yellow)');
+          } else if (arg === 'clear') {
+            window.gpsTracker?.clearTrail();
+            printMsg(`[TRAIL] GPS breadcrumb history cleared.`, 'var(--neon-green)');
+          }
+        } else if (val === 'pinpoint') {
+          termModal.style.display = 'none';
+          window.gpsTracker?.startInteractivePinpointMode();
+          printMsg(`[PINPOINT] Tactical map reticle activated.`, 'var(--neon-green)');
+        } else if (val.startsWith('weather') || val.startsWith('meteo')) {
+          const cityQuery = raw.replace(/^(weather|meteo)\s*/i, '').trim();
+          if (!cityQuery || cityQuery === 'status' || cityQuery === 'refresh') {
+            window.weatherHUD?.fetchAtmosphericTelemetry();
+            const w = window.weatherHUD?.cachedData?.current;
+            if (w) {
+              printMsg(`[ATMOSPHERIC TELEMETRY] Temp: ${Math.round(w.temperature_2m)}°C | Humidity: ${Math.round(w.relative_humidity_2m)}% | Wind: ${Math.round(w.wind_speed_10m)} km/h | Weather Code: ${w.weather_code}`, 'var(--neon-cyan)');
+            } else {
+              printMsg(`[WEATHER] Atmospheric sensors online. Refreshing telemetry...`, 'var(--neon-cyan)');
+            }
+          } else {
+            printMsg(`[WEATHER] Querying atmospheric sensors for "${cityQuery}"...`, 'var(--neon-cyan)');
+            try {
+              const geoRes = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(cityQuery)}&count=1&language=en&format=json`);
+              if (geoRes.ok) {
+                const geoData = await geoRes.json();
+                if (geoData.results && geoData.results[0]) {
+                  const place = geoData.results[0];
+                  const wRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${place.latitude.toFixed(4)}&longitude=${place.longitude.toFixed(4)}&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m`);
+                  if (wRes.ok) {
+                    const wData = await wRes.json();
+                    const cur = wData.current;
+                    printMsg(`[METEO: ${place.name.toUpperCase()}, ${place.country_code || ''}] Temp: ${Math.round(cur.temperature_2m)}°C | Humidity: ${Math.round(cur.relative_humidity_2m)}% | Wind: ${Math.round(cur.wind_speed_10m)} km/h | Condition: Code ${cur.weather_code}`, 'var(--neon-green)');
+                  }
+                } else {
+                  printMsg(`[ERROR] City "${cityQuery}" not found.`, 'var(--neon-pink)');
+                }
+              }
+            } catch(e) {
+              printMsg(`[ERROR] Weather query failed: ${e.message}`, 'var(--neon-pink)');
+            }
+          }
+        } else if (val === 'scan' || val === 'radar') {
+          cyberAudio.playRadarPing();
+          const sweep = document.getElementById('radar-sweep-fx');
+          if (sweep) {
+            sweep.style.display = 'block';
+            setTimeout(() => { if (!radarFxActive) sweep.style.display = 'none'; }, 2000);
+          }
+          printMsg(`[SCAN] Radar acoustic ping emitted. Viewport swept.`, 'var(--neon-green)');
+        } else if (val.startsWith('voice ')) {
+          const arg = val.replace('voice ', '').trim();
+          if (arg === 'on') {
+            cyberVoice.enabled = true;
+            updateVoiceUI(true, false);
+            printMsg(`[VOICE] Synthetic navigator speech ENABLED.`, 'var(--neon-green)');
+          } else if (arg === 'off') {
+            cyberVoice.enabled = false;
+            updateVoiceUI(false, false);
+            printMsg(`[VOICE] Synthetic navigator speech DISABLED.`, 'var(--neon-yellow)');
+          }
+        } else if (val.startsWith('speak ')) {
+          const txt = raw.replace(/^speak\s+/i, '').trim();
+          cyberVoice.speak(txt);
+          printMsg(`[VOICE SYNTH] "${txt}"`, 'var(--neon-cyan)');
+        } else if (val.startsWith('audio ')) {
+          const arg = val.replace('audio ', '').trim();
+          if (arg === 'on') {
+            cyberAudio.enabled = true;
+            updateAudioUI(true);
+            printMsg(`[AUDIO] Procedural synthesizer SFX ENABLED.`, 'var(--neon-green)');
+          } else if (arg === 'off') {
+            cyberAudio.enabled = false;
+            updateAudioUI(false);
+            printMsg(`[AUDIO] Procedural synthesizer SFX MUTED.`, 'var(--neon-yellow)');
+          }
+        } else if (val === 'sysinfo' || val === 'status') {
+          const gl = map.getCanvas().getContext('webgl2') || map.getCanvas().getContext('webgl');
+          const debugInfo = gl?.getExtension('WEBGL_debug_renderer_info');
+          const renderer = debugInfo ? gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL) : 'WebGL Hardware';
+          const center = map.getCenter();
+          printMsg(`<div style="color: var(--neon-yellow); font-weight: bold;">[SYSTEM DIAGNOSTICS]</div>
+• Renderer: ${renderer}
+• Viewport: ${window.innerWidth}x${window.innerHeight} | Canvas: ${map.getCanvas().width}x${map.getCanvas().height}
+• Center: [${center.lng.toFixed(5)}, ${center.lat.toFixed(5)}] | Zoom: ${map.getZoom().toFixed(2)} | Pitch: ${Math.round(map.getPitch())}° | Bearing: ${Math.round(map.getBearing())}°
+• Active Style: ${currentStyleKey.toUpperCase()}
+• Valhalla Router: ONLINE | Photon Geocoder: ONLINE | Open-Meteo: ONLINE`, 'var(--neon-cyan)');
+        } else if (val.startsWith('mark ') || val.startsWith('bookmark ')) {
+          const name = raw.replace(/^(mark|bookmark)\s+/i, '').trim();
+          const c = map.getCenter();
+          saveBookmark(name, c.lng, c.lat);
+          printMsg(`[DATASHARD] Location marked: "${name}" [${c.lng.toFixed(4)}, ${c.lat.toFixed(4)}]`, 'var(--neon-green)');
+        } else if (val === 'marks' || val === 'bookmarks') {
+          if (bookmarks && bookmarks.length > 0) {
+            let str = `<div style="color: var(--neon-yellow); font-weight: bold;">[SAVED DATASHARD BOOKMARKS]</div>`;
+            bookmarks.forEach((b, i) => {
+              str += `<div>${i + 1}. <strong style="color: #fff;">${b.name}</strong> [${b.lng.toFixed(4)}, ${b.lat.toFixed(4)}]</div>`;
+            });
+            printMsg(str, 'var(--neon-cyan)');
+          } else {
+            printMsg(`[DATASHARDS] No saved bookmarks found. Use 'mark &lt;label&gt;' to save current view.`, 'var(--text-muted)');
+          }
+        } else if (val === 'clear' || val === 'cls') {
+          termOutput.innerHTML = '';
         } else if (val === 'photon' || val === 'photon status') {
           const cfg = window.photonEngine?.config;
-          termOutput.innerHTML += `<div>[PHOTON] Endpoint: ${cfg?.endpoint || 'N/A'} | Status: ${cfg?.status?.toUpperCase() || 'ONLINE'} | Bias: ${cfg?.useLocationBias ? 'ON' : 'OFF'} | Lang: ${cfg?.lang || 'en'} | Limit: ${cfg?.limit || 10}</div>`;
+          printMsg(`[PHOTON] Endpoint: ${cfg?.endpoint || 'N/A'} | Status: ${cfg?.status?.toUpperCase() || 'ONLINE'} | Bias: ${cfg?.useLocationBias ? 'ON' : 'OFF'} | Lang: ${cfg?.lang || 'en'} | Limit: ${cfg?.limit || 10}`, 'var(--neon-cyan)');
         } else if (val === 'photon test') {
-          termOutput.innerHTML += `<div>[PHOTON] Pinging ${window.photonEngine?.config.endpoint}...</div>`;
+          printMsg(`[PHOTON] Pinging ${window.photonEngine?.config.endpoint}...`, 'var(--neon-yellow)');
           window.photonEngine?.probe().then(res => {
-            termOutput.innerHTML += `<div>[PHOTON RESULT] ${res.ok ? 'ONLINE' : 'FAILED'}: ${res.message}</div>`;
+            printMsg(`[PHOTON RESULT] ${res.ok ? 'ONLINE' : 'FAILED'}: ${res.message}`, res.ok ? 'var(--neon-green)' : 'var(--neon-pink)');
             termOutput.scrollTop = termOutput.scrollHeight;
           });
         } else if (val.startsWith('photon set ')) {
@@ -9521,17 +9870,18 @@
           if (window.photonEngine) {
             window.photonEngine.config.endpoint = newUrl;
             window.photonEngine.save();
-            termOutput.innerHTML += `<div>[PHOTON] Endpoint set to: ${newUrl}</div>`;
+            printMsg(`[PHOTON] Endpoint set to: ${newUrl}`, 'var(--neon-green)');
           }
         } else if (val === 'photon on') {
           if (window.photonEngine) { window.photonEngine.config.enabled = true; window.photonEngine.save(); }
-          termOutput.innerHTML += `<div>[PHOTON] Search engine ENABLED.</div>`;
+          printMsg(`[PHOTON] Search engine ENABLED.`, 'var(--neon-green)');
         } else if (val === 'photon off') {
           if (window.photonEngine) { window.photonEngine.config.enabled = false; window.photonEngine.save(); }
-          termOutput.innerHTML += `<div>[PHOTON] Search engine DISABLED.</div>`;
-        } else if (val.startsWith('pitch ')) {
-          map.setPitch(parseInt(val.replace('pitch ', '')) || 0);
+          printMsg(`[PHOTON] Search engine DISABLED.`, 'var(--neon-yellow)');
+        } else {
+          printMsg(`[UNKNOWN COMMAND] "${raw}". Type <span style="color: var(--neon-yellow); font-weight: bold;">help</span> for full command matrix.`, 'var(--neon-pink)');
         }
+
         termOutput.scrollTop = termOutput.scrollHeight;
       }
     });
@@ -9667,6 +10017,69 @@
         }
       }
 
+      getWeatherIconSvg(code) {
+        // 0: Clear Sky / Ionosphere (Pulsing glowing cyber sun with flares)
+        if (code === 0) {
+          return `<svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke-width="1.8">
+            <circle cx="12" cy="12" r="4.5" stroke="#fcee0a" stroke-width="2" fill="rgba(252, 238, 10, 0.2)"/>
+            <line x1="12" y1="2" x2="12" y2="5" stroke="#fcee0a" stroke-linecap="round"/>
+            <line x1="12" y1="19" x2="12" y2="22" stroke="#fcee0a" stroke-linecap="round"/>
+            <line x1="2" y1="12" x2="5" y2="12" stroke="#fcee0a" stroke-linecap="round"/>
+            <line x1="19" y1="12" x2="22" y2="12" stroke="#fcee0a" stroke-linecap="round"/>
+            <line x1="4.93" y1="4.93" x2="7.05" y2="7.05" stroke="#00f0ff" stroke-linecap="round"/>
+            <line x1="16.95" y1="16.95" x2="19.07" y2="19.07" stroke="#00f0ff" stroke-linecap="round"/>
+            <line x1="4.93" y1="19.07" x2="7.05" y2="16.95" stroke="#00f0ff" stroke-linecap="round"/>
+            <line x1="16.95" y1="7.05" x2="19.07" y2="4.93" stroke="#00f0ff" stroke-linecap="round"/>
+          </svg>`;
+        }
+        // 1-3: Neon Smog & Scatter / Fair to Overcast (Cyan cloud with yellow sun peeking)
+        if (code <= 3) {
+          return `<svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke-width="1.8">
+            <path d="M12 4a4.5 4.5 0 0 1 4.3 3.2" stroke="#fcee0a" stroke-width="2" stroke-linecap="round"/>
+            <line x1="12" y1="1.5" x2="12" y2="3" stroke="#fcee0a" stroke-linecap="round"/>
+            <line x1="15.5" y1="2.5" x2="14.5" y2="3.8" stroke="#fcee0a" stroke-linecap="round"/>
+            <path d="M19.5 17.5 A4.5 4.5 0 0 0 17 9.5 A6.5 6.5 0 0 0 5 14 A4.5 4.5 0 0 0 7 19.5 Z" stroke="#00f0ff" stroke-width="1.8" fill="rgba(0, 240, 255, 0.08)"/>
+            <line x1="7" y1="17" x2="17" y2="17" stroke="#00ff66" stroke-width="1" stroke-dasharray="2 2"/>
+          </svg>`;
+        }
+        // 45, 48: Atmospheric Fog / Cyber Smog Haze
+        if (code === 45 || code === 48) {
+          return `<svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke-width="2">
+            <line x1="4" y1="7" x2="20" y2="7" stroke="#00f0ff" stroke-linecap="round"/>
+            <line x1="2" y1="12" x2="17" y2="12" stroke="#fcee0a" stroke-linecap="round"/>
+            <line x1="7" y1="17" x2="22" y2="17" stroke="#00ff66" stroke-linecap="round"/>
+            <circle cx="19" cy="12" r="1.5" fill="#fcee0a"/>
+            <circle cx="5" cy="17" r="1.5" fill="#00ff66"/>
+          </svg>`;
+        }
+        // 71-77, 85, 86: Cryo Frost / Subzero Snow (Cyan Crystal Lattice)
+        if ((code >= 71 && code <= 77) || code === 85 || code === 86) {
+          return `<svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke-width="1.8">
+            <line x1="12" y1="2" x2="12" y2="22" stroke="#00f0ff" stroke-linecap="round"/>
+            <line x1="3.34" y1="7" x2="20.66" y2="17" stroke="#00f0ff" stroke-linecap="round"/>
+            <line x1="3.34" y1="17" x2="20.66" y2="7" stroke="#00f0ff" stroke-linecap="round"/>
+            <circle cx="12" cy="12" r="2.5" fill="#ffffff" stroke="#00f0ff"/>
+            <polyline points="9 4 12 7 15 4" stroke="#00f0ff"/>
+            <polyline points="9 20 12 17 15 20" stroke="#00f0ff"/>
+          </svg>`;
+        }
+        // 95-99: Ion Storm & Deluge (Cloud with Lightning bolt & Sparks)
+        if (code >= 95) {
+          return `<svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke-width="1.8">
+            <path d="M19 16.5A4.5 4.5 0 0 0 17 8h-1.26A8 8 0 1 0 4 15.5" stroke="#00f0ff" stroke-width="1.8"></path>
+            <polygon points="13 11 9 17 13 17 11 22 17 15 13 15 15 11" fill="#fcee0a" stroke="#fcee0a" stroke-width="1" stroke-linejoin="round"/>
+            <line x1="6" y1="19" x2="5" y2="22" stroke="#ff007f" stroke-linecap="round" stroke-width="2"></line>
+          </svg>`;
+        }
+        // Default / 51-67, 80-82: Acid Rain & Neon Haze (Reference Image design)
+        return `<svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke-width="1.8">
+          <path d="M20 17.58A5 5 0 0 0 18 8h-1.26A8 8 0 1 0 4 16.25" stroke="#00f0ff" stroke-width="1.8"></path>
+          <line x1="8" y1="19" x2="7" y2="22" stroke="#fcee0a" stroke-linecap="round" stroke-width="2.2"></line>
+          <line x1="12" y1="19" x2="11" y2="22" stroke="#00f0ff" stroke-linecap="round" stroke-width="2.2"></line>
+          <line x1="16" y1="19" x2="15" y2="22" stroke="#ff007f" stroke-linecap="round" stroke-width="2.2"></line>
+        </svg>`;
+      }
+
       updateDisplay(data) {
         if (!data || !data.current) {
           this.usePresetTelemetry();
@@ -9693,12 +10106,22 @@
           phText = 'pH 6.2 // MILD';
           aqiVal = '88 FAIR';
           aqiColor = '#00f0ff';
+        } else if (code === 45 || code === 48) {
+          condText = 'ATMOSPHERIC HAZE';
+          phText = 'pH 5.5 // HAZE';
+          aqiVal = '112 MODERATE';
+          aqiColor = '#ffaa00';
+        } else if ((code >= 71 && code <= 77) || code === 85 || code === 86) {
+          condText = 'CRYO PRECIPITATION';
+          phText = 'pH 6.8 // FROST';
+          aqiVal = '35 NOMINAL';
+          aqiColor = '#00f0ff';
         } else if (code >= 51 && code <= 67) {
           condText = 'ACID PRECIPITATION';
           phText = 'pH 3.8 // TOXIC';
           aqiVal = '165 UNHEALTHY';
           aqiColor = '#ff0055';
-        } else if (code >= 80) {
+        } else if (code >= 95) {
           condText = 'ION STORM & DELUGE';
           phText = 'pH 3.2 // CRITICAL';
           aqiVal = '198 HAZARDOUS';
@@ -9713,6 +10136,8 @@
         const aqiDisp = document.getElementById('weather-aqi-val');
         const minTemp = document.getElementById('w-min-temp');
         const minCond = document.getElementById('w-min-cond');
+        const iconHud = document.getElementById('weather-dynamic-icon');
+        const minIcon = document.getElementById('w-min-icon');
 
         if (tempDisp) tempDisp.innerText = `${temp}°`;
         if (condDisp) condDisp.innerText = condText;
@@ -9725,13 +10150,20 @@
         }
         if (minTemp) minTemp.innerText = `${temp}°C`;
         if (minCond) minCond.innerText = condText.slice(0, 14);
+        if (iconHud) iconHud.innerHTML = this.getWeatherIconSvg(code);
+        if (minIcon) {
+          const miniMap = { 0: '☀️', 1: '⛅', 2: '⛅', 3: '☁️', 45: '🌫️', 48: '🌫️', 71: '❄️', 73: '❄️', 75: '❄️', 95: '⚡', 96: '⚡', 99: '⚡' };
+          minIcon.innerText = miniMap[code] || '🌧️';
+        }
       }
 
       usePresetTelemetry() {
         const tempDisp = document.getElementById('weather-temp-display');
         const condDisp = document.getElementById('weather-condition-display');
+        const iconHud = document.getElementById('weather-dynamic-icon');
         if (tempDisp) tempDisp.innerText = '24°';
         if (condDisp) condDisp.innerText = 'ACID RAIN & NEON HAZE';
+        if (iconHud) iconHud.innerHTML = this.getWeatherIconSvg(61);
       }
     }
 
