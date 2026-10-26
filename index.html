@@ -1600,28 +1600,108 @@
 
 
     /* Hacker Terminal */
+    /* Hacker Terminal */
     .terminal-modal {
       position: absolute;
       bottom: 24px;
       left: 24px;
-      width: 440px;
-      max-width: calc(100vw - 48px);
-      height: 260px;
+      width: 480px;
+      max-width: calc(100vw - 36px);
+      height: 360px;
       background: rgba(5, 7, 12, 0.96);
-      backdrop-filter: blur(16px);
+      backdrop-filter: blur(18px);
       border: 1px solid var(--neon-green);
-      box-shadow: 0 0 25px rgba(0, 255, 102, 0.25);
+      box-shadow: 0 0 30px rgba(0, 255, 102, 0.3), inset 0 0 15px rgba(0, 255, 102, 0.05);
       clip-path: var(--clip-chamfer);
       z-index: 200;
       display: none;
       flex-direction: column;
       font-family: var(--font-mono);
+      transition: all 0.25s ease;
     }
-    .terminal-header { background: rgba(0, 255, 102, 0.15); border-bottom: 1px solid rgba(0, 255, 102, 0.3); padding: 6px 12px; display: flex; justify-content: space-between; font-size: 11px; color: var(--neon-green); }
-    .terminal-body { flex: 1; overflow-y: auto; padding: 10px 12px; font-size: 11px; color: #7aff9e; display: flex; flex-direction: column; gap: 4px; }
-    .terminal-input-row { display: flex; align-items: center; gap: 6px; padding: 6px 12px; border-top: 1px solid rgba(0, 255, 102, 0.2); }
-    .terminal-prompt { color: var(--neon-green); }
-    .terminal-input { flex: 1; background: transparent; border: none; outline: none; color: #fff; font-family: var(--font-mono); font-size: 12px; }
+    .terminal-header {
+      background: rgba(0, 255, 102, 0.15);
+      border-bottom: 1px solid rgba(0, 255, 102, 0.3);
+      padding: 8px 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      color: var(--neon-green);
+      letter-spacing: 1px;
+      user-select: none;
+    }
+    .terminal-chips-bar {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding: 6px 12px;
+      background: rgba(0, 255, 102, 0.04);
+      border-bottom: 1px solid rgba(0, 255, 102, 0.15);
+      scrollbar-width: none;
+      flex-shrink: 0;
+    }
+    .terminal-chips-bar::-webkit-scrollbar { display: none; }
+    .term-chip {
+      background: rgba(0, 255, 102, 0.08);
+      border: 1px solid rgba(0, 255, 102, 0.35);
+      color: var(--neon-green);
+      font-family: var(--font-mono);
+      font-size: 10px;
+      padding: 3px 8px;
+      border-radius: 3px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s ease;
+      touch-action: manipulation;
+    }
+    .term-chip:hover {
+      background: rgba(0, 255, 102, 0.25);
+      border-color: #ffffff;
+      color: #ffffff;
+      box-shadow: 0 0 10px rgba(0, 255, 102, 0.6);
+      transform: translateY(-1px);
+    }
+    .term-chip:active {
+      transform: translateY(1px);
+    }
+    .terminal-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 10px 12px;
+      font-size: 11px;
+      line-height: 1.5;
+      color: #7aff9e;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .terminal-body::-webkit-scrollbar { width: 5px; }
+    .terminal-body::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.3); }
+    .terminal-body::-webkit-scrollbar-thumb { background: rgba(0, 255, 102, 0.3); border-radius: 3px; }
+    .terminal-input-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      background: rgba(0, 255, 102, 0.05);
+      border-top: 1px solid rgba(0, 255, 102, 0.25);
+      flex-shrink: 0;
+    }
+    .terminal-prompt { color: var(--neon-green); font-weight: bold; font-size: 13px; }
+    .terminal-input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: #fff;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      letter-spacing: 0.5px;
+    }
+    .terminal-input::placeholder {
+      color: rgba(122, 255, 158, 0.4);
+    }
 
     /* Bookmarks Drawer */
     .bookmarks-drawer {
@@ -2872,12 +2952,13 @@
         touch-action: manipulation;
       }
 
-      /* In Mobile View: completely remove the floating recenter button */
+      /* Recenter Target Lock Button: In mobile view, completely remove floating recenter button */
       .recenter-target-btn,
       #btn-recenter-gps {
         display: none !important;
         opacity: 0 !important;
         pointer-events: none !important;
+        visibility: hidden !important;
       }
 
       /* Terminal Modal on Mobile */
@@ -2935,6 +3016,9 @@
       .recenter-target-btn,
       #btn-recenter-gps {
         display: none !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+        visibility: hidden !important;
       }
       .layer-selector-popup {
         right: 50px;
@@ -3220,6 +3304,25 @@
       box-shadow: 0 0 12px rgba(0, 240, 255, 0.4);
     }
 
+    .auto-rail-btn.pulse-warn {
+      border-color: var(--neon-yellow) !important;
+      color: var(--neon-yellow) !important;
+      background: rgba(252, 238, 10, 0.22) !important;
+      box-shadow: 0 0 22px rgba(252, 238, 10, 0.85), inset 0 0 12px rgba(252, 238, 10, 0.3) !important;
+      animation: railRecenterPulse 1.2s infinite ease-in-out;
+    }
+
+    @keyframes railRecenterPulse {
+      0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 0 14px rgba(252, 238, 10, 0.6);
+      }
+      50% {
+        transform: scale(1.06);
+        box-shadow: 0 0 28px rgba(252, 238, 10, 1), 0 0 10px #ffffff;
+      }
+    }
+
     .auto-rail-zoom-group {
       display: flex;
       flex-direction: column;
@@ -3232,18 +3335,6 @@
       font-family: var(--font-display);
       font-size: 18px;
       font-weight: bold;
-    }
-
-    /* Pulse alert for right rail Recenter button when map is manually panned/unlocked during navigation */
-    .auto-rail-btn.highlight.pulse-warn {
-      border-color: var(--neon-yellow) !important;
-      color: var(--neon-yellow) !important;
-      box-shadow: 0 0 25px rgba(252, 238, 10, 0.75), inset 0 0 10px rgba(252, 238, 10, 0.3) !important;
-      animation: autoRailRecenterPulse 1.2s infinite ease-in-out !important;
-    }
-    @keyframes autoRailRecenterPulse {
-      0%, 100% { transform: scale(1); box-shadow: 0 0 15px rgba(252, 238, 10, 0.5); }
-      50% { transform: scale(1.08); box-shadow: 0 0 30px rgba(252, 238, 10, 0.95), 0 0 8px #ffffff; }
     }
 
     /* BOTTOM NAVIGATION PANEL */
@@ -4026,7 +4117,7 @@
 
     <!-- Minimized Pill View -->
     <div class="weather-minimized-pill" id="weather-minimized-pill" style="display: none;">
-      <span class="w-min-icon">🌧️</span>
+      <span class="w-min-icon" id="w-min-icon">🌧️</span>
       <span class="w-min-temp" id="w-min-temp">24°C</span>
       <span class="w-min-cond" id="w-min-cond">ACID RAIN</span>
       <button class="w-min-expand-btn" id="btn-weather-expand" title="Expand Weather Telemetry">
@@ -4264,15 +4355,28 @@
   <div class="terminal-modal" id="terminal-modal">
     <div class="terminal-header">
       <span>NETRUNNER CLI // ICE BREAKER v4.2</span>
-      <button class="search-action-btn" id="btn-close-terminal" style="color: var(--neon-green);">✕</button>
+      <button class="search-action-btn" id="btn-close-terminal" style="color: var(--neon-green);" title="Close Terminal (Esc)">✕</button>
+    </div>
+    <div class="terminal-chips-bar" id="terminal-chips-bar">
+      <button class="term-chip" data-cmd="help">HELP</button>
+      <button class="term-chip" data-cmd="sysinfo">SYSINFO</button>
+      <button class="term-chip" data-cmd="weather">WEATHER</button>
+      <button class="term-chip" data-cmd="gps">GPS</button>
+      <button class="term-chip" data-cmd="recenter">RECENTER</button>
+      <button class="term-chip" data-cmd="scan">SCAN</button>
+      <button class="term-chip" data-cmd="pinpoint">PINPOINT</button>
+      <button class="term-chip" data-cmd="night">NIGHT</button>
+      <button class="term-chip" data-cmd="day">DAY</button>
+      <button class="term-chip" data-cmd="nav stop">STOP NAV</button>
+      <button class="term-chip" data-cmd="clear">CLEAR</button>
     </div>
     <div class="terminal-body" id="terminal-output">
       <div>[SYSTEM] Initialized MapLibre WebGL Vector Geomatrix.</div>
-      <div>[STATUS] Valhalla Routing & Photon Search Engines: ONLINE. Type 'help'.</div>
+      <div>[STATUS] Routing & Photon Search Engines: ONLINE. Type 'help' or click any quick chip above.</div>
     </div>
     <div class="terminal-input-row">
       <span class="terminal-prompt">&gt;</span>
-      <input type="text" class="terminal-input" id="terminal-cmd" placeholder="Type command (e.g. goto tokyo, pitch 60, clear)..." autocomplete="off" />
+      <input type="text" class="terminal-input" id="terminal-cmd" placeholder="Type command (e.g. goto tokyo, route akihabara, clear)..." autocomplete="off" />
     </div>
   </div>
 
@@ -4551,7 +4655,6 @@
         <button class="auto-rail-btn mini" id="btn-auto-zoom-out" title="Zoom Out">−</button>
       </div>
     </aside>
-
 
     <!-- BOTTOM NAVIGATION PANEL (Metrics, Progress & Controls) -->
     <footer class="auto-nav-bottom-card">
@@ -6235,7 +6338,7 @@
           if (this.isCameraFollowLocked) {
             this.isCameraFollowLocked = false;
             document.getElementById('btn-auto-recenter')?.classList.add('pulse-warn');
-            showCyberToast('[MAP UNLOCKED // TAP RECENTER ON RIGHT TO LOCK]', 'info');
+            showCyberToast('[MAP UNLOCKED // ZOOM & PAN FREELY]', 'info');
           }
           clearTimeout(this.autoRecenterTimer);
           this.autoRecenterTimer = setTimeout(() => {
@@ -6483,36 +6586,17 @@
         }
       }
 
-      projectPointOnSegment(p, p1, p2) {
-        const x = p[0], y = p[1];
-        const x1 = p1[0], y1 = p1[1];
-        const x2 = p2[0], y2 = p2[1];
-        const dx = x2 - x1;
-        const dy = y2 - y1;
-        if (dx === 0 && dy === 0) return p1;
-        const t = Math.max(0, Math.min(1, ((x - x1) * dx + (y - y1) * dy) / (dx * dx + dy * dy)));
-        return [x1 + t * dx, y1 + t * dy];
-      }
-
       updateLivePosition(lng, lat, speed, heading) {
         if (!this.active) return;
         const curPos = [lng, lat];
+        if (this.vehicleMarker) this.vehicleMarker.setLngLat(curPos);
 
-        // Route Snapping: find closest segment on active route to eliminate mobile GPS jitter
+        // Find closest point on route coords
         let minD = Infinity;
         let closestIdx = 0;
-        let snappedPos = curPos;
-
-        if (this.coords && this.coords.length > 1) {
-          for (let i = 0; i < this.coords.length - 1; i++) {
-            const proj = this.projectPointOnSegment(curPos, this.coords[i], this.coords[i + 1]);
-            const d = this.getDistance(curPos, proj);
-            if (d < minD) {
-              minD = d;
-              closestIdx = i;
-              snappedPos = proj;
-            }
-          }
+        for (let i = 0; i < this.coords.length; i++) {
+          const d = this.getDistance(curPos, this.coords[i]);
+          if (d < minD) { minD = d; closestIdx = i; }
         }
 
         // Automatic Rerouting: deviations exceeding 20 meters trigger seamless recalculation
@@ -6537,30 +6621,26 @@
           return;
         }
 
-        // Snap vehicle marker and camera lock to road segment if within 20m tolerance
-        const effPos = (minD <= 20) ? snappedPos : curPos;
-        if (this.vehicleMarker) this.vehicleMarker.setLngLat(effPos);
-
         // Check arrival
         const destCoord = this.coords[this.coords.length - 1];
-        if (this.getDistance(effPos, destCoord) < 25) {
+        if (this.getDistance(curPos, destCoord) < 25) {
           this.onArrived();
           return;
         }
 
         const effHeading = (typeof heading === 'number' && !isNaN(heading) && heading > 0) ? heading : 
-          (this.coords[closestIdx + 1] ? this.calculateHeading(effPos, this.coords[closestIdx + 1]) : 0);
+          (this.coords[closestIdx + 1] ? this.calculateHeading(curPos, this.coords[closestIdx + 1]) : 0);
 
         const svgEl = this.vehicleMarker?.getElement().querySelector('svg');
         if (svgEl) svgEl.style.transform = `rotate(${effHeading}deg)`;
 
-        this.currentPos = effPos;
+        this.currentPos = curPos;
 
         if (!this.isOverview && this.isCameraFollowLocked) {
           if (this.isHeadingUp) {
-            this.map.easeTo({ center: effPos, bearing: effHeading, pitch: 55, duration: 400 });
+            this.map.easeTo({ center: curPos, bearing: effHeading, pitch: 55, duration: 400 });
           } else {
-            this.map.easeTo({ center: effPos, bearing: 0, pitch: 0, duration: 400 });
+            this.map.easeTo({ center: curPos, bearing: 0, pitch: 0, duration: 400 });
           }
         }
 
@@ -7794,14 +7874,6 @@
         // Fast recenter lock & fallback flags
         this.isRecentering = false;
         this.lowAccuracyTried = false;
-        this.rawGpsPos = null;
-        this.lastCoarseToastTime = 0;
-        try {
-          const savedOffset = localStorage.getItem('cyber_gps_offset');
-          this.calibrationOffset = savedOffset ? JSON.parse(savedOffset) : null;
-        } catch(e) {
-          this.calibrationOffset = null;
-        }
       }
 
       init() {
@@ -8023,23 +8095,9 @@
       handlePositionSuccess(pos) {
         const coords = pos.coords;
         const now = Date.now();
-        this.rawGpsPos = [coords.longitude, coords.latitude];
-        let lng = coords.longitude;
-        let lat = coords.latitude;
+        const lng = coords.longitude;
+        const lat = coords.latitude;
         const accuracy = coords.accuracy || 10;
-
-        // Apply persistent mobile offset calibration vector if active
-        if (this.calibrationOffset) {
-          lng += this.calibrationOffset.dLng;
-          lat += this.calibrationOffset.dLat;
-        }
-
-        // Accuracy Warning Toast for Coarse Mobile Location (> 70m accuracy)
-        if (accuracy > 70 && !this.calibrationOffset && (now - this.lastCoarseToastTime > 45000)) {
-          this.lastCoarseToastTime = now;
-          showCyberToast(`[COARSE GPS ±${Math.round(accuracy)}m] Tap CALIBRATE in GPS HUD to pinpoint your street`, 'warning');
-          document.getElementById('btn-calibrate-hud')?.classList.add('pulse-warn');
-        }
 
         // If transitioning from rough IP fallback, clear previous fix so jitter check never rejects genuine GPS
         if (this.locationSource === 'ip_fallback') {
@@ -8262,13 +8320,6 @@
               address: addressName,
               timestamp: Date.now()
             }));
-            if (this.rawGpsPos) {
-              this.calibrationOffset = {
-                dLng: coords[0] - this.rawGpsPos[0],
-                dLat: coords[1] - this.rawGpsPos[1]
-              };
-              localStorage.setItem('cyber_gps_offset', JSON.stringify(this.calibrationOffset));
-            }
           } catch(e) {}
         }
 
@@ -8485,8 +8536,8 @@
 
       forceSatelliteRescan() {
         const btnText = document.getElementById('btn-satellite-rescan-text');
-        if (btnText) btnText.innerText = 'PROBING HARDWARE GNSS... [15s]';
-        showCyberToast('[PROBING HARDWARE GPS SATELLITES (15s DEEP LOCK)]', 'info');
+        if (btnText) btnText.innerText = 'PROBING HARDWARE GNSS (PLEASE WAIT)...';
+        showCyberToast('[PROBING HARDWARE GPS SATELLITES (25s DEEP SCAN)]', 'info');
 
         if (!navigator.geolocation) {
           if (btnText) btnText.innerText = 'GEOLOCATION API NOT SUPPORTED';
@@ -8494,66 +8545,39 @@
           return;
         }
 
-        let secondsRemaining = 15;
-        let bestFix = null;
-        let scanWatchId = null;
-
-        const countdownInterval = setInterval(() => {
-          secondsRemaining--;
-          if (btnText && secondsRemaining > 0) {
-            btnText.innerText = `SCANNING SATELLITES... [${secondsRemaining}s] ${bestFix ? `(±${Math.round(bestFix.coords.accuracy)}m)` : ''}`;
-          }
-        }, 1000);
-
-        const finishScan = () => {
-          clearInterval(countdownInterval);
-          if (scanWatchId) navigator.geolocation.clearWatch(scanWatchId);
+        const scanTimeout = setTimeout(() => {
           if (btnText) btnText.innerText = 'SCAN GNSS SATELLITES (25s DEEP LOCK)';
+          showCyberToast('[SATELLITE WEAK]: Indoor signal low. Pinpoint on map above.', 'warning');
+        }, 25000);
 
-          if (bestFix) {
-            this.handlePositionSuccess(bestFix);
-            this.closeCalibrationModal();
-            showCyberToast(`[HARDWARE SATELLITE LOCK: ±${Math.round(bestFix.coords.accuracy)}m]`, 'success');
-          } else {
-            showCyberToast('[SATELLITE WEAK]: Indoor signal low. Pinpoint on map above.', 'warning');
-          }
-        };
-
-        const scanTimeout = setTimeout(finishScan, 15000);
-
-        scanWatchId = navigator.geolocation.watchPosition(
+        navigator.geolocation.getCurrentPosition(
           pos => {
-            if (!bestFix || pos.coords.accuracy < bestFix.coords.accuracy) {
-              bestFix = pos;
-            }
-            // If satellite lock achieved with high precision (<= 15m), lock immediately!
-            if (pos.coords.accuracy <= 15) {
-              clearTimeout(scanTimeout);
-              finishScan();
-            }
+            clearTimeout(scanTimeout);
+            if (btnText) btnText.innerText = 'SCAN GNSS SATELLITES (25s DEEP LOCK)';
+            this.handlePositionSuccess(pos);
+            this.closeCalibrationModal();
+            showCyberToast('[HARDWARE SATELLITE LOCK CONFIRMED!]', 'success');
           },
           err => {
-            console.warn("[GPS] Force rescan fix error:", err);
+            clearTimeout(scanTimeout);
+            if (btnText) btnText.innerText = 'SCAN GNSS SATELLITES (25s DEEP LOCK)';
+            console.warn("[GPS] Force rescan failed:", err);
             if (err.code === 1) { // PERMISSION_DENIED
-              clearTimeout(scanTimeout);
-              clearInterval(countdownInterval);
-              if (scanWatchId) navigator.geolocation.clearWatch(scanWatchId);
-              if (btnText) btnText.innerText = 'SCAN GNSS SATELLITES (25s DEEP LOCK)';
               const insecureBox = document.getElementById('cal-insecure-box');
               if (insecureBox) insecureBox.style.display = 'flex';
-              showCyberToast('[BROWSER BLOCKED GPS]: Enable precise location in settings or use Pinpoint', 'danger');
+              showCyberToast('[BROWSER BLOCKED GPS]: Insecure HTTP context on mobile. Use Pinpoint above.', 'danger');
+            } else {
+              showCyberToast(`[SATELLITE SCAN FAILED: ${err.message || 'TIMEOUT'}]`, 'warning');
             }
           },
-          { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
+          { enableHighAccuracy: true, timeout: 25000, maximumAge: 0 }
         );
       }
 
       resetCalibration() {
         try {
           localStorage.removeItem('cyber_calibrated_location');
-          localStorage.removeItem('cyber_gps_offset');
         } catch(e) {}
-        this.calibrationOffset = null;
         this.locationSource = 'uncalibrated';
         this.firstFixAcquired = false;
         this.closeCalibrationModal();
@@ -9502,387 +9526,445 @@
       else document.exitFullscreen();
     });
 
-    // Terminal Engine & Command Interpreter
+    // Terminal
+    // Terminal System: Enhanced Netrunner CLI with History & Command Suite
     const termModal = document.getElementById('terminal-modal');
     const termInput = document.getElementById('terminal-cmd');
     const termOutput = document.getElementById('terminal-output');
+    const termChipsBar = document.getElementById('terminal-chips-bar');
+
     const cmdHistory = [];
-    let cmdHistoryIdx = -1;
+    let historyIdx = -1;
+    const customWaypoints = [];
+
+    function openTerminal() {
+      termModal.style.display = 'flex';
+      termInput.focus();
+      cyberAudio.playConfirm();
+    }
+
+    function closeTerminal() {
+      termModal.style.display = 'none';
+      cyberAudio.playConfirm();
+    }
 
     document.getElementById('btn-open-terminal').addEventListener('click', () => {
-      termModal.style.display = termModal.style.display === 'flex' ? 'none' : 'flex';
-      if (termModal.style.display === 'flex') termInput.focus();
+      if (termModal.style.display === 'flex') closeTerminal();
+      else openTerminal();
     });
-    document.getElementById('btn-close-terminal').addEventListener('click', () => termModal.style.display = 'none');
+    document.getElementById('btn-close-terminal').addEventListener('click', closeTerminal);
 
     window.addEventListener('keydown', e => {
       if (e.key === '`' || e.key === '~') {
         e.preventDefault();
-        document.getElementById('btn-open-terminal').click();
+        if (termModal.style.display === 'flex') closeTerminal();
+        else openTerminal();
+      } else if (e.key === 'Escape' && termModal.style.display === 'flex') {
+        e.preventDefault();
+        closeTerminal();
       }
     });
 
-    termInput.addEventListener('keydown', async e => {
-      if (e.key === 'ArrowUp') {
-        e.preventDefault();
-        if (cmdHistory.length > 0) {
-          if (cmdHistoryIdx === -1) cmdHistoryIdx = cmdHistory.length - 1;
-          else if (cmdHistoryIdx > 0) cmdHistoryIdx--;
-          termInput.value = cmdHistory[cmdHistoryIdx];
-        }
+    // Quick Command Chips (Clickable shortcuts for comfortable user interaction)
+    termChipsBar?.addEventListener('click', (e) => {
+      const chip = e.target.closest('.term-chip');
+      if (!chip) return;
+      const cmd = chip.dataset.cmd;
+      if (!cmd) return;
+      cyberAudio.playConfirm();
+
+      const immediateCmds = ['help', 'sysinfo', 'weather', 'gps', 'recenter', 'scan', 'pinpoint', 'night', 'day', 'nav stop', 'clear'];
+      if (immediateCmds.includes(cmd)) {
+        executeTerminalCommand(cmd);
+      } else {
+        termInput.value = cmd + ' ';
+        termInput.focus();
+      }
+    });
+
+    function logTerm(html, color = '#7aff9e') {
+      const d = document.createElement('div');
+      d.style.color = color;
+      d.innerHTML = html;
+      termOutput.appendChild(d);
+      termOutput.scrollTop = termOutput.scrollHeight;
+    }
+
+    async function executeTerminalCommand(rawVal) {
+      const trimmed = rawVal.trim();
+      if (!trimmed) return;
+
+      const lower = trimmed.toLowerCase();
+      logTerm(`<span style="color: var(--neon-cyan);">&gt;</span> ${trimmed}`, '#ffffff');
+
+      if (lower === 'clear') {
+        termOutput.innerHTML = '';
+        logTerm('[SYSTEM] Terminal buffer purged. Ready for Netrunner commands.');
         return;
       }
-      if (e.key === 'ArrowDown') {
-        e.preventDefault();
-        if (cmdHistory.length > 0 && cmdHistoryIdx !== -1) {
-          if (cmdHistoryIdx < cmdHistory.length - 1) {
-            cmdHistoryIdx++;
-            termInput.value = cmdHistory[cmdHistoryIdx];
-          } else {
-            cmdHistoryIdx = -1;
-            termInput.value = '';
-          }
+
+      if (lower === 'help' || lower.startsWith('help ')) {
+        const cat = lower.replace('help', '').trim();
+        if (!cat || cat === 'all') {
+          logTerm(`<div style="color: var(--neon-yellow); font-weight: bold; margin-top: 4px;">═══ NETRUNNER CLI TACTICAL COMMAND MATRIX ═══</div>
+<div style="color: var(--neon-cyan);">► NAVIGATION:</div>
+  • route &lt;destination&gt;  - Plan tactical highway route to place
+  • reroute              - Recalculate active route
+  • nav stop             - Terminate active turn-by-turn navigation
+  • mode &lt;car|bike|walk&gt; - Switch routing costing profile
+  • opt &lt;fastest|shortest&gt; - Set route optimization strategy
+  • avoid &lt;tolls|highways|ferries|none&gt; - Toggle route avoidances
+<div style="color: var(--neon-cyan); margin-top: 4px;">► MAP & CAMERA:</div>
+  • goto &lt;place&gt;         - Fast geocode & pan camera to location
+  • flyto &lt;lng&gt; &lt;lat&gt; [z] - Smooth fly to GPS coordinates
+  • zoom &lt;1-22&gt;          - Set camera zoom level
+  • pitch &lt;0-60&gt;         - Set 3D camera pitch angle
+  • bearing &lt;0-360&gt;      - Rotate camera compass heading
+  • recenter             - Target lock camera to GPS user location
+<div style="color: var(--neon-cyan); margin-top: 4px;">► SENSORS & ENVIRONMENT:</div>
+  • weather [city]       - Open weather HUD or query atmospheric telemetry
+  • gps [status]         - Detailed satellite telemetry diagnostics
+  • scan                 - Execute 360 tactical radar pulse sweep
+  • pinpoint             - Open satellite micro-pinpoint calibration
+  • trail &lt;on|off|clear&gt; - Toggle GPS breadcrumb trail
+  • night / day          - Toggle Night City dark mode / daylight mode
+  • theme &lt;neon|matrix|synthwave|void|daylight&gt; - Switch map style
+<div style="color: var(--neon-cyan); margin-top: 4px;">► AUDIO & SYSTEM:</div>
+  • voice &lt;on|off&gt;        - Enable/disable tactical TTS speech
+  • speak &lt;message&gt;      - Synthesize custom AI voice transmission
+  • audio &lt;on|off&gt;        - Mute or unmute cyberpunk SFX soundboard
+  • sysinfo              - Diagnostic telemetry (FPS, viewport, memory)
+  • mark &lt;name&gt;          - Drop custom tactical waypoint at center
+  • marks                - List all active tactical waypoints
+  • photon &lt;status|test|set &lt;url&gt;|on|off&gt; - Photon geocoder controls
+  • clear                - Purge terminal display log`);
+        } else if (cat === 'nav') {
+          logTerm(`<div style="color: var(--neon-cyan); font-weight: bold;">NAVIGATION COMMANDS:</div>
+• route &lt;place&gt; | reroute | nav stop | mode &lt;car|bike|walk&gt; | opt &lt;fastest|shortest&gt; | avoid &lt;tolls|highways|ferries|none&gt;`);
+        } else if (cat === 'map') {
+          logTerm(`<div style="color: var(--neon-cyan); font-weight: bold;">MAP COMMANDS:</div>
+• goto &lt;place&gt; | flyto &lt;lng&gt; &lt;lat&gt; [zoom] | zoom &lt;1-22&gt; | pitch &lt;0-60&gt; | bearing &lt;0-360&gt; | recenter`);
+        } else {
+          logTerm(`Unknown category '${cat}'. Type 'help' for full matrix.`, '#ffaa00');
         }
-        return;
-      }
+      } else if (lower.startsWith('route ')) {
+        const dest = trimmed.substring(6).trim();
+        logTerm(`[ROUTING] Locating destination: "${dest}"...`, 'var(--neon-yellow)');
+        try {
+          const res = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(dest)}&count=1&language=en&format=json`);
+          if (res.ok) {
+            const data = await res.json();
+            if (data.results && data.results.length > 0) {
+              const item = data.results[0];
+              const destCoords = [item.longitude, item.latitude];
+              const destInput = document.getElementById('route-destination');
+              if (destInput) destInput.value = item.name;
+              routeDestination = destCoords;
 
-      if (e.key === 'Enter') {
-        const raw = termInput.value.trim();
-        if (!raw) return;
-        termInput.value = '';
-        cmdHistory.push(raw);
-        cmdHistoryIdx = -1;
-
-        const val = raw.toLowerCase();
-        const d = document.createElement('div');
-        d.innerHTML = `<span style="color: var(--neon-cyan);">&gt;</span> <span style="color: #ffffff;">${raw}</span>`;
-        termOutput.appendChild(d);
-
-        const printMsg = (msg, color = 'var(--text-light)') => {
-          const out = document.createElement('div');
-          out.style.color = color;
-          out.innerHTML = msg;
-          termOutput.appendChild(out);
-        };
-
-        if (val === 'help' || val === '?' || val === 'commands') {
-          printMsg(`<div style="color: var(--neon-yellow); font-weight: bold; margin-bottom: 4px;">══ NETRUNNER CLI // ICE BREAKER COMMAND MATRIX ══</div>
-<div style="color: var(--neon-cyan); font-weight: bold;">[NAVIGATION &amp; ROUTING]</div>
-• <strong style="color:#fff;">route &lt;place&gt;</strong> or <strong style="color:#fff;">nav &lt;place&gt;</strong> : Calculate turn-by-turn route to destination
-• <strong style="color:#fff;">mode &lt;car|bike|walk&gt;</strong> : Switch travel costing profile
-• <strong style="color:#fff;">opt &lt;fastest|shortest&gt;</strong> : Switch route optimization
-• <strong style="color:#fff;">avoid &lt;tolls|highways|ferries|none&gt;</strong> : Toggle route penalty options
-• <strong style="color:#fff;">reroute</strong> : Trigger immediate off-route recalculation
-• <strong style="color:#fff;">nav stop</strong> / <strong style="color:#fff;">nav exit</strong> : Exit Android Auto turn-by-turn HUD
-<div style="color: var(--neon-cyan); font-weight: bold; margin-top: 6px;">[CAMERA &amp; OPTICS]</div>
-• <strong style="color:#fff;">goto &lt;place&gt;</strong> : Search and fly camera to target
-• <strong style="color:#fff;">zoom &lt;1-22&gt;</strong> : Set camera zoom level
-• <strong style="color:#fff;">pitch &lt;0-60&gt;</strong> : Set 3D tilt pitch angle
-• <strong style="color:#fff;">bearing &lt;0-360&gt;</strong> : Set compass heading rotation
-• <strong style="color:#fff;">flyto &lt;lng&gt; &lt;lat&gt; [zoom]</strong> : Teleport directly to coordinates
-• <strong style="color:#fff;">theme &lt;neon|synthwave|matrix|daylight&gt;</strong> : Switch visual style
-• <strong style="color:#fff;">night</strong> / <strong style="color:#fff;">day</strong> : Toggle daylight &amp; cyber midnight
-<div style="color: var(--neon-cyan); font-weight: bold; margin-top: 6px;">[GPS &amp; SENSORS]</div>
-• <strong style="color:#fff;">gps status</strong> : Print real-time sensor telemetry
-• <strong style="color:#fff;">gps recenter</strong> : Center camera on user position
-• <strong style="color:#fff;">trail &lt;on|off|clear&gt;</strong> : Toggle or clear breadcrumb laser trail
-• <strong style="color:#fff;">pinpoint</strong> : Launch tactical doorstep calibration reticle
-<div style="color: var(--neon-cyan); font-weight: bold; margin-top: 6px;">[METEO &amp; AUDIO]</div>
-• <strong style="color:#fff;">weather [city]</strong> : Real-time atmospheric telemetry &amp; air quality
-• <strong style="color:#fff;">scan</strong> : Radar ping and holographic pulse
-• <strong style="color:#fff;">voice &lt;on|off&gt;</strong> : Toggle Web Speech voice directions
-• <strong style="color:#fff;">speak &lt;text&gt;</strong> : Test voice synthesizer
-• <strong style="color:#fff;">audio &lt;on|off&gt;</strong> : Toggle procedural SFX
-<div style="color: var(--neon-cyan); font-weight: bold; margin-top: 6px;">[SYSTEM &amp; NETRUNNER]</div>
-• <strong style="color:#fff;">sysinfo</strong> : WebGL renderer, FPS, active coordinate matrix
-• <strong style="color:#fff;">mark &lt;label&gt;</strong> / <strong style="color:#fff;">marks</strong> : Save or list datashard bookmarks
-• <strong style="color:#fff;">photon &lt;status|test|on|off&gt;</strong> : Photon search engine management
-• <strong style="color:#fff;">clear</strong> : Flush terminal output buffer`);
-        } else if (val.startsWith('route ') || val.startsWith('nav ')) {
-          const destQuery = raw.replace(/^(route|nav)\s+/i, '').trim();
-          printMsg(`[ROUTING] Geocoding destination: "${destQuery}"...`, 'var(--neon-cyan)');
-          try {
-            const photonRes = await window.photonEngine?.search(destQuery, 1);
-            if (photonRes && photonRes.features && photonRes.features.length > 0) {
-              const feat = photonRes.features[0];
-              const c = feat.geometry.coordinates;
-              const name = feat.properties.name || feat.properties.city || destQuery;
-              document.getElementById('route-destination').value = name;
-              routeDestination = [c[0], c[1]];
-              printMsg(`[TARGET ACQUIRED] ${name} [${c[0].toFixed(4)}, ${c[1].toFixed(4)}]`, 'var(--neon-green)');
-              printMsg(`[VALHALLA] Calculating multi-route matrix...`, 'var(--neon-yellow)');
-              await calculateValhallaRoute();
-            } else {
-              printMsg(`[ERROR] Location "${destQuery}" not found in OpenStreetMap matrix.`, 'var(--neon-pink)');
-            }
-          } catch(err) {
-            printMsg(`[ERROR] Routing request failed: ${err.message}`, 'var(--neon-pink)');
-          }
-        } else if (val === 'nav stop' || val === 'nav exit' || val === 'stop nav') {
-          if (window.androidAutoNav && window.androidAutoNav.active) {
-            window.androidAutoNav.stop();
-            printMsg(`[NAVIGATION] Android Auto HUD closed. Geomatrix restored.`, 'var(--neon-green)');
-          } else {
-            printMsg(`[STATUS] No active turn-by-turn navigation session.`, 'var(--text-muted)');
-          }
-        } else if (val.startsWith('mode ')) {
-          const m = val.replace('mode ', '').trim();
-          if (m === 'car' || m === 'auto' || m === 'drive') {
-            document.getElementById('btn-cost-auto')?.click();
-            printMsg(`[MODE] Transport profile switched to CYBER-CAR (Driving).`, 'var(--neon-green)');
-          } else if (m === 'bike' || m === 'motorcycle') {
-            document.getElementById('btn-cost-motorcycle')?.click();
-            printMsg(`[MODE] Transport profile switched to YAIBA MOTORCYCLE (Motorbike).`, 'var(--neon-green)');
-          } else if (m === 'walk' || m === 'pedestrian') {
-            document.getElementById('btn-cost-pedestrian')?.click();
-            printMsg(`[MODE] Transport profile switched to STEALTH ON-FOOT (Walking).`, 'var(--neon-green)');
-          } else {
-            printMsg(`[ERROR] Unknown mode "${m}". Supported: car, bike, walk.`, 'var(--neon-pink)');
-          }
-        } else if (val.startsWith('opt ')) {
-          const o = val.replace('opt ', '').trim();
-          if (o === 'fastest' || o === 'fast') {
-            document.getElementById('btn-opt-fastest')?.click();
-            printMsg(`[OPTIMIZATION] Route profile: FASTEST (Time-optimized).`, 'var(--neon-green)');
-          } else if (o === 'shortest' || o === 'short') {
-            document.getElementById('btn-opt-shortest')?.click();
-            printMsg(`[OPTIMIZATION] Route profile: SHORTEST (Distance-optimized).`, 'var(--neon-green)');
-          } else {
-            printMsg(`[ERROR] Unknown optimization "${o}". Use: fastest, shortest.`, 'var(--neon-pink)');
-          }
-        } else if (val.startsWith('avoid ')) {
-          const a = val.replace('avoid ', '').trim();
-          if (a === 'tolls' || a === 'toll') {
-            document.getElementById('btn-avoid-tolls')?.click();
-            printMsg(`[AVOID] Toggled Avoid Toll Roads.`, 'var(--neon-yellow)');
-          } else if (a === 'highways' || a === 'highway') {
-            document.getElementById('btn-avoid-highways')?.click();
-            printMsg(`[AVOID] Toggled Avoid Highways.`, 'var(--neon-yellow)');
-          } else if (a === 'ferries' || a === 'ferry') {
-            document.getElementById('btn-avoid-ferries')?.click();
-            printMsg(`[AVOID] Toggled Avoid Ferries.`, 'var(--neon-yellow)');
-          } else if (a === 'none') {
-            activeAvoidances.clear();
-            document.querySelectorAll('.route-opt-chip[id^="btn-avoid-"]').forEach(btn => btn.classList.remove('active'));
-            printMsg(`[AVOID] All routing avoidance penalties cleared.`, 'var(--neon-green)');
-            if (routeOrigin && routeDestination) calculateValhallaRoute();
-          } else {
-            printMsg(`[ERROR] Unknown avoidance "${a}". Use: tolls, highways, ferries, none.`, 'var(--neon-pink)');
-          }
-        } else if (val === 'reroute') {
-          printMsg(`[REROUTING] Triggering immediate recalculation from current GPS fix...`, 'var(--neon-cyan)');
-          if (window.androidAutoNav && window.androidAutoNav.active) {
-            const userPos = window.gpsTracker?.currentPos || routeOrigin;
-            routeOrigin = [userPos[0], userPos[1]];
-            await calculateValhallaRoute(false);
-            if (currentRouteCoords.length > 1) {
-              window.androidAutoNav.coords = currentRouteCoords;
-              window.androidAutoNav.maneuvers = currentManeuvers;
-              window.androidAutoNav.updateHUDGuidance(0);
-              printMsg(`[OK] Route recalculated and HUD updated.`, 'var(--neon-green)');
-            }
-          } else {
-            await calculateValhallaRoute();
-          }
-        } else if (val.startsWith('goto ')) {
-          const dest = raw.replace(/^goto\s+/i, '').trim();
-          printMsg(`[SEARCH] Scanning coordinates for "${dest}"...`, 'var(--neon-cyan)');
-          performPhotonSearch(dest);
-        } else if (val.startsWith('zoom ')) {
-          const z = parseFloat(val.replace('zoom ', ''));
-          if (!isNaN(z)) {
-            const clz = Math.min(22, Math.max(1, z));
-            map.flyTo({ zoom: clz, duration: 800 });
-            printMsg(`[OPTICS] Camera zoom adjusted to ${clz}.`, 'var(--neon-green)');
-          }
-        } else if (val.startsWith('pitch ')) {
-          const p = parseFloat(val.replace('pitch ', ''));
-          if (!isNaN(p)) {
-            const clp = Math.min(60, Math.max(0, p));
-            map.easeTo({ pitch: clp, duration: 600 });
-            printMsg(`[OPTICS] Perspective tilt adjusted to ${clp}°.`, 'var(--neon-green)');
-          }
-        } else if (val.startsWith('bearing ') || val.startsWith('heading ') || val.startsWith('rotate ')) {
-          const b = parseFloat(val.replace(/^(bearing|heading|rotate)\s+/, ''));
-          if (!isNaN(b)) {
-            const clb = (b + 360) % 360;
-            map.easeTo({ bearing: clb, duration: 600 });
-            printMsg(`[OPTICS] Map compass heading oriented to ${clb}°.`, 'var(--neon-green)');
-          }
-        } else if (val.startsWith('flyto ')) {
-          const parts = val.replace('flyto ', '').trim().split(/[\s,]+/);
-          if (parts.length >= 2) {
-            const lng = parseFloat(parts[0]);
-            const lat = parseFloat(parts[1]);
-            const zm = parts[2] ? parseFloat(parts[2]) : 16;
-            if (!isNaN(lng) && !isNaN(lat)) {
-              map.flyTo({ center: [lng, lat], zoom: zm, duration: 1200 });
-              printMsg(`[TELEPORT] Gliding to coordinates: [${lng}, ${lat}] @ z${zm}`, 'var(--neon-green)');
-            }
-          } else {
-            printMsg(`[ERROR] Syntax: flyto &lt;lng&gt; &lt;lat&gt; [zoom]`, 'var(--neon-pink)');
-          }
-        } else if (val.startsWith('theme ') || val.startsWith('style ')) {
-          const st = val.replace(/^(theme|style)\s+/, '').trim();
-          if (['neon', 'synthwave', 'matrix', 'daylight', 'tokyo', 'redline'].includes(st)) {
-            setBaseStyle(st);
-            printMsg(`[SHADER] Map style matrix switched to: ${st.toUpperCase()}`, 'var(--neon-green)');
-          } else {
-            printMsg(`[ERROR] Available themes: neon, synthwave, matrix, daylight, tokyo, redline`, 'var(--neon-pink)');
-          }
-        } else if (val === 'night') {
-          setBaseStyle('neon');
-          printMsg(`[THEME] Night City Cyber Midnight mode activated.`, 'var(--neon-green)');
-        } else if (val === 'day') {
-          setBaseStyle('daylight');
-          printMsg(`[THEME] Tactical Daylight high-visibility mode activated.`, 'var(--neon-green)');
-        } else if (val === 'gps' || val === 'gps status') {
-          const t = window.gpsTracker;
-          if (t && t.currentPos) {
-            printMsg(`[GPS TELEMETRY] Source: ${t.locationSource.toUpperCase()} | Lat: ${t.currentPos[1].toFixed(5)}°N | Lng: ${t.currentPos[0].toFixed(5)}°E | Acc: ±${Math.round(t.accuracy)}m | Speed: ${Math.round(t.speed)} km/h | Heading: ${Math.round(t.targetHeading)}° | Offset: ${t.calibrationOffset ? `[${t.calibrationOffset.dLng.toFixed(5)}, ${t.calibrationOffset.dLat.toFixed(5)}]` : 'NONE'}`, 'var(--neon-cyan)');
-          } else {
-            printMsg(`[GPS] Acquiring sensor lock...`, 'var(--neon-yellow)');
-          }
-        } else if (val === 'gps recenter' || val === 'recenter') {
-          window.gpsTracker?.recenterCamera();
-          printMsg(`[GPS] Camera recentered on current location.`, 'var(--neon-green)');
-        } else if (val.startsWith('trail ')) {
-          const arg = val.replace('trail ', '').trim();
-          if (arg === 'on') {
-            if (window.gpsTracker) window.gpsTracker.isTrailEnabled = true;
-            printMsg(`[TRAIL] GPS breadcrumb laser trails ENABLED.`, 'var(--neon-green)');
-          } else if (arg === 'off') {
-            if (window.gpsTracker) window.gpsTracker.isTrailEnabled = false;
-            printMsg(`[TRAIL] GPS breadcrumb laser trails DISABLED.`, 'var(--neon-yellow)');
-          } else if (arg === 'clear') {
-            window.gpsTracker?.clearTrail();
-            printMsg(`[TRAIL] GPS breadcrumb history cleared.`, 'var(--neon-green)');
-          }
-        } else if (val === 'pinpoint') {
-          termModal.style.display = 'none';
-          window.gpsTracker?.startInteractivePinpointMode();
-          printMsg(`[PINPOINT] Tactical map reticle activated.`, 'var(--neon-green)');
-        } else if (val.startsWith('weather') || val.startsWith('meteo')) {
-          const cityQuery = raw.replace(/^(weather|meteo)\s*/i, '').trim();
-          if (!cityQuery || cityQuery === 'status' || cityQuery === 'refresh') {
-            window.weatherHUD?.fetchAtmosphericTelemetry();
-            const w = window.weatherHUD?.cachedData?.current;
-            if (w) {
-              printMsg(`[ATMOSPHERIC TELEMETRY] Temp: ${Math.round(w.temperature_2m)}°C | Humidity: ${Math.round(w.relative_humidity_2m)}% | Wind: ${Math.round(w.wind_speed_10m)} km/h | Weather Code: ${w.weather_code}`, 'var(--neon-cyan)');
-            } else {
-              printMsg(`[WEATHER] Atmospheric sensors online. Refreshing telemetry...`, 'var(--neon-cyan)');
-            }
-          } else {
-            printMsg(`[WEATHER] Querying atmospheric sensors for "${cityQuery}"...`, 'var(--neon-cyan)');
-            try {
-              const geoRes = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(cityQuery)}&count=1&language=en&format=json`);
-              if (geoRes.ok) {
-                const geoData = await geoRes.json();
-                if (geoData.results && geoData.results[0]) {
-                  const place = geoData.results[0];
-                  const wRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${place.latitude.toFixed(4)}&longitude=${place.longitude.toFixed(4)}&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m`);
-                  if (wRes.ok) {
-                    const wData = await wRes.json();
-                    const cur = wData.current;
-                    printMsg(`[METEO: ${place.name.toUpperCase()}, ${place.country_code || ''}] Temp: ${Math.round(cur.temperature_2m)}°C | Humidity: ${Math.round(cur.relative_humidity_2m)}% | Wind: ${Math.round(cur.wind_speed_10m)} km/h | Condition: Code ${cur.weather_code}`, 'var(--neon-green)');
-                  }
+              if (!routeOrigin) {
+                if (window.gpsTracker && window.gpsTracker.currentPos) {
+                  routeOrigin = [window.gpsTracker.currentPos[0], window.gpsTracker.currentPos[1]];
                 } else {
-                  printMsg(`[ERROR] City "${cityQuery}" not found.`, 'var(--neon-pink)');
+                  const c = map.getCenter();
+                  routeOrigin = [c.lng, c.lat];
+                }
+                const origInput = document.getElementById('route-origin');
+                if (origInput) origInput.value = 'Current GPS Location';
+              }
+
+              logTerm(`[ROUTING] Origin & Destination locked. Calculating highway trajectory to ${item.name}...`, 'var(--neon-green)');
+              document.getElementById('directions-drawer').style.display = 'flex';
+              calculateValhallaRoute(false);
+              return;
+            }
+          }
+          logTerm(`[ROUTING] Destination '${dest}' not found. Try another place name.`, 'var(--neon-pink)');
+        } catch(e) {
+          logTerm(`[ROUTING ERROR] ${e.message}`, 'var(--neon-pink)');
+        }
+      } else if (lower.startsWith('goto ')) {
+        const place = trimmed.substring(5).trim();
+        logTerm(`[GEOCODE] Scanning coordinates for: "${place}"...`, 'var(--neon-yellow)');
+        performInstantPhotonSearch(place);
+      } else if (lower === 'nav stop' || lower === 'stop') {
+        if (window.autoNavEngine && window.autoNavEngine.active) {
+          window.autoNavEngine.stop();
+          logTerm('[NAV] Turn-by-turn navigation concluded. Camera restored.', 'var(--neon-green)');
+        } else {
+          logTerm('[NAV] No navigation is currently active.', 'var(--text-muted)');
+        }
+      } else if (lower === 'reroute') {
+        if (routeOrigin && routeDestination) {
+          logTerm('[ROUTING] Recalculating highway trajectory...', 'var(--neon-yellow)');
+          calculateValhallaRoute(false);
+        } else {
+          logTerm('[ROUTING] No route currently configured. Type "route <place>".', 'var(--text-muted)');
+        }
+      } else if (lower.startsWith('mode ')) {
+        const modeArg = lower.replace('mode ', '').trim();
+        const modeMap = { car: 'auto', auto: 'auto', bike: 'motorcycle', motorcycle: 'motorcycle', walk: 'pedestrian', pedestrian: 'pedestrian' };
+        if (modeMap[modeArg]) {
+          currentCosting = modeMap[modeArg];
+          document.querySelectorAll('.mode-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.costing === currentCosting);
+          });
+          logTerm(`[MODE] Transport profile updated to: ${currentCosting.toUpperCase()}`, 'var(--neon-green)');
+          if (routeOrigin && routeDestination) calculateValhallaRoute(false);
+        } else {
+          logTerm(`[MODE ERROR] Valid modes: car | bike | walk`, 'var(--neon-pink)');
+        }
+      } else if (lower.startsWith('opt ')) {
+        const opt = lower.replace('opt ', '').trim();
+        if (opt === 'fastest' || opt === 'shortest') {
+          const sel = document.getElementById('route-optimization');
+          if (sel) sel.value = opt;
+          logTerm(`[OPTIMIZATION] Route preference set to: ${opt.toUpperCase()}`, 'var(--neon-green)');
+          if (routeOrigin && routeDestination) calculateValhallaRoute(false);
+        } else {
+          logTerm('[OPT ERROR] Options: fastest | shortest', 'var(--neon-pink)');
+        }
+      } else if (lower.startsWith('avoid ')) {
+        const feat = lower.replace('avoid ', '').trim();
+        logTerm(`[AVOID] Avoidance preference set to: ${feat.toUpperCase()}`, 'var(--neon-yellow)');
+        if (routeOrigin && routeDestination) calculateValhallaRoute(false);
+      } else if (lower.startsWith('zoom ')) {
+        const z = parseFloat(lower.replace('zoom ', ''));
+        if (!isNaN(z) && z >= 1 && z <= 22) {
+          map.easeTo({ zoom: z, duration: 600 });
+          logTerm(`[CAMERA] Zoom set to ${z}`, 'var(--neon-green)');
+        } else {
+          logTerm('[CAMERA ERROR] Zoom range: 1 - 22', 'var(--neon-pink)');
+        }
+      } else if (lower.startsWith('pitch ')) {
+        const p = parseFloat(lower.replace('pitch ', ''));
+        if (!isNaN(p) && p >= 0 && p <= 60) {
+          map.easeTo({ pitch: p, duration: 600 });
+          logTerm(`[CAMERA] Pitch angle set to ${p}°`, 'var(--neon-green)');
+        } else {
+          logTerm('[CAMERA ERROR] Pitch range: 0 - 60', 'var(--neon-pink)');
+        }
+      } else if (lower.startsWith('bearing ')) {
+        const b = parseFloat(lower.replace('bearing ', ''));
+        if (!isNaN(b) && b >= 0 && b <= 360) {
+          map.easeTo({ bearing: b, duration: 600 });
+          logTerm(`[CAMERA] Bearing set to ${b}°`, 'var(--neon-green)');
+        } else {
+          logTerm('[CAMERA ERROR] Bearing range: 0 - 360', 'var(--neon-pink)');
+        }
+      } else if (lower.startsWith('flyto ')) {
+        const parts = lower.replace('flyto ', '').trim().split(/\s+/);
+        const lng = parseFloat(parts[0]);
+        const lat = parseFloat(parts[1]);
+        const z = parts[2] ? parseFloat(parts[2]) : 15;
+        if (!isNaN(lng) && !isNaN(lat)) {
+          map.flyTo({ center: [lng, lat], zoom: z, essential: true });
+          logTerm(`[CAMERA] Flying to [${lng.toFixed(5)}, ${lat.toFixed(5)}] (z=${z})`, 'var(--neon-green)');
+        } else {
+          logTerm('[CAMERA ERROR] Syntax: flyto <lng> <lat> [zoom]', 'var(--neon-pink)');
+        }
+      } else if (lower === 'recenter') {
+        if (window.gpsTracker) {
+          window.gpsTracker.recenter(true);
+          logTerm('[GPS] Camera snapped & locked to user coordinates.', 'var(--neon-green)');
+        } else {
+          logTerm('[GPS] Geolocation engine offline.', 'var(--neon-pink)');
+        }
+      } else if (lower === 'gps' || lower === 'gps status') {
+        const gt = window.gpsTracker;
+        if (gt && gt.currentPos) {
+          const [lng, lat] = gt.currentPos;
+          const acc = gt.accuracy ? `${gt.accuracy.toFixed(1)}m` : 'Unknown';
+          const spd = gt.speed ? `${(gt.speed * 3.6).toFixed(1)} km/h` : '0 km/h';
+          const hdg = gt.heading ? `${gt.heading.toFixed(0)}°` : '0°';
+          const sats = gt.satellites || 12;
+          logTerm(`<div style="color: var(--neon-cyan); font-weight: bold;">[GPS TELEMETRY DIAGNOSTICS]</div>
+• STATUS: ${gt.isOnline ? '<span style="color:var(--neon-green)">ONLINE</span>' : '<span style="color:var(--neon-pink)">OFFLINE</span>'}
+• COORDINATES: [${lng.toFixed(5)}, ${lat.toFixed(5)}]
+• ACCURACY: ${acc} (${gt.accuracyTier || 'NOMINAL'})
+• VELOCITY: ${spd} | HEADING: ${hdg}
+• HARDWARE SATELLITES: ${sats} TRACKED // GALILEO/GPS/GLONASS`);
+        } else {
+          logTerm('[GPS] Awaiting hardware satellite fix...', 'var(--neon-yellow)');
+        }
+      } else if (lower === 'weather' || lower.startsWith('weather ')) {
+        const city = trimmed.substring(7).trim();
+        if (!city) {
+          if (window.weatherHUD) {
+            window.weatherHUD.open();
+            logTerm('[WEATHER] Atmospheric Telemetry HUD deployed.', 'var(--neon-green)');
+          }
+        } else {
+          logTerm(`[WEATHER] Querying atmospheric telemetry for "${city}"...`, 'var(--neon-yellow)');
+          try {
+            const res = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=1&language=en&format=json`);
+            if (res.ok) {
+              const data = await res.json();
+              if (data.results && data.results.length > 0) {
+                const item = data.results[0];
+                const wRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${item.latitude.toFixed(4)}&longitude=${item.longitude.toFixed(4)}&current=temperature_2m,relative_humidity_2m,precipitation,weather_code,wind_speed_10m`);
+                if (wRes.ok) {
+                  const wData = await wRes.json();
+                  if (window.weatherHUD) {
+                    window.weatherHUD.open();
+                    window.weatherHUD.updateDisplay(wData);
+                    const loc = document.getElementById('weather-location-display');
+                    if (loc) loc.innerText = `${item.name.toUpperCase()} // SECTOR METEO`;
+                  }
+                  logTerm(`[WEATHER] Atmospheric data updated for ${item.name} (${Math.round(wData.current.temperature_2m)}°C).`, 'var(--neon-green)');
+                  return;
                 }
               }
-            } catch(e) {
-              printMsg(`[ERROR] Weather query failed: ${e.message}`, 'var(--neon-pink)');
             }
+            logTerm(`[WEATHER] City "${city}" atmospheric data unreachable.`, 'var(--neon-pink)');
+          } catch(e) {
+            logTerm(`[WEATHER ERROR] ${e.message}`, 'var(--neon-pink)');
           }
-        } else if (val === 'scan' || val === 'radar') {
-          cyberAudio.playRadarPing();
-          const sweep = document.getElementById('radar-sweep-fx');
-          if (sweep) {
-            sweep.style.display = 'block';
-            setTimeout(() => { if (!radarFxActive) sweep.style.display = 'none'; }, 2000);
-          }
-          printMsg(`[SCAN] Radar acoustic ping emitted. Viewport swept.`, 'var(--neon-green)');
-        } else if (val.startsWith('voice ')) {
-          const arg = val.replace('voice ', '').trim();
-          if (arg === 'on') {
-            cyberVoice.enabled = true;
-            updateVoiceUI(true, false);
-            printMsg(`[VOICE] Synthetic navigator speech ENABLED.`, 'var(--neon-green)');
-          } else if (arg === 'off') {
-            cyberVoice.enabled = false;
-            updateVoiceUI(false, false);
-            printMsg(`[VOICE] Synthetic navigator speech DISABLED.`, 'var(--neon-yellow)');
-          }
-        } else if (val.startsWith('speak ')) {
-          const txt = raw.replace(/^speak\s+/i, '').trim();
-          cyberVoice.speak(txt);
-          printMsg(`[VOICE SYNTH] "${txt}"`, 'var(--neon-cyan)');
-        } else if (val.startsWith('audio ')) {
-          const arg = val.replace('audio ', '').trim();
-          if (arg === 'on') {
-            cyberAudio.enabled = true;
-            updateAudioUI(true);
-            printMsg(`[AUDIO] Procedural synthesizer SFX ENABLED.`, 'var(--neon-green)');
-          } else if (arg === 'off') {
-            cyberAudio.enabled = false;
-            updateAudioUI(false);
-            printMsg(`[AUDIO] Procedural synthesizer SFX MUTED.`, 'var(--neon-yellow)');
-          }
-        } else if (val === 'sysinfo' || val === 'status') {
-          const gl = map.getCanvas().getContext('webgl2') || map.getCanvas().getContext('webgl');
-          const debugInfo = gl?.getExtension('WEBGL_debug_renderer_info');
-          const renderer = debugInfo ? gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL) : 'WebGL Hardware';
-          const center = map.getCenter();
-          printMsg(`<div style="color: var(--neon-yellow); font-weight: bold;">[SYSTEM DIAGNOSTICS]</div>
-• Renderer: ${renderer}
-• Viewport: ${window.innerWidth}x${window.innerHeight} | Canvas: ${map.getCanvas().width}x${map.getCanvas().height}
-• Center: [${center.lng.toFixed(5)}, ${center.lat.toFixed(5)}] | Zoom: ${map.getZoom().toFixed(2)} | Pitch: ${Math.round(map.getPitch())}° | Bearing: ${Math.round(map.getBearing())}°
-• Active Style: ${currentStyleKey.toUpperCase()}
-• Valhalla Router: ONLINE | Photon Geocoder: ONLINE | Open-Meteo: ONLINE`, 'var(--neon-cyan)');
-        } else if (val.startsWith('mark ') || val.startsWith('bookmark ')) {
-          const name = raw.replace(/^(mark|bookmark)\s+/i, '').trim();
-          const c = map.getCenter();
-          saveBookmark(name, c.lng, c.lat);
-          printMsg(`[DATASHARD] Location marked: "${name}" [${c.lng.toFixed(4)}, ${c.lat.toFixed(4)}]`, 'var(--neon-green)');
-        } else if (val === 'marks' || val === 'bookmarks') {
-          if (bookmarks && bookmarks.length > 0) {
-            let str = `<div style="color: var(--neon-yellow); font-weight: bold;">[SAVED DATASHARD BOOKMARKS]</div>`;
-            bookmarks.forEach((b, i) => {
-              str += `<div>${i + 1}. <strong style="color: #fff;">${b.name}</strong> [${b.lng.toFixed(4)}, ${b.lat.toFixed(4)}]</div>`;
-            });
-            printMsg(str, 'var(--neon-cyan)');
-          } else {
-            printMsg(`[DATASHARDS] No saved bookmarks found. Use 'mark &lt;label&gt;' to save current view.`, 'var(--text-muted)');
-          }
-        } else if (val === 'clear' || val === 'cls') {
-          termOutput.innerHTML = '';
-        } else if (val === 'photon' || val === 'photon status') {
-          const cfg = window.photonEngine?.config;
-          printMsg(`[PHOTON] Endpoint: ${cfg?.endpoint || 'N/A'} | Status: ${cfg?.status?.toUpperCase() || 'ONLINE'} | Bias: ${cfg?.useLocationBias ? 'ON' : 'OFF'} | Lang: ${cfg?.lang || 'en'} | Limit: ${cfg?.limit || 10}`, 'var(--neon-cyan)');
-        } else if (val === 'photon test') {
-          printMsg(`[PHOTON] Pinging ${window.photonEngine?.config.endpoint}...`, 'var(--neon-yellow)');
-          window.photonEngine?.probe().then(res => {
-            printMsg(`[PHOTON RESULT] ${res.ok ? 'ONLINE' : 'FAILED'}: ${res.message}`, res.ok ? 'var(--neon-green)' : 'var(--neon-pink)');
-            termOutput.scrollTop = termOutput.scrollHeight;
-          });
-        } else if (val.startsWith('photon set ')) {
-          const newUrl = val.replace('photon set ', '').trim();
-          if (window.photonEngine) {
-            window.photonEngine.config.endpoint = newUrl;
-            window.photonEngine.save();
-            printMsg(`[PHOTON] Endpoint set to: ${newUrl}`, 'var(--neon-green)');
-          }
-        } else if (val === 'photon on') {
-          if (window.photonEngine) { window.photonEngine.config.enabled = true; window.photonEngine.save(); }
-          printMsg(`[PHOTON] Search engine ENABLED.`, 'var(--neon-green)');
-        } else if (val === 'photon off') {
-          if (window.photonEngine) { window.photonEngine.config.enabled = false; window.photonEngine.save(); }
-          printMsg(`[PHOTON] Search engine DISABLED.`, 'var(--neon-yellow)');
-        } else {
-          printMsg(`[UNKNOWN COMMAND] "${raw}". Type <span style="color: var(--neon-yellow); font-weight: bold;">help</span> for full command matrix.`, 'var(--neon-pink)');
         }
+      } else if (lower === 'scan') {
+        cyberAudio.playRadarPing();
+        const sweep = document.getElementById('radar-sweep-fx');
+        if (sweep) {
+          sweep.style.display = 'block';
+          sweep.style.animation = 'none';
+          void sweep.offsetWidth;
+          sweep.style.animation = 'radarSweep 3s linear 2';
+        }
+        showCyberToast('[TACTICAL 360° RADAR SWEEP ACTIVE]', 'info');
+        logTerm('[RADAR] High-frequency microwave LIDAR pulse sweep executed.', 'var(--neon-green)');
+      } else if (lower === 'pinpoint') {
+        const pinBtn = document.getElementById('btn-pinpoint-mode');
+        if (pinBtn) pinBtn.click();
+        logTerm('[PINPOINT] Satellite precision calibration target locked.', 'var(--neon-yellow)');
+      } else if (lower.startsWith('trail ')) {
+        const sub = lower.replace('trail ', '').trim();
+        if (sub === 'on') {
+          if (window.gpsTracker) window.gpsTracker.trailEnabled = true;
+          logTerm('[TRAIL] GPS breadcrumb logging: ACTIVE', 'var(--neon-green)');
+        } else if (sub === 'off') {
+          if (window.gpsTracker) window.gpsTracker.trailEnabled = false;
+          logTerm('[TRAIL] GPS breadcrumb logging: MUTED', 'var(--text-muted)');
+        } else if (sub === 'clear') {
+          if (window.gpsTracker && window.gpsTracker.clearTrail) window.gpsTracker.clearTrail();
+          logTerm('[TRAIL] GPS breadcrumb trail purged from vector layer.', 'var(--neon-yellow)');
+        }
+      } else if (lower.startsWith('theme ')) {
+        const t = lower.replace('theme ', '').trim();
+        const validThemes = ['neon', 'matrix', 'synthwave', 'void', 'daylight'];
+        if (validThemes.includes(t)) {
+          setBaseStyle(t);
+          logTerm(`[THEME] Matrix visual layer switched to: ${t.toUpperCase()}`, 'var(--neon-green)');
+        } else {
+          logTerm(`[THEME ERROR] Available themes: ${validThemes.join(' | ')}`, 'var(--neon-pink)');
+        }
+      } else if (lower === 'night') {
+        setBaseStyle('neon');
+        logTerm('[LIGHTING] Night City Cyber Midnight mode engaged.', 'var(--neon-cyan)');
+      } else if (lower === 'day') {
+        setBaseStyle('daylight');
+        logTerm('[LIGHTING] High-Visibility Tactical Daylight mode engaged.', 'var(--neon-yellow)');
+      } else if (lower.startsWith('voice ')) {
+        const v = lower.replace('voice ', '').trim();
+        if (v === 'on') {
+          cyberVoice.enabled = true;
+          logTerm('[VOICE] AI guidance synthesizer: ENABLED', 'var(--neon-green)');
+          cyberVoice.speak('Voice synthesizer operational.');
+        } else if (v === 'off') {
+          cyberVoice.enabled = false;
+          logTerm('[VOICE] AI guidance synthesizer: DISABLED', 'var(--text-muted)');
+        }
+      } else if (lower.startsWith('speak ')) {
+        const text = trimmed.substring(6).trim();
+        cyberVoice.speak(text);
+        logTerm(`[TTS] Transmitting: "${text}"`, 'var(--neon-green)');
+      } else if (lower.startsWith('audio ')) {
+        const a = lower.replace('audio ', '').trim();
+        if (a === 'on') {
+          cyberAudio.enabled = true;
+          logTerm('[AUDIO] Cyberpunk audio soundboard: UNMUTED', 'var(--neon-green)');
+          cyberAudio.playConfirm();
+        } else if (a === 'off') {
+          cyberAudio.enabled = false;
+          logTerm('[AUDIO] Cyberpunk audio soundboard: MUTED', 'var(--text-muted)');
+        }
+      } else if (lower === 'sysinfo') {
+        const c = map.getCenter();
+        const mem = performance?.memory ? `${(performance.memory.usedJSHeapSize / 1048576).toFixed(1)} MB` : 'N/A';
+        logTerm(`<div style="color: var(--neon-cyan); font-weight: bold;">[SYSTEM DIAGNOSTIC TELEMETRY]</div>
+• MAPLIBRE GL JS: v3.6.2 (Vector WebGL Engine)
+• RESOLUTION: ${window.innerWidth} x ${window.innerHeight} (DPR: ${window.devicePixelRatio || 1})
+• CAMERA CENTER: [${c.lng.toFixed(5)}, ${c.lat.toFixed(5)}]
+• ZOOM: ${map.getZoom().toFixed(2)} | PITCH: ${map.getPitch().toFixed(1)}° | BEARING: ${map.getBearing().toFixed(1)}°
+• MEMORY CONSUMPTION: ${mem}
+• PHOTON GEOCODER: ${window.photonEngine?.config.enabled ? 'ACTIVE' : 'MUTED'}
+• VALHALLA ROUTING: ONLINE (OSRM/Valhalla Matrix)`);
+      } else if (lower.startsWith('mark ')) {
+        const label = trimmed.substring(5).trim();
+        const center = map.getCenter();
+        const markerEl = document.createElement('div');
+        markerEl.className = 'cyber-custom-marker';
+        markerEl.innerHTML = `<div style="background:var(--neon-yellow);color:#000;font-family:var(--font-mono);font-size:10px;font-weight:bold;padding:2px 6px;border-radius:2px;box-shadow:0 0 10px rgba(252,238,10,0.8);white-space:nowrap;">📍 ${label}</div>`;
+        const m = new maplibregl.Marker({ element: markerEl }).setLngLat([center.lng, center.lat]).addTo(map);
+        customWaypoints.push({ label, coords: [center.lng, center.lat], marker: m });
+        cyberAudio.playConfirm();
+        logTerm(`[MARK] Tactical waypoint "${label}" locked at [${center.lng.toFixed(5)}, ${center.lat.toFixed(5)}].`, 'var(--neon-green)');
+      } else if (lower === 'marks') {
+        if (customWaypoints.length === 0) {
+          logTerm('[MARKS] No active tactical waypoints. Create one with "mark <name>".', 'var(--text-muted)');
+        } else {
+          logTerm(`<div style="color: var(--neon-yellow); font-weight: bold;">ACTIVE TACTICAL WAYPOINTS (${customWaypoints.length}):</div>` +
+            customWaypoints.map((w, i) => `  ${i+1}. [${w.coords[0].toFixed(5)}, ${w.coords[1].toFixed(5)}] - ${w.label}`).join('<br>')
+          );
+        }
+      } else if (lower === 'photon' || lower === 'photon status') {
+        const cfg = window.photonEngine?.config;
+        logTerm(`[PHOTON] Endpoint: ${cfg?.endpoint || 'N/A'} | Status: ${cfg?.status?.toUpperCase() || 'ONLINE'} | Bias: ${cfg?.useLocationBias ? 'ON' : 'OFF'} | Lang: ${cfg?.lang || 'en'} | Limit: ${cfg?.limit || 10}`);
+      } else if (lower === 'photon test') {
+        logTerm(`[PHOTON] Pinging ${window.photonEngine?.config.endpoint}...`, 'var(--neon-yellow)');
+        window.photonEngine?.probe().then(res => {
+          logTerm(`[PHOTON RESULT] ${res.ok ? 'ONLINE' : 'FAILED'}: ${res.message}`, res.ok ? 'var(--neon-green)' : 'var(--neon-pink)');
+        });
+      } else if (lower.startsWith('photon set ')) {
+        const newUrl = trimmed.substring(11).trim();
+        if (window.photonEngine) {
+          window.photonEngine.config.endpoint = newUrl;
+          window.photonEngine.save();
+          logTerm(`[PHOTON] Endpoint set to: ${newUrl}`, 'var(--neon-green)');
+        }
+      } else if (lower === 'photon on') {
+        if (window.photonEngine) { window.photonEngine.config.enabled = true; window.photonEngine.save(); }
+        logTerm('[PHOTON] Search engine ENABLED.', 'var(--neon-green)');
+      } else if (lower === 'photon off') {
+        if (window.photonEngine) { window.photonEngine.config.enabled = false; window.photonEngine.save(); }
+        logTerm('[PHOTON] Search engine DISABLED.', 'var(--neon-pink)');
+      } else {
+        logTerm(`[CLI] Command unrecognized: "${trimmed}". Type <span style="color:var(--neon-yellow);cursor:pointer;" onclick="executeTerminalCommand('help')">'help'</span> for list of commands.`, 'var(--neon-pink)');
+      }
+    }
 
-        termOutput.scrollTop = termOutput.scrollHeight;
+    termInput.addEventListener('keydown', e => {
+      if (e.key === 'Enter') {
+        const val = termInput.value;
+        if (!val.trim()) return;
+        cmdHistory.unshift(val);
+        if (cmdHistory.length > 50) cmdHistory.pop();
+        historyIdx = -1;
+        termInput.value = '';
+        executeTerminalCommand(val);
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        if (cmdHistory.length > 0 && historyIdx < cmdHistory.length - 1) {
+          historyIdx++;
+          termInput.value = cmdHistory[historyIdx];
+        }
+      } else if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        if (historyIdx > 0) {
+          historyIdx--;
+          termInput.value = cmdHistory[historyIdx];
+        } else if (historyIdx === 0) {
+          historyIdx = -1;
+          termInput.value = '';
+        }
       }
     });
 
@@ -10018,66 +10100,70 @@
       }
 
       getWeatherIconSvg(code) {
-        // 0: Clear Sky / Ionosphere (Pulsing glowing cyber sun with flares)
+        // Clear sky
         if (code === 0) {
-          return `<svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke-width="1.8">
-            <circle cx="12" cy="12" r="4.5" stroke="#fcee0a" stroke-width="2" fill="rgba(252, 238, 10, 0.2)"/>
-            <line x1="12" y1="2" x2="12" y2="5" stroke="#fcee0a" stroke-linecap="round"/>
-            <line x1="12" y1="19" x2="12" y2="22" stroke="#fcee0a" stroke-linecap="round"/>
-            <line x1="2" y1="12" x2="5" y2="12" stroke="#fcee0a" stroke-linecap="round"/>
-            <line x1="19" y1="12" x2="22" y2="12" stroke="#fcee0a" stroke-linecap="round"/>
-            <line x1="4.93" y1="4.93" x2="7.05" y2="7.05" stroke="#00f0ff" stroke-linecap="round"/>
-            <line x1="16.95" y1="16.95" x2="19.07" y2="19.07" stroke="#00f0ff" stroke-linecap="round"/>
-            <line x1="4.93" y1="19.07" x2="7.05" y2="16.95" stroke="#00f0ff" stroke-linecap="round"/>
-            <line x1="16.95" y1="7.05" x2="19.07" y2="4.93" stroke="#00f0ff" stroke-linecap="round"/>
+          return `<svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <circle cx="12" cy="12" r="4.5" stroke="#fcee0a" stroke-width="2" fill="rgba(252, 238, 10, 0.25)"></circle>
+            <line x1="12" y1="2" x2="12" y2="4.5" stroke="#fcee0a" stroke-width="2.2" stroke-linecap="round"></line>
+            <line x1="12" y1="19.5" x2="12" y2="22" stroke="#fcee0a" stroke-width="2.2" stroke-linecap="round"></line>
+            <line x1="2" y1="12" x2="4.5" y2="12" stroke="#fcee0a" stroke-width="2.2" stroke-linecap="round"></line>
+            <line x1="19.5" y1="12" x2="22" y2="12" stroke="#fcee0a" stroke-width="2.2" stroke-linecap="round"></line>
+            <line x1="4.93" y1="4.93" x2="6.7" y2="6.7" stroke="#00f0ff" stroke-width="1.8" stroke-linecap="round"></line>
+            <line x1="17.3" y1="17.3" x2="19.07" y2="19.07" stroke="#00f0ff" stroke-width="1.8" stroke-linecap="round"></line>
+            <line x1="4.93" y1="19.07" x2="6.7" y2="17.3" stroke="#00f0ff" stroke-width="1.8" stroke-linecap="round"></line>
+            <line x1="17.3" y1="6.7" x2="19.07" y2="4.93" stroke="#00f0ff" stroke-width="1.8" stroke-linecap="round"></line>
           </svg>`;
         }
-        // 1-3: Neon Smog & Scatter / Fair to Overcast (Cyan cloud with yellow sun peeking)
+        // Neon Smog & Scatter / Partly Cloudy
         if (code <= 3) {
-          return `<svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke-width="1.8">
-            <path d="M12 4a4.5 4.5 0 0 1 4.3 3.2" stroke="#fcee0a" stroke-width="2" stroke-linecap="round"/>
-            <line x1="12" y1="1.5" x2="12" y2="3" stroke="#fcee0a" stroke-linecap="round"/>
-            <line x1="15.5" y1="2.5" x2="14.5" y2="3.8" stroke="#fcee0a" stroke-linecap="round"/>
-            <path d="M19.5 17.5 A4.5 4.5 0 0 0 17 9.5 A6.5 6.5 0 0 0 5 14 A4.5 4.5 0 0 0 7 19.5 Z" stroke="#00f0ff" stroke-width="1.8" fill="rgba(0, 240, 255, 0.08)"/>
-            <line x1="7" y1="17" x2="17" y2="17" stroke="#00ff66" stroke-width="1" stroke-dasharray="2 2"/>
+          return `<svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <circle cx="16.5" cy="8.5" r="3.5" stroke="#fcee0a" stroke-width="1.8" fill="rgba(252, 238, 10, 0.3)"></circle>
+            <path d="M18 18.5a4.5 4.5 0 0 0 .5-8.97A6 6 0 0 0 6.5 13.5 4 4 0 0 0 7 21.5h11" stroke="#00f0ff" stroke-width="2" fill="rgba(0, 240, 255, 0.12)"></path>
           </svg>`;
         }
-        // 45, 48: Atmospheric Fog / Cyber Smog Haze
+        // Fog & Atmospheric Haze
         if (code === 45 || code === 48) {
-          return `<svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke-width="2">
-            <line x1="4" y1="7" x2="20" y2="7" stroke="#00f0ff" stroke-linecap="round"/>
-            <line x1="2" y1="12" x2="17" y2="12" stroke="#fcee0a" stroke-linecap="round"/>
-            <line x1="7" y1="17" x2="22" y2="17" stroke="#00ff66" stroke-linecap="round"/>
-            <circle cx="19" cy="12" r="1.5" fill="#fcee0a"/>
-            <circle cx="5" cy="17" r="1.5" fill="#00ff66"/>
+          return `<svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="3" y1="7" x2="21" y2="7" stroke="#00f0ff" stroke-linecap="round"></line>
+            <line x1="6" y1="11" x2="19" y2="11" stroke="#fcee0a" stroke-linecap="round"></line>
+            <line x1="2" y1="15" x2="22" y2="15" stroke="#00f0ff" stroke-linecap="round"></line>
+            <line x1="5" y1="19" x2="17" y2="19" stroke="#00ff66" stroke-linecap="round"></line>
           </svg>`;
         }
-        // 71-77, 85, 86: Cryo Frost / Subzero Snow (Cyan Crystal Lattice)
-        if ((code >= 71 && code <= 77) || code === 85 || code === 86) {
-          return `<svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke-width="1.8">
-            <line x1="12" y1="2" x2="12" y2="22" stroke="#00f0ff" stroke-linecap="round"/>
-            <line x1="3.34" y1="7" x2="20.66" y2="17" stroke="#00f0ff" stroke-linecap="round"/>
-            <line x1="3.34" y1="17" x2="20.66" y2="7" stroke="#00f0ff" stroke-linecap="round"/>
-            <circle cx="12" cy="12" r="2.5" fill="#ffffff" stroke="#00f0ff"/>
-            <polyline points="9 4 12 7 15 4" stroke="#00f0ff"/>
-            <polyline points="9 20 12 17 15 20" stroke="#00f0ff"/>
+        // Cryo Frost & Snow
+        if ((code >= 71 && code <= 77) || (code >= 85 && code <= 86)) {
+          return `<svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <line x1="12" y1="2" x2="12" y2="22" stroke="#00f0ff" stroke-width="2"></line>
+            <line x1="3.34" y1="7" x2="20.66" y2="17" stroke="#00f0ff" stroke-width="1.8"></line>
+            <line x1="3.34" y1="17" x2="20.66" y2="7" stroke="#00f0ff" stroke-width="1.8"></line>
+            <circle cx="12" cy="12" r="2.8" fill="#ffffff" stroke="#00f0ff"></circle>
+            <polygon points="12,5 14,8 10,8" fill="#00f0ff"></polygon>
+            <polygon points="12,19 14,16 10,16" fill="#00f0ff"></polygon>
           </svg>`;
         }
-        // 95-99: Ion Storm & Deluge (Cloud with Lightning bolt & Sparks)
+        // Ion Storm & Deluge / Thunderstorm
         if (code >= 95) {
-          return `<svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke-width="1.8">
-            <path d="M19 16.5A4.5 4.5 0 0 0 17 8h-1.26A8 8 0 1 0 4 15.5" stroke="#00f0ff" stroke-width="1.8"></path>
-            <polygon points="13 11 9 17 13 17 11 22 17 15 13 15 15 11" fill="#fcee0a" stroke="#fcee0a" stroke-width="1" stroke-linejoin="round"/>
-            <line x1="6" y1="19" x2="5" y2="22" stroke="#ff007f" stroke-linecap="round" stroke-width="2"></line>
+          return `<svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M19 15A4 4 0 0 0 17 8h-1.26A7 7 0 1 0 5 14.5" stroke="#00f0ff" stroke-width="2" fill="rgba(157, 0, 255, 0.18)"></path>
+            <polygon points="13,10 8,16 12.5,16 10.5,22 17,14 12.5,14" fill="#fcee0a" stroke="#fcee0a" stroke-width="1.5"></polygon>
           </svg>`;
         }
-        // Default / 51-67, 80-82: Acid Rain & Neon Haze (Reference Image design)
-        return `<svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke-width="1.8">
-          <path d="M20 17.58A5 5 0 0 0 18 8h-1.26A8 8 0 1 0 4 16.25" stroke="#00f0ff" stroke-width="1.8"></path>
-          <line x1="8" y1="19" x2="7" y2="22" stroke="#fcee0a" stroke-linecap="round" stroke-width="2.2"></line>
-          <line x1="12" y1="19" x2="11" y2="22" stroke="#00f0ff" stroke-linecap="round" stroke-width="2.2"></line>
-          <line x1="16" y1="19" x2="15" y2="22" stroke="#ff007f" stroke-linecap="round" stroke-width="2.2"></line>
+        // Acid Precipitation (Drizzle, Rain, Showers) - Reference Image Design
+        return `<svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M20 17.58A5 5 0 0 0 18 8h-1.26A8 8 0 1 0 4 16.25" stroke="#00f0ff" stroke-width="2" fill="rgba(0, 240, 255, 0.1)"></path>
+          <line x1="8" y1="19" x2="7" y2="22" stroke="#fcee0a" stroke-width="2.2" stroke-linecap="round"></line>
+          <line x1="12" y1="19" x2="11" y2="22" stroke="#00f0ff" stroke-width="2.2" stroke-linecap="round"></line>
+          <line x1="16" y1="19" x2="15" y2="22" stroke="#ff007f" stroke-width="2.2" stroke-linecap="round"></line>
         </svg>`;
+      }
+
+      getWeatherEmoji(code) {
+        if (code === 0) return '☀️';
+        if (code <= 3) return '⛅';
+        if (code === 45 || code === 48) return '🌫️';
+        if ((code >= 71 && code <= 77) || (code >= 85 && code <= 86)) return '❄️';
+        if (code >= 95) return '⚡';
+        return '🌧️';
       }
 
       updateDisplay(data) {
@@ -10108,20 +10194,20 @@
           aqiColor = '#00f0ff';
         } else if (code === 45 || code === 48) {
           condText = 'ATMOSPHERIC HAZE';
-          phText = 'pH 5.5 // HAZE';
+          phText = 'pH 6.5 // REDUCED VIS';
           aqiVal = '112 MODERATE';
           aqiColor = '#ffaa00';
-        } else if ((code >= 71 && code <= 77) || code === 85 || code === 86) {
-          condText = 'CRYO PRECIPITATION';
-          phText = 'pH 6.8 // FROST';
-          aqiVal = '35 NOMINAL';
+        } else if ((code >= 71 && code <= 77) || (code >= 85 && code <= 86)) {
+          condText = 'CRYO FROST & BLIZZARD';
+          phText = 'pH 6.0 // SUB-ZERO';
+          aqiVal = '64 MODERATE';
           aqiColor = '#00f0ff';
         } else if (code >= 51 && code <= 67) {
           condText = 'ACID PRECIPITATION';
           phText = 'pH 3.8 // TOXIC';
           aqiVal = '165 UNHEALTHY';
           aqiColor = '#ff0055';
-        } else if (code >= 95) {
+        } else if (code >= 80) {
           condText = 'ION STORM & DELUGE';
           phText = 'pH 3.2 // CRITICAL';
           aqiVal = '198 HAZARDOUS';
@@ -10136,7 +10222,7 @@
         const aqiDisp = document.getElementById('weather-aqi-val');
         const minTemp = document.getElementById('w-min-temp');
         const minCond = document.getElementById('w-min-cond');
-        const iconHud = document.getElementById('weather-dynamic-icon');
+        const dynamicIcon = document.getElementById('weather-dynamic-icon');
         const minIcon = document.getElementById('w-min-icon');
 
         if (tempDisp) tempDisp.innerText = `${temp}°`;
@@ -10150,20 +10236,19 @@
         }
         if (minTemp) minTemp.innerText = `${temp}°C`;
         if (minCond) minCond.innerText = condText.slice(0, 14);
-        if (iconHud) iconHud.innerHTML = this.getWeatherIconSvg(code);
-        if (minIcon) {
-          const miniMap = { 0: '☀️', 1: '⛅', 2: '⛅', 3: '☁️', 45: '🌫️', 48: '🌫️', 71: '❄️', 73: '❄️', 75: '❄️', 95: '⚡', 96: '⚡', 99: '⚡' };
-          minIcon.innerText = miniMap[code] || '🌧️';
-        }
+        if (dynamicIcon) dynamicIcon.innerHTML = this.getWeatherIconSvg(code);
+        if (minIcon) minIcon.innerText = this.getWeatherEmoji(code);
       }
 
       usePresetTelemetry() {
         const tempDisp = document.getElementById('weather-temp-display');
         const condDisp = document.getElementById('weather-condition-display');
-        const iconHud = document.getElementById('weather-dynamic-icon');
+        const dynamicIcon = document.getElementById('weather-dynamic-icon');
+        const minIcon = document.getElementById('w-min-icon');
         if (tempDisp) tempDisp.innerText = '24°';
         if (condDisp) condDisp.innerText = 'ACID RAIN & NEON HAZE';
-        if (iconHud) iconHud.innerHTML = this.getWeatherIconSvg(61);
+        if (dynamicIcon) dynamicIcon.innerHTML = this.getWeatherIconSvg(61);
+        if (minIcon) minIcon.innerText = '🌧️';
       }
     }
 
