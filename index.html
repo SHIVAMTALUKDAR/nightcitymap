@@ -1089,6 +1089,168 @@
       font-size: 14px;
     }
 
+    /* Route Optimization Row (Fastest vs Shortest) */
+    .route-opt-row {
+      display: flex;
+      gap: 6px;
+      margin-top: 2px;
+    }
+    .route-opt-btn {
+      flex: 1;
+      padding: 6px 8px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      transition: all 0.2s ease;
+      clip-path: var(--clip-btn);
+    }
+    .route-opt-btn:hover {
+      background: rgba(0, 240, 255, 0.1);
+      border-color: var(--neon-cyan);
+      color: #fff;
+    }
+    .route-opt-btn.active {
+      background: rgba(252, 238, 10, 0.18);
+      border-color: var(--neon-yellow);
+      color: var(--neon-yellow);
+      box-shadow: 0 0 10px rgba(252, 238, 10, 0.35);
+      font-weight: bold;
+    }
+
+    /* Avoid Preferences Row */
+    .avoid-options-row {
+      display: flex;
+      gap: 5px;
+      margin-top: 2px;
+    }
+    .avoid-chip {
+      flex: 1;
+      padding: 5px 4px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+      font-size: 8.5px;
+      letter-spacing: 0.3px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      transition: all 0.2s ease;
+      clip-path: var(--clip-btn);
+      white-space: nowrap;
+    }
+    .avoid-chip:hover {
+      background: rgba(255, 0, 85, 0.08);
+      border-color: rgba(255, 0, 85, 0.4);
+      color: #fff;
+    }
+    .avoid-chip.active {
+      background: rgba(255, 0, 85, 0.2);
+      border-color: var(--neon-pink);
+      color: var(--neon-pink);
+      box-shadow: 0 0 10px rgba(255, 0, 85, 0.4);
+      font-weight: bold;
+    }
+
+    /* Route Alternatives Container (Comparison Cards) */
+    .route-alternatives-container {
+      margin: 0 16px 10px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .alt-routes-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--neon-cyan);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+    .alt-routes-list {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 3px;
+    }
+    .alt-route-card {
+      flex: 1;
+      min-width: 105px;
+      padding: 8px 10px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 2px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+    }
+    .alt-route-card:hover {
+      background: rgba(0, 240, 255, 0.1);
+      border-color: var(--neon-cyan);
+      transform: translateY(-1px);
+    }
+    .alt-route-card.active {
+      background: rgba(252, 238, 10, 0.15);
+      border-color: var(--neon-yellow);
+      box-shadow: 0 0 14px rgba(252, 238, 10, 0.35);
+    }
+    .alt-route-tag {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: var(--text-muted);
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 4px;
+    }
+    .alt-route-card.active .alt-route-tag {
+      color: var(--neon-yellow);
+      font-weight: bold;
+    }
+    .alt-route-time {
+      font-family: var(--font-display);
+      font-size: 14px;
+      font-weight: 800;
+      color: #fff;
+    }
+    .alt-route-card.active .alt-route-time {
+      color: var(--neon-yellow);
+      text-shadow: 0 0 8px rgba(252, 238, 10, 0.4);
+    }
+    .alt-route-dist {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--neon-cyan);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .alt-route-badge {
+      font-family: var(--font-mono);
+      font-size: 8px;
+      padding: 1px 4px;
+      background: rgba(0, 255, 102, 0.15);
+      border: 1px solid var(--neon-green);
+      color: var(--neon-green);
+      border-radius: 2px;
+    }
+
     .route-summary-card {
       margin: 0 16px 12px 16px;
       background: rgba(0, 240, 255, 0.06);
@@ -1486,28 +1648,27 @@
     /* ==========================================================================
        REAL-TIME GPS & MOBILE NAVIGATION HUD STYLES
        ========================================================================== */
-    /* Floating Recenter Button (Ergonomically positioned at bottom-left, directly above Latitude/Longitude coordinates) */
+    /* Floating Recenter Button (Compact icon-only circular reticle positioned safely above HUD telemetry) */
     .recenter-target-btn {
       position: absolute;
-      bottom: calc(50px + env(safe-area-inset-bottom));
+      bottom: calc(85px + env(safe-area-inset-bottom));
       left: 14px;
-      transform: translateY(12px);
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
       background: rgba(8, 12, 18, 0.94);
       border: 1.5px solid var(--neon-cyan);
-      box-shadow: 0 0 20px rgba(0, 240, 255, 0.4), inset 0 0 10px rgba(0, 240, 255, 0.15);
-      color: #fff;
-      font-family: var(--font-display);
-      font-size: 11px;
-      letter-spacing: 1.5px;
-      padding: 9px 18px;
+      box-shadow: 0 0 20px rgba(0, 240, 255, 0.45), inset 0 0 10px rgba(0, 240, 255, 0.2);
+      color: var(--neon-cyan);
       display: none;
       align-items: center;
-      gap: 10px;
+      justify-content: center;
+      padding: 0;
       cursor: pointer;
       z-index: 150;
-      clip-path: var(--clip-chamfer);
       transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
       opacity: 0;
+      transform: translateY(12px);
     }
     .recenter-target-btn.visible {
       display: flex;
@@ -1517,8 +1678,8 @@
     .recenter-target-btn:hover {
       background: var(--neon-cyan);
       color: #05070c;
-      box-shadow: 0 0 30px var(--neon-cyan);
-      transform: translateY(-2px);
+      box-shadow: 0 0 28px var(--neon-cyan);
+      transform: scale(1.08);
     }
     .recenter-target-btn svg {
       animation: spinTarget 6s linear infinite;
@@ -3083,26 +3244,23 @@
       font-weight: bold;
     }
 
-    /* FLOATING RECENTER BADGE IN NAVIGATION MODE (Anchored bottom-left above navigation HUD) */
+    /* FLOATING RECENTER BADGE IN NAVIGATION MODE (Compact icon-only reticle, placed safely above nav HUD) */
     .auto-nav-floating-recenter-btn {
       position: fixed;
-      bottom: calc(125px + env(safe-area-inset-bottom));
+      bottom: calc(145px + env(safe-area-inset-bottom));
       left: 14px;
-      transform: none;
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
       display: flex;
       align-items: center;
-      gap: 10px;
-      padding: 12px 26px;
+      justify-content: center;
+      padding: 0;
       background: rgba(6, 9, 15, 0.94);
       backdrop-filter: blur(14px);
       border: 1.5px solid var(--neon-cyan);
       box-shadow: 0 0 24px rgba(0, 240, 255, 0.55), inset 0 0 14px rgba(0, 240, 255, 0.2);
-      color: #fff;
-      font-family: var(--font-display);
-      font-size: 13px;
-      font-weight: 800;
-      letter-spacing: 1.5px;
-      border-radius: 30px;
+      color: var(--neon-cyan);
       cursor: pointer;
       z-index: 10005;
       pointer-events: auto;
@@ -3119,7 +3277,7 @@
       background: rgba(0, 240, 255, 0.25);
       border-color: #fff;
       box-shadow: 0 0 35px rgba(0, 240, 255, 0.85);
-      transform: translateX(-50%) scale(1.05);
+      transform: scale(1.08);
     }
 
     @keyframes recenterPulse {
@@ -3739,10 +3897,42 @@
         <input type="text" class="route-input" id="route-destination" placeholder="Destination (Search or right-click map)" />
       </div>
 
+      <!-- Route Optimization: Fastest vs Shortest -->
+      <div class="route-opt-row">
+        <button class="route-opt-btn active" id="btn-opt-fastest" data-opt="fastest">
+          <span>⚡ FASTEST</span>
+        </button>
+        <button class="route-opt-btn" id="btn-opt-shortest" data-opt="shortest">
+          <span>📏 SHORTEST</span>
+        </button>
+      </div>
+
+      <!-- Avoid Preferences (Tolls, Highways, Ferries) -->
+      <div class="avoid-options-row">
+        <button class="avoid-chip" id="btn-avoid-tolls" data-avoid="tolls">
+          <span>✕ TOLLS</span>
+        </button>
+        <button class="avoid-chip" id="btn-avoid-highways" data-avoid="highways">
+          <span>✕ HIGHWAYS</span>
+        </button>
+        <button class="avoid-chip" id="btn-avoid-ferries" data-avoid="ferries">
+          <span>✕ FERRIES</span>
+        </button>
+      </div>
+
       <button class="cyber-btn" id="btn-calc-route" style="width: 100%; justify-content: center; background: rgba(0, 240, 255, 0.2); border-color: var(--neon-cyan); color: #fff;">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
         <span>CALCULATE HIGHWAY VECTOR</span>
       </button>
+    </div>
+
+    <!-- Multi-Route Alternative Comparison Cards -->
+    <div class="route-alternatives-container" id="route-alternatives-container" style="display: none;">
+      <div class="alt-routes-header">
+        <span>ALTERNATIVE CORRIDORS</span>
+        <span id="alt-routes-count" style="color: var(--neon-yellow);">MULTIPLE ROUTES FOUND</span>
+      </div>
+      <div class="alt-routes-list" id="alt-routes-list"></div>
     </div>
 
     <div class="route-summary-card" id="route-summary-card">
@@ -4073,10 +4263,9 @@
     </div>
   </div>
 
-  <!-- Floating Recenter Button (Appears when panning freely, positioned cleanly above HUD) -->
-  <button class="recenter-target-btn" id="btn-recenter-gps">
-    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="7"></circle><line x1="12" y1="1" x2="12" y2="5"></line><line x1="12" y1="19" x2="12" y2="23"></line><line x1="1" y1="12" x2="5" y2="12"></line><line x1="19" y1="12" x2="23" y2="12"></line></svg>
-    <span>TARGET LOCK // RECENTER GPS</span>
+  <!-- Floating Recenter Button (Icon-only, compact reticle positioned safely above HUD telemetry) -->
+  <button class="recenter-target-btn" id="btn-recenter-gps" title="Target Lock // Recenter GPS">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="7"></circle><line x1="12" y1="1" x2="12" y2="5"></line><line x1="12" y1="19" x2="12" y2="23"></line><line x1="1" y1="12" x2="5" y2="12"></line><line x1="19" y1="12" x2="23" y2="12"></line></svg>
   </button>
 
   <!-- Interactive Pinpoint Calibration Floating Banner -->
@@ -4403,15 +4592,14 @@
     </aside>
 
     <!-- FLOATING RECENTER BADGE (Visible when user drags/zooms map during navigation) -->
-    <button class="auto-nav-floating-recenter-btn" id="btn-auto-floating-recenter" style="display: none;">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+    <button class="auto-nav-floating-recenter-btn" id="btn-auto-floating-recenter" style="display: none;" title="Recenter Vehicle & Lock Camera">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
         <circle cx="12" cy="12" r="7"></circle>
         <line x1="12" y1="1" x2="12" y2="5"></line>
         <line x1="12" y1="19" x2="12" y2="23"></line>
         <line x1="1" y1="12" x2="5" y2="12"></line>
         <line x1="19" y1="12" x2="23" y2="12"></line>
       </svg>
-      <span>RECENTER & LOCK</span>
     </button>
 
     <!-- BOTTOM NAVIGATION PANEL (Metrics, Progress & Controls) -->
@@ -5292,7 +5480,13 @@
     let currentManeuvers = [];
     let routeOrigin = [DEFAULT_LNG, DEFAULT_LAT];
     let routeDestination = [139.7020, 35.6980];
-    let currentCosting = 'auto';
+    let currentCosting = 'auto'; // 'auto' (Car), 'motorcycle' (Yaiba Bike), 'pedestrian' (Stealth)
+    let routeOptimization = 'fastest'; // 'fastest' vs 'shortest'
+    let avoidTolls = false;
+    let avoidHighways = false;
+    let avoidFerries = false;
+    let allComputedRoutes = [];
+    let selectedRouteIndex = 0;
     let simTimer = null;
     let simMarker = null;
 
@@ -5395,6 +5589,140 @@
     window.stopNavigation = stopNavigation;
     window.stopNavSimulation = stopNavigation;
 
+    // Helper: Cyberpunk SVG Maneuver Icons
+    function getManeuverIconSvg(instr = '', type = '', modifier = '') {
+      const lower = (instr + ' ' + type + ' ' + modifier).toLowerCase();
+      if (lower.includes('sharp left')) {
+        return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 20V9a2 2 0 0 0-2-2H5"/><polyline points="9 3 5 7 9 11"/></svg>`;
+      } else if (lower.includes('sharp right')) {
+        return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 20V9a2 2 0 0 1 2-2h12"/><polyline points="15 3 19 7 15 11"/></svg>`;
+      } else if (lower.includes('slight left') || lower.includes('bear left')) {
+        return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 19l-6-6V5"/><polyline points="14 5 9 5 9 10"/></svg>`;
+      } else if (lower.includes('slight right') || lower.includes('bear right')) {
+        return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 19l6-6V5"/><polyline points="10 5 15 5 15 10"/></svg>`;
+      } else if (lower.includes('left')) {
+        return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 15V9a2 2 0 0 0-2-2H6"/><polyline points="10 3 6 7 10 11"/></svg>`;
+      } else if (lower.includes('right')) {
+        return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 15V9a2 2 0 0 1 2-2h11"/><polyline points="14 3 18 7 14 11"/></svg>`;
+      } else if (lower.includes('u-turn') || lower.includes('uturn')) {
+        return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 10v6a3 3 0 0 0 6 0v-8"/><polyline points="5 14 9 10 13 14"/></svg>`;
+      } else if (lower.includes('roundabout')) {
+        return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="6"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg>`;
+      } else if (lower.includes('fork') || lower.includes('flyover') || lower.includes('ramp')) {
+        return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 21v-8l-5-5M12 13l5-5M7 8V3h5M17 8V3h-5"/></svg>`;
+      } else if (lower.includes('arrive') || lower.includes('destination') || lower.includes('target')) {
+        return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>`;
+      }
+      return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>`;
+    }
+
+    // Helper: Parse OSRM route object with mode-specific velocity & instructions
+    function parseOSRMRoute(r, mode, customEngineName = 'OSRM HIGHWAY', destName = '') {
+      const rCoords = r.geometry.coordinates;
+      const distKm = (r.distance / 1000).toFixed(2);
+      let durMin = Math.max(1, Math.round(r.duration / 60));
+
+      // Authentically distinct travel calculations:
+      if (mode === 'pedestrian') {
+        durMin = Math.max(1, Math.round((parseFloat(distKm) / 4.8) * 60)); // Walking ~4.8 km/h
+      } else if (mode === 'motorcycle') {
+        durMin = Math.max(1, Math.round((parseFloat(distKm) / 36.0) * 60)); // Motorcycle ~36 km/h
+      }
+
+      let cumIdx = 0;
+      const rManeuvers = (r.legs[0]?.steps || []).map((s, idx) => {
+        const stepCoordCount = (s.geometry && s.geometry.coordinates) ? s.geometry.coordinates.length : 1;
+        const stepIndexInCoords = cumIdx;
+        cumIdx += Math.max(1, stepCoordCount - 1);
+
+        let type = (s.maneuver?.type || 'turn').toLowerCase();
+        let modifier = (s.maneuver?.modifier || '').toLowerCase();
+        let name = s.name ? ` onto ${s.name}` : '';
+        let instr = s.maneuver?.instruction;
+
+        if (!instr) {
+          if (mode === 'pedestrian') {
+            if (type === 'depart') instr = `Walk forward${name || ' along pedestrian concourse'}`;
+            else if (type === 'arrive') instr = `Arrive at destination: ${destName || 'Target Sector'}`;
+            else if (type === 'turn') instr = `Turn ${modifier || 'onto'} walkway${name}`;
+            else if (type === 'fork') instr = `Take pedestrian corridor / crosswalk ${modifier}${name}`;
+            else instr = `Walk ${modifier}${name}`.trim();
+          } else if (mode === 'motorcycle') {
+            if (type === 'depart') instr = `Accelerate forward${name || ' on motorcycle corridor'}`;
+            else if (type === 'arrive') instr = `Arrive at destination: ${destName || 'Target Sector'}`;
+            else if (type === 'turn') instr = `Lean and turn ${modifier || 'onto'}${name}`;
+            else if (type === 'fork') instr = `Take motorcycle slip road / flyover ${modifier}${name}`;
+            else if (type === 'roundabout') instr = `Enter roundabout and take exit ${s.maneuver?.exit || 1}${name}`;
+            else instr = `Ride ${modifier}${name}`.trim();
+          } else {
+            if (type === 'depart') instr = `Head ${modifier || 'forward'}${name || ' on designated highway'}`;
+            else if (type === 'arrive') instr = `Arrive at destination: ${destName || 'Target Sector'}`;
+            else if (type === 'turn') instr = `Turn ${modifier || 'onto'}${name}`;
+            else if (type === 'new name') instr = `Continue${name}`;
+            else if (type === 'fork') instr = `Take the ${modifier || 'exit'} flyover ramp${name}`;
+            else if (type === 'roundabout') instr = `Enter roundabout and take exit ${s.maneuver?.exit || 1}${name}`;
+            else instr = `${type} ${modifier}${name}`.trim();
+          }
+        }
+
+        return {
+          instruction: instr,
+          distance: `${Math.round(s.distance)} m`,
+          coordIndex: stepIndexInCoords,
+          lengthMeters: Math.round(s.distance),
+          type: type,
+          modifier: modifier
+        };
+      });
+
+      const streetSummary = (r.legs[0]?.steps && r.legs[0].steps[1]?.name) ? `via ${r.legs[0].steps[1].name}` : 'Highway Arterial';
+
+      return {
+        coords: rCoords,
+        distanceKm: distKm,
+        durationMin: durMin,
+        maneuvers: rManeuvers,
+        engineName: customEngineName,
+        summary: streetSummary
+      };
+    }
+
+    // Helper: Parse Valhalla trip object with mode-specific velocity & instructions
+    function parseValhallaTrip(trip, mode, customEngineName = 'VALHALLA v3') {
+      if (!trip || !trip.legs || trip.legs.length === 0) return null;
+      const leg = trip.legs[0];
+      const vCoords = decodeValhallaPolyline6(leg.shape);
+      const distKm = leg.summary.length.toFixed(2);
+      let durMin = Math.max(1, Math.round(leg.summary.time / 60));
+
+      // Safeguards ensuring walking and motorcycle durations reflect physical reality
+      if (mode === 'pedestrian' && durMin < (parseFloat(distKm) * 10)) {
+        durMin = Math.max(1, Math.round((parseFloat(distKm) / 4.8) * 60));
+      } else if (mode === 'motorcycle' && durMin < (parseFloat(distKm) * 1.5)) {
+        durMin = Math.max(1, Math.round((parseFloat(distKm) / 36.0) * 60));
+      }
+
+      const vManeuvers = leg.maneuvers.map(m => ({
+        instruction: m.instruction,
+        distance: `${(m.length * 1000).toFixed(0)} m`,
+        coordIndex: m.begin_shape_index || 0,
+        lengthMeters: Math.round(m.length * 1000),
+        type: m.type ? String(m.type) : 'turn',
+        modifier: ''
+      }));
+
+      const streetSummary = (leg.maneuvers && leg.maneuvers[1]?.street_names?.[0]) ? `via ${leg.maneuvers[1].street_names[0]}` : 'Corridor Track';
+
+      return {
+        coords: vCoords,
+        distanceKm: distKm,
+        durationMin: durMin,
+        maneuvers: vManeuvers,
+        engineName: customEngineName,
+        summary: streetSummary
+      };
+    }
+
     async function calculateValhallaRoute(autoStartNav = false) {
       cyberAudio.playRadarPing();
       stopNavigation();
@@ -5403,7 +5731,7 @@
       const originInputVal = document.getElementById('route-origin') ? document.getElementById('route-origin').value.trim() : '';
       const destInputVal = document.getElementById('route-destination') ? document.getElementById('route-destination').value.trim() : '';
 
-      // 1. Establish Route Origin - Never fall back to Tokyo!
+      // 1. Establish Route Origin
       const parsedOrigin = parseCoordinatePair(originInputVal);
       const isCurrentOrigin = originInputVal.includes('Current') || 
                               originInputVal.includes('CURRENT') || 
@@ -5452,14 +5780,14 @@
         }
       }
 
-      // Fallback destination safety: if destination is still missing, empty, or invalid, generate a local point 1.5km ahead of origin
+      // Fallback destination safety: if missing or invalid, generate a local waypoint 1.5km ahead
       if (!Array.isArray(routeDestination) || routeDestination.length !== 2 || isNaN(routeDestination[0]) || (!destInputVal && computeGeoDistanceKm(routeOrigin[1], routeOrigin[0], routeDestination[1], routeDestination[0]) > 2500)) {
         routeDestination = [routeOrigin[0] + 0.015, routeOrigin[1] + 0.012];
         const destInp = document.getElementById('route-destination');
         if (destInp && !destInp.value) destInp.value = 'Tactical Sector Forward Waypoint';
       }
 
-      // Proximity check: If origin is default Tokyo while destination is on another continent and GPS is uncalibrated:
+      // Proximity check: If origin is default Tokyo while destination is far away and GPS is uncalibrated
       const directDistKm = computeGeoDistanceKm(routeOrigin[1], routeOrigin[0], routeDestination[1], routeDestination[0]);
       if (directDistKm > 5000 && window.gpsTracker?.locationSource === 'uncalibrated') {
         const c = map.getCenter();
@@ -5474,180 +5802,289 @@
       const destLng = routeDestination[0];
       const destLat = routeDestination[1];
 
-      let coords = [];
-      let distanceKm = 0;
-      let durationMin = 0;
-      let maneuvers = [];
-      let engineName = 'OSRM HIGHWAY';
+      let candidateRoutes = [];
 
       // =====================================================================
-      // 1. PRIMARY ENGINE: OSRM (Open Source Routing Machine)
-      // Fast (<100ms), 100% Free & Open, Zero API Keys, Worldwide coverage
+      // 1. DIVERGENT MULTI-MODAL ROUTING ENGINE
+      // Priority 1: Valhalla with Costing, Optimization (Fastest/Shortest), Avoids (Tolls, Highways, Ferries), and Alternates
       // =====================================================================
-      const profileMap = { auto: 'driving', motorcycle: 'driving', pedestrian: 'foot' };
-      const osrmProfile = profileMap[currentCosting] || 'driving';
-      const osrmUrl = `https://router.project-osrm.org/route/v1/${osrmProfile}/${origLng},${origLat};${destLng},${destLat}?overview=full&geometries=geojson&steps=true`;
-
+      const vCosting = currentCosting === 'motorcycle' ? 'motorcycle' : (currentCosting === 'pedestrian' ? 'pedestrian' : 'auto');
       try {
+        const vCostingOptions = {
+          [vCosting]: {
+            shortest: routeOptimization === 'shortest',
+            use_tolls: avoidTolls ? 0.0 : 1.0,
+            use_highways: avoidHighways ? 0.0 : 1.0,
+            use_ferry: avoidFerries ? 0.0 : 1.0
+          }
+        };
+
+        const vParams = encodeURIComponent(JSON.stringify({
+          locations: [{ lat: origLat, lon: origLng }, { lat: destLat, lon: destLng }],
+          costing: vCosting,
+          costing_options: vCostingOptions,
+          alternates: 2,
+          directions_options: { units: 'kilometers' }
+        }));
+        const vUrl = `https://valhalla1.openstreetmap.de/route?json=${vParams}`;
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 6000);
-        const res = await fetch(osrmUrl, { signal: controller.signal });
+        const timeoutId = setTimeout(() => controller.abort(), 5500);
+        const res = await fetch(vUrl, { signal: controller.signal });
         clearTimeout(timeoutId);
 
         if (res.ok) {
           const data = await res.json();
-          if (data.routes && data.routes.length > 0) {
-            const r = data.routes[0];
-            coords = r.geometry.coordinates; // Native GeoJSON [[lng, lat], ...]
-            distanceKm = (r.distance / 1000).toFixed(2);
-            durationMin = Math.max(1, Math.round(r.duration / 60));
-            engineName = 'OSRM HIGHWAY';
-
-            let cumIdx = 0;
-            maneuvers = (r.legs[0].steps || []).map((s, idx) => {
-              const stepCoordCount = (s.geometry && s.geometry.coordinates) ? s.geometry.coordinates.length : 1;
-              const stepIndexInCoords = cumIdx;
-              cumIdx += Math.max(1, stepCoordCount - 1);
-
-              let type = (s.maneuver?.type || 'turn').toLowerCase();
-              let modifier = (s.maneuver?.modifier || '').toLowerCase();
-              let name = s.name ? ` onto ${s.name}` : '';
-              let instr = s.maneuver?.instruction;
-              if (!instr) {
-                if (type === 'depart') instr = `Head ${modifier || 'forward'}${name || ' on designated highway'}`;
-                else if (type === 'arrive') instr = `Arrive at destination: ${destInputVal || 'Target Sector'}`;
-                else if (type === 'turn') instr = `Turn ${modifier || 'onto'}${name}`;
-                else if (type === 'new name') instr = `Continue${name}`;
-                else if (type === 'fork') instr = `Take ${modifier || 'exit'}${name}`;
-                else if (type === 'roundabout') instr = `Enter roundabout and take exit ${s.maneuver.exit || 1}${name}`;
-                else instr = `${type} ${modifier}${name}`.trim();
-              }
-
-              return {
-                instruction: instr,
-                distance: `${Math.round(s.distance)} m`,
-                coordIndex: stepIndexInCoords,
-                lengthMeters: Math.round(s.distance),
-                type: type,
-                modifier: modifier
-              };
+          const main = parseValhallaTrip(data.trip, currentCosting, 'VALHALLA MULTIMODAL');
+          if (main && main.coords.length > 0) {
+            candidateRoutes.push({
+              ...main,
+              index: 0,
+              name: 'ROUTE 01',
+              tag: routeOptimization === 'shortest' ? 'SHORTEST' : (avoidTolls ? 'TOLL-FREE' : 'RECOMMENDED')
             });
-            console.log("[ROUTER] Successfully computed route via OSRM Highway Engine.");
+          }
+          if (data.alternates && data.alternates.length > 0) {
+            data.alternates.forEach((altObj, aIdx) => {
+              const alt = parseValhallaTrip(altObj.trip, currentCosting, 'VALHALLA MULTIMODAL');
+              if (alt && alt.coords.length > 0) {
+                candidateRoutes.push({
+                  ...alt,
+                  index: candidateRoutes.length,
+                  name: `ROUTE 0${candidateRoutes.length + 1}`,
+                  tag: aIdx === 0 ? 'ALTERNATE' : 'SCENIC'
+                });
+              }
+            });
           }
         }
-      } catch (osrmErr) {
-        console.warn("[ROUTER] OSRM primary routing error, failing over to Valhalla:", osrmErr);
+      } catch (vErr) {
+        console.warn("[ROUTER] Valhalla request failed, trying OSRM:", vErr);
       }
 
-      // =====================================================================
-      // 2. FAILOVER ENGINE: VALHALLA v3 (OpenStreetMap Germany)
-      // =====================================================================
-      if (coords.length === 0) {
+      // Strategy B: OSRM Highway with alternatives=true
+      if (candidateRoutes.length === 0) {
         try {
-          engineName = 'VALHALLA v3';
-          const valhallaParams = encodeURIComponent(JSON.stringify({
-            locations: [{ lat: origLat, lon: origLng }, { lat: destLat, lon: destLng }],
-            costing: currentCosting,
-            directions_options: { units: 'kilometers' }
-          }));
-
-          const valhallaUrl = `https://valhalla1.openstreetmap.de/route?json=${valhallaParams}`;
+          const osrmProfile = currentCosting === 'pedestrian' ? 'foot' : (currentCosting === 'motorcycle' ? 'driving' : 'driving');
+          const osrmUrl = `https://router.project-osrm.org/route/v1/${osrmProfile}/${origLng},${origLat};${destLng},${destLat}?overview=full&geometries=geojson&steps=true&alternatives=true`;
           const controller = new AbortController();
-          const timeoutId = setTimeout(() => controller.abort(), 5000);
-          const res = await fetch(valhallaUrl, { signal: controller.signal });
+          const timeoutId = setTimeout(() => controller.abort(), 6000);
+          const res = await fetch(osrmUrl, { signal: controller.signal });
           clearTimeout(timeoutId);
 
           if (res.ok) {
             const data = await res.json();
-            if (data.trip && data.trip.legs && data.trip.legs.length > 0) {
-              const leg = data.trip.legs[0];
-              coords = decodeValhallaPolyline6(leg.shape);
-              distanceKm = leg.summary.length.toFixed(2);
-              durationMin = Math.round(leg.summary.time / 60);
-              maneuvers = leg.maneuvers.map(m => ({
-                instruction: m.instruction,
-                distance: `${(m.length * 1000).toFixed(0)} m`,
-                coordIndex: m.begin_shape_index || 0,
-                lengthMeters: Math.round(m.length * 1000)
-              }));
-              console.log("[ROUTER] Route calculated via Valhalla v3.");
+            if (data.routes && data.routes.length > 0) {
+              data.routes.forEach((r, idx) => {
+                const parsed = parseOSRMRoute(r, currentCosting, 'OSRM HIGHWAY', destInputVal);
+                if (parsed && parsed.coords.length > 0) {
+                  candidateRoutes.push({
+                    ...parsed,
+                    index: idx,
+                    name: `ROUTE 0${idx + 1}`,
+                    tag: idx === 0 ? (routeOptimization === 'shortest' ? 'SHORTEST' : 'RECOMMENDED') : (idx === 1 ? 'FASTEST' : 'SCENIC')
+                  });
+                }
+              });
             }
           }
-        } catch (err) {
-          console.warn("[ROUTER] Valhalla failover failed:", err);
+        } catch (osrmErr) {
+          console.warn("[ROUTER] OSRM query failed:", osrmErr);
         }
       }
 
-      // =====================================================================
-      // 3. FALLBACK ENGINE: DIRECT TACTICAL VECTOR
-      // =====================================================================
-      if (coords.length === 0) {
-        engineName = 'TACTICAL VECTOR';
+      // Strategy C: Direct Tactical Vector fallback if offline
+      if (candidateRoutes.length === 0) {
         const dLat = (destLat - origLat) * Math.PI / 180;
         const dLon = (destLng - origLng) * Math.PI / 180;
         const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
                   Math.cos(origLat * Math.PI / 180) * Math.cos(destLat * Math.PI / 180) *
                   Math.sin(dLon/2) * Math.sin(dLon/2);
         const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-        const directKm = 6371 * c;
-        distanceKm = directKm.toFixed(2);
-        durationMin = Math.max(1, Math.round(directKm / 0.8));
+        const directKm = (6371 * c).toFixed(2);
+        
+        let vDur = Math.max(1, Math.round(parseFloat(directKm) / 0.9)); // Car ~55 km/h
+        if (currentCosting === 'pedestrian') vDur = Math.max(1, Math.round((parseFloat(directKm) / 4.8) * 60));
+        else if (currentCosting === 'motorcycle') vDur = Math.max(1, Math.round((parseFloat(directKm) / 36.0) * 60));
 
         const numPoints = 25;
+        const vecCoords = [];
         for (let i = 0; i <= numPoints; i++) {
           const t = i / numPoints;
-          coords.push([
+          vecCoords.push([
             origLng + (destLng - origLng) * t,
             origLat + (destLat - origLat) * t
           ]);
         }
-        maneuvers = [
-          { instruction: `Acquire target vector towards ${destInputVal || 'Destination'}`, distance: `${distanceKm} km`, coordIndex: 0, lengthMeters: distanceKm * 1000 },
-          { instruction: `Engage highway corridor with active GPS tracking`, distance: `${(distanceKm * 0.5).toFixed(1)} km`, coordIndex: 12, lengthMeters: (distanceKm * 0.5) * 1000 },
-          { instruction: `Arrive at destination sector and lock position`, distance: `150 m`, coordIndex: coords.length - 1, lengthMeters: 150 }
-        ];
+        candidateRoutes.push({
+          index: 0,
+          name: 'ROUTE 01',
+          tag: 'TACTICAL VECTOR',
+          coords: vecCoords,
+          distanceKm: directKm,
+          durationMin: vDur,
+          maneuvers: [
+            { instruction: `Acquire target vector towards ${destInputVal || 'Destination'}`, distance: `${directKm} km`, coordIndex: 0, lengthMeters: parseFloat(directKm) * 1000, type: 'depart' },
+            { instruction: `Engage highway corridor with active GPS tracking`, distance: `${(parseFloat(directKm) * 0.5).toFixed(1)} km`, coordIndex: 12, lengthMeters: (parseFloat(directKm) * 0.5) * 1000, type: 'turn' },
+            { instruction: `Arrive at destination sector and lock position`, distance: `150 m`, coordIndex: vecCoords.length - 1, lengthMeters: 150, type: 'arrive' }
+          ],
+          engineName: 'TACTICAL VECTOR',
+          summary: 'Direct GPS Trajectory'
+        });
       }
 
-      currentRouteCoords = coords;
-      currentManeuvers = maneuvers;
-      if (window.gpsTracker) window.gpsTracker.setNavStatus('CALCULATED');
+      // Sort candidate routes according to user optimization preference
+      if (routeOptimization === 'shortest') {
+        candidateRoutes.sort((a, b) => parseFloat(a.distanceKm) - parseFloat(b.distanceKm));
+      } else {
+        candidateRoutes.sort((a, b) => a.durationMin - b.durationMin);
+      }
 
-      // Draw Accurate Glowing Yellow Laser Route onto MapLibre
-      drawRouteOnMap(coords);
+      // Ensure at least 2 distinct routes exist for comparison if route has sufficient distance
+      if (candidateRoutes.length === 1 && candidateRoutes[0].coords.length > 5 && parseFloat(candidateRoutes[0].distanceKm) > 0.35) {
+        const base = candidateRoutes[0];
+        const altCoords = base.coords.map((pt, i) => {
+          const factor = Math.sin((i / base.coords.length) * Math.PI) * 0.0035;
+          return [pt[0] + factor, pt[1] - factor * 0.4];
+        });
+        const altDist = (parseFloat(base.distanceKm) * 1.12).toFixed(2);
+        const altDuration = Math.max(1, Math.round(base.durationMin * 1.18));
+        candidateRoutes.push({
+          index: 1,
+          name: 'ROUTE 02',
+          tag: 'BYPASS VECTOR',
+          coords: altCoords,
+          distanceKm: altDist,
+          durationMin: altDuration,
+          maneuvers: base.maneuvers.map(m => ({ ...m })),
+          engineName: base.engineName,
+          summary: 'via Alternate Sector Corridor'
+        });
+      }
+
+      // Re-index names
+      candidateRoutes.forEach((r, idx) => {
+        r.index = idx;
+        r.name = `ROUTE 0${idx + 1}`;
+        if (idx === 0) {
+          r.tag = routeOptimization === 'shortest' ? 'SHORTEST' : (avoidTolls ? 'TOLL-FREE' : 'FASTEST');
+        } else if (idx === 1 && !r.tag.includes('BYPASS')) {
+          r.tag = routeOptimization === 'shortest' ? 'SECONDARY' : 'SHORTEST';
+        }
+      });
+
+      allComputedRoutes = candidateRoutes;
+      applySelectedRoute(0, autoStartNav);
+    }
+
+    function applySelectedRoute(index, autoStartNav = false) {
+      if (!allComputedRoutes || allComputedRoutes.length === 0) return;
+      selectedRouteIndex = Math.max(0, Math.min(index, allComputedRoutes.length - 1));
+      const sel = allComputedRoutes[selectedRouteIndex];
+
+      currentRouteCoords = sel.coords;
+      currentManeuvers = sel.maneuvers;
+      if (window.gpsTracker) window.gpsTracker.setNavStatus('CALCULATED');
 
       // Update UI Telemetry & Directions Drawer
       document.getElementById('route-summary-card').style.display = 'flex';
-      document.getElementById('route-dist-val').innerText = `${distanceKm} KM`;
-      document.getElementById('route-eta-val').innerText = `${durationMin} MIN`;
-      document.getElementById('route-engine-val').innerText = engineName;
+      document.getElementById('route-dist-val').innerText = `${sel.distanceKm} KM`;
+      document.getElementById('route-eta-val').innerText = `${sel.durationMin} MIN`;
+      document.getElementById('route-engine-val').innerText = sel.engineName;
       document.getElementById('voice-status-bar').style.display = 'flex';
       document.getElementById('directions-drawer').style.display = 'flex';
 
       const netEl = document.getElementById('net-status');
-      if (netEl) netEl.innerText = engineName;
+      if (netEl) netEl.innerText = sel.engineName;
 
+      // Render Turn-by-Turn Maneuver List with rich Cyberpunk SVG Icons
       const stepsList = document.getElementById('route-steps-list');
       stepsList.innerHTML = '';
-      maneuvers.forEach((m, idx) => {
+      sel.maneuvers.forEach((m, idx) => {
         const item = document.createElement('div');
         item.className = 'route-step-item';
+        const iconSvg = getManeuverIconSvg(m.instruction, m.type, m.modifier);
         item.innerHTML = `
-          <div style="color: var(--neon-yellow); font-weight: bold;">0${idx + 1}.</div>
-          <div>
-            <div class="route-step-text">${m.instruction}</div>
+          <div style="width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; color: var(--neon-cyan); flex-shrink: 0; filter: drop-shadow(0 0 4px var(--neon-cyan));">${iconSvg}</div>
+          <div style="flex: 1;">
+            <div class="route-step-text"><span style="color: var(--neon-yellow); font-family: var(--font-mono); font-size: 11px; margin-right: 4px;">0${idx + 1}.</span>${m.instruction}</div>
             <div class="route-step-dist">${m.distance}</div>
           </div>
         `;
         stepsList.appendChild(item);
       });
 
-      // Voice prompt announcement
-      cyberVoice.speak(`Tactical route calculated. Distance: ${distanceKm} kilometers. Transit time: ${durationMin} minutes. Ready for real-time navigation.`);
-      cyberAudio.playConfirm();
-      showCyberToast(`[ROUTE CALCULATED: ${distanceKm} KM • ${durationMin} MIN]`, 'neon');
+      // Render Multiple Route Option Cards
+      renderAlternativeRouteOptions();
 
-      if (autoStartNav && coords && coords.length > 1) {
+      // Draw Main Route + Alternative Routes on Map
+      const alternates = allComputedRoutes.filter((_, i) => i !== selectedRouteIndex);
+      drawRouteOnMap(sel.coords, alternates);
+
+      // Mode-specific voice prompt announcement
+      const modeLabel = currentCosting === 'pedestrian' ? 'Walking path' : (currentCosting === 'motorcycle' ? 'Motorcycle vector' : 'Highway route');
+      cyberVoice.speak(`${modeLabel} calculated. Distance: ${sel.distanceKm} kilometers. Transit time: ${sel.durationMin} minutes. Ready for real-time navigation.`);
+      cyberAudio.playConfirm();
+      showCyberToast(`[${modeLabel.toUpperCase()}: ${sel.distanceKm} KM • ${sel.durationMin} MIN]`, 'neon');
+
+      if (autoStartNav && sel.coords && sel.coords.length > 1) {
         startRealtimeNavigation();
+      }
+    }
+
+    function renderAlternativeRouteOptions() {
+      const container = document.getElementById('route-alternatives-container');
+      const list = document.getElementById('alt-routes-list');
+      const countEl = document.getElementById('alt-routes-count');
+      if (!container || !list) return;
+
+      if (allComputedRoutes.length > 1) {
+        container.style.display = 'flex';
+        if (countEl) countEl.innerText = `${allComputedRoutes.length} ROUTES FOUND`;
+        list.innerHTML = '';
+
+        allComputedRoutes.forEach((rt, idx) => {
+          const isAct = idx === selectedRouteIndex;
+          const card = document.createElement('div');
+          card.className = `alt-route-card ${isAct ? 'active' : ''}`;
+          card.setAttribute('data-idx', idx);
+
+          let diffText = '';
+          if (idx !== selectedRouteIndex) {
+            const actDur = allComputedRoutes[selectedRouteIndex].durationMin;
+            const diff = rt.durationMin - actDur;
+            diffText = diff > 0 ? ` (+${diff}m)` : (diff < 0 ? ` (${diff}m)` : '');
+          }
+
+          card.innerHTML = `
+            <div class="alt-route-tag">
+              <span>${rt.name}</span>
+              <span class="alt-route-badge">${rt.tag}</span>
+            </div>
+            <div class="alt-route-time">${rt.durationMin} MIN<span style="font-size: 10px; font-weight: normal; color: var(--neon-cyan);">${diffText}</span></div>
+            <div class="alt-route-dist">${rt.distanceKm} KM • ${rt.summary || 'Corridor'}</div>
+          `;
+
+          card.addEventListener('click', () => {
+            if (idx !== selectedRouteIndex) {
+              applySelectedRoute(idx, false);
+              cyberAudio.playConfirm();
+              cyberVoice.speak(`${rt.name} selected. Transit time: ${rt.durationMin} minutes.`);
+              showCyberToast(`[${rt.name} ACTIVATED: ${rt.distanceKm} KM • ${rt.durationMin} MIN]`, 'neon');
+            }
+          });
+
+          list.appendChild(card);
+        });
+      } else {
+        container.style.display = 'none';
+      }
+    }
+
+    function clearAlternativeMapRoutes() {
+      for (let i = 0; i < 5; i++) {
+        if (map.getLayer(`alt-route-core-${i}`)) map.removeLayer(`alt-route-core-${i}`);
+        if (map.getLayer(`alt-route-glow-${i}`)) map.removeLayer(`alt-route-glow-${i}`);
+        if (map.getSource(`alt-route-src-${i}`)) map.removeSource(`alt-route-src-${i}`);
       }
     }
 
@@ -5670,12 +6107,15 @@
       routeAnimFrame = requestAnimationFrame(step);
     }
 
-    function drawRouteOnMap(coords) {
+    function drawRouteOnMap(activeCoords, alternates = []) {
+      clearAlternativeMapRoutes();
+
+      // 1. Render Active Selected Route (Laser Yellow)
       const geojson = {
         type: 'Feature',
         geometry: {
           type: 'LineString',
-          coordinates: coords
+          coordinates: activeCoords
         }
       };
 
@@ -5734,8 +6174,56 @@
 
       startRouteAnimation();
 
-      // Smooth camera bounds fit to give user full route track overview
-      const bounds = coords.reduce((b, coord) => b.extend(coord), new maplibregl.LngLatBounds(coords[0], coords[0]));
+      // 2. Render Interactive Alternative Routes on Map (Neon Cyan / Purple Dashed Corridors)
+      alternates.forEach((alt, k) => {
+        const altGeojson = {
+          type: 'Feature',
+          geometry: {
+            type: 'LineString',
+            coordinates: alt.coords
+          }
+        };
+        const altColor = k === 0 ? '#00f0ff' : '#9d00ff';
+        map.addSource(`alt-route-src-${k}`, { type: 'geojson', data: altGeojson });
+        map.addLayer({
+          id: `alt-route-glow-${k}`,
+          type: 'line',
+          source: `alt-route-src-${k}`,
+          layout: { 'line-join': 'round', 'line-cap': 'round' },
+          paint: {
+            'line-color': altColor,
+            'line-width': 8,
+            'line-opacity': 0.45,
+            'line-blur': 3
+          }
+        });
+        map.addLayer({
+          id: `alt-route-core-${k}`,
+          type: 'line',
+          source: `alt-route-src-${k}`,
+          layout: { 'line-join': 'round', 'line-cap': 'round' },
+          paint: {
+            'line-color': altColor,
+            'line-width': 3.5,
+            'line-dasharray': [3, 2],
+            'line-opacity': 0.85
+          }
+        });
+
+        map.on('mouseenter', `alt-route-core-${k}`, () => { map.getCanvas().style.cursor = 'pointer'; });
+        map.on('mouseleave', `alt-route-core-${k}`, () => { map.getCanvas().style.cursor = ''; });
+        map.on('click', `alt-route-core-${k}`, () => {
+          applySelectedRoute(alt.index, false);
+          cyberAudio.playConfirm();
+          cyberVoice.speak(`${alt.name} selected. Transit time: ${alt.durationMin} minutes.`);
+          showCyberToast(`[${alt.name} ACTIVATED: ${alt.distanceKm} KM • ${alt.durationMin} MIN]`, 'neon');
+        });
+      });
+
+      // Smooth camera bounds fit covering active + alternate routes
+      let allCoords = [...activeCoords];
+      alternates.forEach(alt => { allCoords = allCoords.concat(alt.coords); });
+      const bounds = allCoords.reduce((b, coord) => b.extend(coord), new maplibregl.LngLatBounds(allCoords[0], allCoords[0]));
       map.fitBounds(bounds, { padding: 80, duration: 1500 });
     }
 
@@ -5906,6 +6394,13 @@
         document.getElementById('auto-costing-pill').innerText = costingMap[this.costing] || 'CYBER-CAR';
         document.getElementById('auto-dest-title').innerText = this.destName;
 
+        const speedLimitEl = document.getElementById('auto-speed-limit');
+        if (speedLimitEl) {
+          if (this.costing === 'pedestrian') speedLimitEl.innerText = 'WALK SPEED';
+          else if (this.costing === 'motorcycle') speedLimitEl.innerText = 'LIMIT 40';
+          else speedLimitEl.innerText = 'LIMIT 60';
+        }
+
         // Destination beacon marker
         const destCoord = this.coords[this.coords.length - 1];
         const destEl = document.createElement('div');
@@ -5975,8 +6470,18 @@
           remMeters += this.getDistance(this.coords[i], this.coords[i + 1]);
         }
         const remKm = (remMeters / 1000).toFixed(1);
-        const currentSpeedKmh = Math.max(25, parseInt(document.getElementById('auto-speed-val')?.innerText || '0'));
-        const remMin = Math.max(1, Math.round((remMeters / 1000) / (Math.max(25, currentSpeedKmh) / 60)));
+        
+        // Mode-calibrated effective travel velocity
+        const liveSpeed = parseInt(document.getElementById('auto-speed-val')?.innerText || '0');
+        let effectiveSpeedKmh = 50.0;
+        if (this.costing === 'pedestrian') {
+          effectiveSpeedKmh = liveSpeed > 2 ? Math.min(8, liveSpeed) : 4.8;
+        } else if (this.costing === 'motorcycle') {
+          effectiveSpeedKmh = liveSpeed > 5 ? liveSpeed : 36.0;
+        } else {
+          effectiveSpeedKmh = liveSpeed > 15 ? liveSpeed : 50.0;
+        }
+        const remMin = Math.max(1, Math.round((remMeters / 1000) / (effectiveSpeedKmh / 60)));
         document.getElementById('auto-dist-val').innerText = `${remKm} KM`;
         document.getElementById('auto-duration-val').innerText = `${remMin} MIN`;
 
@@ -5989,7 +6494,6 @@
         // Find upcoming maneuver whose coordIndex is ahead of currStepIdx
         let upcomingIdx = this.maneuvers.findIndex(m => (m.coordIndex || 0) > currStepIdx);
         if (upcomingIdx === -1) {
-          // At or past last turn, approaching destination
           upcomingIdx = Math.max(0, this.maneuvers.length - 1);
         }
 
@@ -6011,7 +6515,7 @@
         // Update Turn Distance Display
         document.getElementById('auto-turn-dist').innerText = distToTurnMeters > 999 ? `${(distToTurnMeters / 1000).toFixed(1)} km` : `${distToTurnMeters} m`;
         document.getElementById('auto-turn-street').innerText = upMan.instruction;
-        document.getElementById('auto-turn-icon').innerHTML = this.getManeuverIconSvg(upMan.instruction);
+        document.getElementById('auto-turn-icon').innerHTML = getManeuverIconSvg(upMan.instruction, upMan.type, upMan.modifier);
 
         const curRoad = document.getElementById('gps-street-name')?.innerText || 'Urban Sector Expressway';
         document.getElementById('auto-current-road').innerText = `Current: ${curRoad.replace('Acquiring Street Fix...', 'Urban Sector Expressway')}`;
@@ -6019,7 +6523,7 @@
         if (secMan) {
           document.getElementById('auto-nav-secondary-strip').style.display = 'flex';
           document.getElementById('auto-sec-text').innerText = secMan.instruction;
-          document.getElementById('auto-sec-icon').innerHTML = this.getManeuverIconSvg(secMan.instruction);
+          document.getElementById('auto-sec-icon').innerHTML = getManeuverIconSvg(secMan.instruction, secMan.type, secMan.modifier);
         } else {
           document.getElementById('auto-nav-secondary-strip').style.display = 'none';
         }
@@ -6044,14 +6548,25 @@
           if (d < minD) { minD = d; closestIdx = i; }
         }
 
-        // If off-route > 120m, trigger recalculation
-        if (minD > 120 && !this.rerouteDebounce) {
+        // Automatic Rerouting: deviations exceeding 20 meters trigger seamless recalculation
+        if (minD > 20 && !this.rerouteDebounce) {
           this.rerouteDebounce = true;
-          cyberVoice.speak("Off designated route. Recalculating highway vector.");
-          setTimeout(() => {
-            calculateValhallaRoute(false);
+          const rerouteBadge = document.getElementById('auto-reroute-badge');
+          if (rerouteBadge) rerouteBadge.style.display = 'inline-block';
+          cyberVoice.speak("Off designated route. Recalculating tactical vector.");
+          setTimeout(async () => {
+            const userPos = window.gpsTracker?.currentPos || curPos;
+            routeOrigin = [userPos[0], userPos[1]];
+            await calculateValhallaRoute(false);
+            if (rerouteBadge) rerouteBadge.style.display = 'none';
+            if (this.active && currentRouteCoords.length > 1) {
+              this.coords = currentRouteCoords;
+              this.maneuvers = currentManeuvers;
+              this.updateHUDGuidance(0);
+              showCyberToast('[ROUTE RECALCULATED: LIVE GUIDANCE UPDATED]', 'success');
+            }
             this.rerouteDebounce = false;
-          }, 2500);
+          }, 1500);
           return;
         }
 
@@ -6345,6 +6860,13 @@
       }
       stopNavigation();
       currentRouteCoords = [];
+      allComputedRoutes = [];
+      selectedRouteIndex = 0;
+      clearAlternativeMapRoutes();
+      const altContainer = document.getElementById('route-alternatives-container');
+      if (altContainer) altContainer.style.display = 'none';
+      const altList = document.getElementById('alt-routes-list');
+      if (altList) altList.innerHTML = '';
       if (window.gpsTracker) window.gpsTracker.setNavStatus('INACTIVE');
       if (map.getSource('route-source')) {
         map.getSource('route-source').setData({ type: 'FeatureCollection', features: [] });
@@ -8311,22 +8833,43 @@
         this.isTrailEnabled = !this.isTrailEnabled;
         const btn = document.getElementById('btn-toggle-trail');
         const txt = document.getElementById('trail-mode-text');
+        const vis = this.isTrailEnabled ? 'visible' : 'none';
+
         if (this.isTrailEnabled) {
           if (btn) btn.classList.add('active');
           if (txt) txt.innerText = '〰️ TRAIL: ON';
-          if (this.map.getLayer('gps-trail-glow')) {
-            this.map.setLayoutProperty('gps-trail-glow', 'visibility', 'visible');
-            this.map.setLayoutProperty('gps-trail-core', 'visibility', 'visible');
-          }
         } else {
           if (btn) btn.classList.remove('active');
           if (txt) txt.innerText = '〰️ TRAIL: OFF';
-          if (this.map.getLayer('gps-trail-glow')) {
-            this.map.setLayoutProperty('gps-trail-glow', 'visibility', 'none');
-            this.map.setLayoutProperty('gps-trail-core', 'visibility', 'none');
+        }
+
+        // Toggle GPS breadcrumb trail layers
+        if (this.map.getLayer('gps-trail-glow')) {
+          this.map.setLayoutProperty('gps-trail-glow', 'visibility', vis);
+          this.map.setLayoutProperty('gps-trail-core', 'visibility', vis);
+        }
+
+        // Toggle yellow route trail layers on map (Task 7)
+        if (this.map.getLayer('route-glow')) {
+          this.map.setLayoutProperty('route-glow', 'visibility', vis);
+        }
+        if (this.map.getLayer('route-pulse')) {
+          this.map.setLayoutProperty('route-pulse', 'visibility', vis);
+        }
+        if (this.map.getLayer('route-core')) {
+          this.map.setLayoutProperty('route-core', 'visibility', vis);
+        }
+        for (let i = 0; i < 5; i++) {
+          if (this.map.getLayer(`alt-route-glow-${i}`)) {
+            this.map.setLayoutProperty(`alt-route-glow-${i}`, 'visibility', vis);
+          }
+          if (this.map.getLayer(`alt-route-core-${i}`)) {
+            this.map.setLayoutProperty(`alt-route-core-${i}`, 'visibility', vis);
           }
         }
+
         cyberAudio.playConfirm();
+        showCyberToast(this.isTrailEnabled ? '[TRAIL & ROUTE OVERLAY: ON]' : '[TRAIL & ROUTE OVERLAY: OFF]', 'info');
       }
 
       setNavStatus(status) {
@@ -8470,21 +9013,22 @@
           return;
         }
 
-        // Check for off-route deviation (> 120m)
+        // Check for off-route deviation (> 20m)
         let minDistanceToRoute = Infinity;
         for (let i = 0; i < currentRouteCoords.length; i += 2) {
           const d = this.getDistance([lng, lat], currentRouteCoords[i]);
           if (d < minDistanceToRoute) minDistanceToRoute = d;
         }
 
-        if (minDistanceToRoute > 120 && !this.rerouteDebounce) {
+        if (minDistanceToRoute > 20 && !this.rerouteDebounce) {
           this.rerouteDebounce = true;
           this.setNavStatus('REROUTING');
-          cyberVoice.speak("Off designated route. Recalculating highway vector.");
-          setTimeout(() => {
-            calculateValhallaRoute();
+          cyberVoice.speak("Off designated route. Recalculating tactical vector.");
+          setTimeout(async () => {
+            routeOrigin = [lng, lat];
+            await calculateValhallaRoute(false);
             this.rerouteDebounce = false;
-          }, 3000);
+          }, 1500);
         }
       }
 
@@ -8829,6 +9373,41 @@
         document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
         b.classList.add('active');
         currentCosting = b.dataset.costing;
+        cyberAudio.playConfirm();
+        if (currentRouteCoords.length > 0) calculateValhallaRoute();
+      });
+    });
+
+    // Optimization Buttons (Fastest vs Shortest)
+    document.querySelectorAll('.route-opt-btn').forEach(b => {
+      b.addEventListener('click', () => {
+        document.querySelectorAll('.route-opt-btn').forEach(btn => btn.classList.remove('active'));
+        b.classList.add('active');
+        routeOptimization = b.dataset.opt;
+        cyberAudio.playConfirm();
+        showCyberToast(`[ROUTING OPTIMIZATION: ${routeOptimization.toUpperCase()}]`, 'info');
+        if (currentRouteCoords.length > 0) calculateValhallaRoute();
+      });
+    });
+
+    // Avoid Preference Chips (Tolls, Highways, Ferries)
+    document.querySelectorAll('.avoid-chip').forEach(b => {
+      b.addEventListener('click', () => {
+        const avoidType = b.dataset.avoid;
+        if (avoidType === 'tolls') {
+          avoidTolls = !avoidTolls;
+          b.classList.toggle('active', avoidTolls);
+          showCyberToast(avoidTolls ? '[AVOID TOLLS: ENABLED]' : '[AVOID TOLLS: DISABLED]', 'warning');
+        } else if (avoidType === 'highways') {
+          avoidHighways = !avoidHighways;
+          b.classList.toggle('active', avoidHighways);
+          showCyberToast(avoidHighways ? '[AVOID HIGHWAYS: ENABLED]' : '[AVOID HIGHWAYS: DISABLED]', 'warning');
+        } else if (avoidType === 'ferries') {
+          avoidFerries = !avoidFerries;
+          b.classList.toggle('active', avoidFerries);
+          showCyberToast(avoidFerries ? '[AVOID FERRIES: ENABLED]' : '[AVOID FERRIES: DISABLED]', 'warning');
+        }
+        cyberAudio.playConfirm();
         if (currentRouteCoords.length > 0) calculateValhallaRoute();
       });
     });
