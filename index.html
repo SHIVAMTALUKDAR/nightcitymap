@@ -639,6 +639,207 @@
       color: #fff;
     }
 
+    /* ==========================================================================
+       TACTICAL MAP PINPOINT & "NAVIGATE HERE" ACTION CARD
+       ========================================================================== */
+    .pinpoint-nav-card {
+      position: absolute;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: calc(100% - 32px);
+      max-width: 480px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 16px;
+      background: rgba(6, 10, 20, 0.95);
+      border: 1.5px solid var(--neon-cyan);
+      box-shadow: 0 0 25px rgba(0, 240, 255, 0.4), inset 0 0 12px rgba(0, 240, 255, 0.12);
+      clip-path: var(--clip-chamfer);
+      backdrop-filter: blur(14px);
+      animation: pinpointPop 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 170;
+    }
+
+    @keyframes pinpointPop {
+      0% { transform: translate(-50%, 16px) scale(0.96); opacity: 0; }
+      100% { transform: translate(-50%, 0) scale(1); opacity: 1; }
+    }
+
+    .pinpoint-card-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+      flex: 1;
+    }
+
+    .pinpoint-radar-icon {
+      position: relative;
+      width: 38px;
+      height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(252, 238, 10, 0.14);
+      border: 1px solid rgba(252, 238, 10, 0.6);
+      border-radius: 4px;
+      color: var(--neon-yellow);
+      flex-shrink: 0;
+    }
+
+    .pinpoint-nav-ping {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 4px;
+      border: 1px solid var(--neon-yellow);
+      animation: pingGlow 1.8s infinite;
+      pointer-events: none;
+    }
+
+    .pinpoint-details {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .pinpoint-status-tag {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 1.2px;
+      color: var(--neon-yellow);
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    .pinpoint-live-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--neon-cyan);
+      box-shadow: 0 0 8px var(--neon-cyan);
+      animation: pulse-dot 1.2s infinite;
+    }
+
+    .pinpoint-target-name {
+      font-family: var(--font-display);
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
+      margin-top: 2px;
+    }
+
+    .pinpoint-target-sub {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--neon-cyan);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-top: 1px;
+    }
+
+    .pinpoint-card-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .pinpoint-nav-btn {
+      padding: 8px 16px;
+      background: rgba(0, 240, 255, 0.25);
+      border: 1px solid var(--neon-cyan);
+      color: #fff;
+      font-family: var(--font-display);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 1.2px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      box-shadow: 0 0 16px rgba(0, 240, 255, 0.45);
+      clip-path: var(--clip-btn);
+      transition: all 0.2s;
+    }
+    .pinpoint-nav-btn:hover, .pinpoint-nav-btn:active {
+      background: var(--neon-cyan);
+      color: #000;
+      box-shadow: 0 0 24px var(--neon-cyan);
+    }
+
+    .pinpoint-close-btn {
+      width: 28px;
+      height: 28px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: var(--text-muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      border-radius: 4px;
+      transition: all 0.2s;
+    }
+    .pinpoint-close-btn:hover {
+      background: rgba(255, 0, 85, 0.25);
+      border-color: #ff0055;
+      color: #fff;
+    }
+
+    /* Tactical Map Pinpoint Marker */
+    .tactical-map-pinpoint-marker {
+      position: relative;
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+    }
+
+    .pinpoint-marker-reticle {
+      position: absolute;
+      width: 44px;
+      height: 44px;
+      border: 1.5px dashed var(--neon-yellow);
+      border-radius: 50%;
+      animation: rotateSlow 8s linear infinite;
+    }
+
+    .pinpoint-marker-pulse {
+      position: absolute;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(252, 238, 10, 0.35) 0%, transparent 70%);
+      animation: pingGlow 1.6s infinite;
+    }
+
+    .pinpoint-marker-core {
+      position: relative;
+      z-index: 2;
+      filter: drop-shadow(0 0 10px rgba(252, 238, 10, 0.8));
+      animation: bouncePin 1.5s ease-in-out infinite alternate;
+      transform: translateY(-8px);
+    }
+
+    @keyframes bouncePin {
+      0% { transform: translateY(-4px); }
+      100% { transform: translateY(-12px); }
+    }
+
     /* Target Reticle Map Marker */
     .search-target-marker-pulse {
       position: relative;
@@ -3202,6 +3403,16 @@
         animation: navCardPop 0.25s ease-out;
       }
 
+      .pinpoint-nav-card {
+        bottom: calc(12px + env(safe-area-inset-bottom));
+        left: 10px;
+        right: 10px;
+        width: auto;
+        max-width: none;
+        transform: none;
+        padding: 10px 12px;
+      }
+
       .reopen-pill-left {
         display: flex;
         align-items: center;
@@ -4411,6 +4622,31 @@
     <div class="reopen-pill-right">
       <button class="cyber-btn" id="btn-reopen-start-nav">START NAV</button>
       <button class="cyber-btn" id="btn-reopen-expand-deck">▲ ROUTES</button>
+    </div>
+  </div>
+
+  <!-- Tactical Map Pinpoint & "Navigate Here" Action Card -->
+  <div class="pinpoint-nav-card" id="pinpoint-nav-card" style="display: none;">
+    <div class="pinpoint-card-left">
+      <div class="pinpoint-radar-icon">
+        <span class="pinpoint-nav-ping"></span>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="3" fill="#fcee0a"></circle><line x1="12" y1="2" x2="12" y2="6"></line><line x1="12" y1="18" x2="12" y2="22"></line><line x1="2" y1="12" x2="6" y2="12"></line><line x1="18" y1="12" x2="22" y2="12"></line></svg>
+      </div>
+      <div class="pinpoint-details">
+        <div class="pinpoint-status-tag">
+          <span class="pinpoint-live-dot"></span>
+          <span>PINPOINT LOCKED // VECTOR READY</span>
+        </div>
+        <div class="pinpoint-target-name" id="pinpoint-target-name">Tactical Waypoint</div>
+        <div class="pinpoint-target-sub" id="pinpoint-target-sub">Distance: Calculating...</div>
+      </div>
+    </div>
+    <div class="pinpoint-card-actions">
+      <button class="cyber-btn pinpoint-nav-btn" id="btn-pinpoint-navigate" title="Calculate Tactical Route & View Turn-by-Turn Steps">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><polygon points="3 11 22 2 13 21 11 13 3 11"></polygon></svg>
+        <span>TACTICAL ROUTE ⚡</span>
+      </button>
+      <button class="pinpoint-close-btn" id="btn-pinpoint-close" title="Dismiss">✕</button>
     </div>
   </div>
 
@@ -6186,9 +6422,12 @@
       };
     }
 
-    async function calculateValhallaRoute(autoStartNav = false) {
+    async function calculateValhallaRoute(autoStartNav = false, isReroute = false) {
       cyberAudio.playRadarPing();
-      stopNavigation();
+      // Only stop navigation if this is a fresh route calculation, NOT an in-flight reroute!
+      if (!isReroute && !(window.androidAutoNav && window.androidAutoNav.active)) {
+        stopNavigation();
+      }
       if (window.gpsTracker) window.gpsTracker.setNavStatus('CALCULATING');
 
       const originInputVal = document.getElementById('route-origin') ? document.getElementById('route-origin').value.trim() : '';
@@ -6436,10 +6675,10 @@
       });
 
       allComputedRoutes = candidateRoutes;
-      applySelectedRoute(0, autoStartNav);
+      applySelectedRoute(0, autoStartNav, isReroute);
     }
 
-    function applySelectedRoute(index, autoStartNav = false) {
+    function applySelectedRoute(index, autoStartNav = false, isReroute = false) {
       if (!allComputedRoutes || allComputedRoutes.length === 0) return;
       selectedRouteIndex = Math.max(0, Math.min(index, allComputedRoutes.length - 1));
       const sel = allComputedRoutes[selectedRouteIndex];
@@ -6447,6 +6686,18 @@
       currentRouteCoords = sel.coords;
       currentManeuvers = sel.maneuvers;
       if (window.gpsTracker) window.gpsTracker.setNavStatus('CALCULATED');
+
+      // If Android Auto / 3D Navigation HUD is active, seamlessly update the route without kicking user out to drawer
+      if (window.androidAutoNav && window.androidAutoNav.active) {
+        window.androidAutoNav.coords = currentRouteCoords;
+        window.androidAutoNav.maneuvers = currentManeuvers;
+        window.androidAutoNav.updateHUDGuidance(0);
+        const rerouteBadge = document.getElementById('auto-reroute-badge');
+        if (rerouteBadge) rerouteBadge.style.display = 'none';
+        showCyberToast('[ROUTE RECALCULATED: LIVE GUIDANCE UPDATED]', 'success');
+        cyberVoice.speak('Route recalculated. Proceeding on updated vector.');
+        return;
+      }
 
       // Update UI Telemetry & Directions Drawer
       document.getElementById('route-summary-card').style.display = 'flex';
@@ -7060,25 +7311,28 @@
           if (d < minD) { minD = d; closestIdx = i; }
         }
 
-        // Automatic Rerouting: deviations exceeding 20 meters trigger seamless recalculation
-        if (minD > 20 && !this.rerouteDebounce) {
+        // Automatic Rerouting: realistic threshold (50m+) and requires 3 consecutive fixes
+        // to prevent normal GPS drift/jitter from triggering false reroutes
+        const offRouteThreshold = Math.max(50, (window.gpsTracker?.accuracy || 15) * 1.5);
+        if (minD > offRouteThreshold) {
+          this.offRouteCounter = (this.offRouteCounter || 0) + 1;
+        } else {
+          this.offRouteCounter = 0;
+        }
+
+        if (this.offRouteCounter >= 3 && !this.rerouteDebounce) {
           this.rerouteDebounce = true;
+          this.offRouteCounter = 0;
           const rerouteBadge = document.getElementById('auto-reroute-badge');
           if (rerouteBadge) rerouteBadge.style.display = 'inline-block';
           cyberVoice.speak("Off designated route. Recalculating tactical vector.");
           setTimeout(async () => {
             const userPos = window.gpsTracker?.currentPos || curPos;
             routeOrigin = [userPos[0], userPos[1]];
-            await calculateValhallaRoute(false);
+            await calculateValhallaRoute(false, true);
             if (rerouteBadge) rerouteBadge.style.display = 'none';
-            if (this.active && currentRouteCoords.length > 1) {
-              this.coords = currentRouteCoords;
-              this.maneuvers = currentManeuvers;
-              this.updateHUDGuidance(0);
-              showCyberToast('[ROUTE RECALCULATED: LIVE GUIDANCE UPDATED]', 'success');
-            }
             this.rerouteDebounce = false;
-          }, 1500);
+          }, 1000);
           return;
         }
 
@@ -7369,6 +7623,7 @@
         routeAnimFrame = null;
       }
       stopNavigation();
+      dismissPinpointCard();
       currentRouteCoords = [];
       allComputedRoutes = [];
       selectedRouteIndex = 0;
@@ -9522,7 +9777,8 @@
 
       checkTurnByTurnProgression(lng, lat) {
         if (this.navStatus !== 'NAVIGATING' || !currentRouteCoords || currentRouteCoords.length === 0) return;
-        if (window.androidAutoNav && window.androidAutoNav.active && window.androidAutoNav.isSimulating) return;
+        // If Android Auto navigation HUD is active, it handles turn-by-turn guidance and rerouting directly
+        if (window.androidAutoNav && window.androidAutoNav.active) return;
 
         // Check if arrived at destination (last route coord)
         const destCoord = currentRouteCoords[currentRouteCoords.length - 1];
@@ -9678,38 +9934,156 @@
       cyberAudio.playConfirm();
     }
 
-    map.on('click', e => {
-      if (!measureActive) return;
-      const pt = [e.lngLat.lng, e.lngLat.lat];
-      measurePoints.push(pt);
-      cyberAudio.playBeep(920, 0.05);
+    /* ==========================================================================
+       TACTICAL MAP PINPOINT & "NAVIGATE HERE" SYSTEM
+       ========================================================================== */
+    let pinpointMarker = null;
+    let currentPinpointCoords = null;
 
-      const geojson = {
-        type: 'Feature',
-        geometry: { type: 'LineString', coordinates: measurePoints }
-      };
+    function handleMapPinpointClick(e) {
+      if (measureActive) return;
+      if (window.androidAutoNav && window.androidAutoNav.active) return;
+      if (window.gpsTracker && window.gpsTracker.isPinpointActive) return;
 
-      if (map.getSource('measure-source')) {
-        map.getSource('measure-source').setData(geojson);
+      const lng = e.lngLat.lng;
+      const lat = e.lngLat.lat;
+      currentPinpointCoords = [lng, lat];
+
+      // Create or move tactical pinpoint marker
+      if (!pinpointMarker) {
+        const el = document.createElement('div');
+        el.className = 'tactical-map-pinpoint-marker';
+        el.innerHTML = `
+          <div class="pinpoint-marker-reticle"></div>
+          <div class="pinpoint-marker-pulse"></div>
+          <div class="pinpoint-marker-core">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" fill="rgba(252,238,10,0.3)" stroke="#fcee0a" stroke-width="2"/>
+              <circle cx="12" cy="9" r="2.5" fill="#00f0ff"/>
+            </svg>
+          </div>
+        `;
+        pinpointMarker = new maplibregl.Marker({ element: el, anchor: 'bottom' })
+          .setLngLat([lng, lat])
+          .addTo(map);
       } else {
-        map.addSource('measure-source', { type: 'geojson', data: geojson });
-        map.addLayer({
-          id: 'measure-line',
-          type: 'line',
-          source: 'measure-source',
-          paint: { 'line-color': '#fcee0a', 'line-width': 3, 'line-dasharray': [2, 2] }
-        });
+        pinpointMarker.setLngLat([lng, lat]);
       }
 
-      if (measurePoints.length > 1) {
-        let totalKm = 0;
-        for (let i = 0; i < measurePoints.length - 1; i++) {
-          const from = maplibregl.LngLat.convert(measurePoints[i]);
-          const to = maplibregl.LngLat.convert(measurePoints[i + 1]);
-          totalKm += from.distanceTo(to) / 1000;
-        }
-        document.getElementById('measure-dist-text').innerText = `TOTAL: ${totalKm.toFixed(2)} KM | ${measurePoints.length} NODES`;
+      cyberAudio.playRadarPing();
+
+      // Compute distance from user's current GPS position
+      const userPos = window.gpsTracker?.currentPos || [map.getCenter().lng, map.getCenter().lat];
+      const distKm = computeGeoDistanceKm(userPos[1], userPos[0], lat, lng);
+      const estMins = Math.max(1, Math.round((distKm / 45) * 60));
+
+      const card = document.getElementById('pinpoint-nav-card');
+      const nameEl = document.getElementById('pinpoint-target-name');
+      const subEl = document.getElementById('pinpoint-target-sub');
+
+      const defaultTitle = `SECTOR [${lat.toFixed(4)}, ${lng.toFixed(4)}]`;
+      if (nameEl) nameEl.innerText = defaultTitle;
+      if (subEl) subEl.innerText = `Distance: ~${distKm.toFixed(1)} KM • ~${estMins} MIN DRIVE`;
+
+      if (card) {
+        card.style.display = 'flex';
+        card.classList.remove('pinpointPop');
+        void card.offsetWidth;
+        card.classList.add('pinpointPop');
       }
+
+      // Reverse geocode to get street name
+      fetch(`https://photon.komoot.io/reverse?lat=${lat}&lon=${lng}`)
+        .then(r => r.ok ? r.json() : null)
+        .then(data => {
+          if (data && data.features && data.features.length > 0) {
+            const p = data.features[0].properties;
+            const street = p.name || p.street || p.district || '';
+            const city = p.city || p.county || p.state || '';
+            const full = street ? `${street}${city ? ', ' + city : ''}` : city;
+            if (full && nameEl && currentPinpointCoords && currentPinpointCoords[0] === lng) {
+              nameEl.innerText = full;
+            }
+          }
+        })
+        .catch(() => {});
+    }
+
+    function startNavigationToPinpoint() {
+      if (!currentPinpointCoords) return;
+      const targetCoords = [currentPinpointCoords[0], currentPinpointCoords[1]];
+      const targetName = document.getElementById('pinpoint-target-name')?.innerText || `Sector [${targetCoords[1].toFixed(4)}, ${targetCoords[0].toFixed(4)}]`;
+
+      routeDestination = targetCoords;
+      const destInput = document.getElementById('route-destination');
+      if (destInput) destInput.value = targetName;
+
+      if (window.gpsTracker && window.gpsTracker.currentPos) {
+        routeOrigin = [window.gpsTracker.currentPos[0], window.gpsTracker.currentPos[1]];
+      } else {
+        const c = map.getCenter();
+        routeOrigin = [c.lng, c.lat];
+      }
+      const origInput = document.getElementById('route-origin');
+      if (origInput) origInput.value = 'CURRENT GPS LOCATION';
+
+      dismissPinpointCard();
+      cyberAudio.playConfirm();
+      cyberVoice.speak(`Plotting vector to ${targetName}. Computing tactical highway route.`);
+
+      // Calculate route: opens tactical route drawer with full turn-by-turn maneuvers (autoStartNav = false)
+      calculateValhallaRoute(false);
+    }
+
+    function dismissPinpointCard() {
+      const card = document.getElementById('pinpoint-nav-card');
+      if (card) card.style.display = 'none';
+      if (pinpointMarker) {
+        pinpointMarker.remove();
+        pinpointMarker = null;
+      }
+      currentPinpointCoords = null;
+    }
+
+    document.getElementById('btn-pinpoint-navigate')?.addEventListener('click', startNavigationToPinpoint);
+    document.getElementById('btn-pinpoint-close')?.addEventListener('click', dismissPinpointCard);
+
+    map.on('click', e => {
+      if (measureActive) {
+        const pt = [e.lngLat.lng, e.lngLat.lat];
+        measurePoints.push(pt);
+        cyberAudio.playBeep(920, 0.05);
+
+        const geojson = {
+          type: 'Feature',
+          geometry: { type: 'LineString', coordinates: measurePoints }
+        };
+
+        if (map.getSource('measure-source')) {
+          map.getSource('measure-source').setData(geojson);
+        } else {
+          map.addSource('measure-source', { type: 'geojson', data: geojson });
+          map.addLayer({
+            id: 'measure-line',
+            type: 'line',
+            source: 'measure-source',
+            paint: { 'line-color': '#fcee0a', 'line-width': 3, 'line-dasharray': [2, 2] }
+          });
+        }
+
+        if (measurePoints.length > 1) {
+          let totalKm = 0;
+          for (let i = 0; i < measurePoints.length - 1; i++) {
+            const from = maplibregl.LngLat.convert(measurePoints[i]);
+            const to = maplibregl.LngLat.convert(measurePoints[i + 1]);
+            totalKm += from.distanceTo(to) / 1000;
+          }
+          document.getElementById('measure-dist-text').innerText = `TOTAL: ${totalKm.toFixed(2)} KM | ${measurePoints.length} NODES`;
+        }
+        return;
+      }
+
+      handleMapPinpointClick(e);
     });
 
     /* ==========================================================================
