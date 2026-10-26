@@ -91,22 +91,17 @@
       display: none !important;
     }
 
-    /* MapLibre Canvas Filter Shaders for Cyberpunk Themes (Rich road hierarchy, small roads lit up, zero blackout) */
+    /* MapLibre Canvas Filter Shaders for Cyberpunk Themes (Rich vector road hierarchy, crisp text, zero blur) */
     .map-cyber-neon canvas,
-    .map-cyber-neon #map canvas {
-      filter: none;
-    }
-
-    /* Synthwave Purple & Violet Highlights Theme */
+    .map-cyber-neon #map canvas,
     .map-cyber-synthwave canvas,
-    .map-cyber-synthwave #map canvas {
-      filter: url(#cyber-synthwave-filter) contrast(110%);
-    }
-
+    .map-cyber-synthwave #map canvas,
+    .map-cyber-matrix canvas,
+    .map-cyber-matrix #map canvas,
     .map-cyber-matrix-green canvas,
     .map-cyber-matrix-green #map canvas,
     .map-matrix-green canvas {
-      filter: url(#cyber-matrix-filter) contrast(110%);
+      filter: none;
     }
 
     .map-cyber-dark-clean canvas,
@@ -5031,40 +5026,8 @@
           { id: 'labels-layer', type: 'raster', source: 'esri-dark-labels', paint: { 'raster-opacity': 0.98 } }
         ]
       },
-      matrix: {
-        version: 8,
-        sources: {
-          'osm-base': {
-            type: 'raster',
-            tiles: [
-              'https://tile.openstreetmap.org/{z}/{x}/{y}.png'
-            ],
-            tileSize: 256,
-            maxzoom: 19
-          }
-        },
-        layers: [
-          { id: 'bg', type: 'background', paint: { 'background-color': '#001100' } },
-          { id: 'matrix-layer', type: 'raster', source: 'osm-base', paint: { 'raster-opacity': 0.98 } }
-        ]
-      },
-      synthwave: {
-        version: 8,
-        sources: {
-          'osm-base': {
-            type: 'raster',
-            tiles: [
-              'https://tile.openstreetmap.org/{z}/{x}/{y}.png'
-            ],
-            tileSize: 256,
-            maxzoom: 19
-          }
-        },
-        layers: [
-          { id: 'bg', type: 'background', paint: { 'background-color': '#160226' } },
-          { id: 'synthwave-layer', type: 'raster', source: 'osm-base', paint: { 'raster-opacity': 0.98 } }
-        ]
-      },
+      synthwave: 'synthwave-style.json',
+      matrix: 'matrix-style.json',
       satellite: {
         version: 8,
         sources: {
@@ -5118,7 +5081,7 @@
       currentStyleKey = key;
       map.setStyle(mapStyles[key]);
       
-      // Update body filter class for shader effect
+      // Update body theme class cleanly while preserving any active navigation state
       const classMap = {
         matrix: 'matrix-green',
         dark: 'dark-clean',
@@ -5127,7 +5090,14 @@
         daylight: 'daylight',
         neon: 'neon'
       };
-      document.body.className = `map-cyber-${classMap[key] || 'neon'}`;
+      
+      const allThemeClasses = [
+        'map-cyber-neon', 'map-cyber-synthwave', 'map-cyber-matrix', 'map-cyber-matrix-green',
+        'map-cyber-dark-clean', 'map-cyber-daylight', 'map-cyber-satellite-recon',
+        'map-matrix-green', 'map-dark-clean', 'map-satellite-recon'
+      ];
+      allThemeClasses.forEach(c => document.body.classList.remove(c));
+      document.body.classList.add(`map-cyber-${classMap[key] || 'neon'}`);
       
       document.querySelectorAll('.layer-option').forEach(el => {
         el.classList.toggle('active', el.dataset.style === key);
@@ -5408,38 +5378,86 @@
     });
 
     /* ==========================================================================
-       CYBERPUNK THEME ENFORCER (CRIMSON BUILDINGS, TRANSPARENT CYAN ROADS, TRANSPARENT PURPLE HIGHWAYS)
+       CYBERPUNK THEME ENFORCER (CYBER NEON, SYNTHWAVE VIOLET & PHOSPHOR MATRIX)
        ========================================================================== */
     function applyCyberpunkCustomTheme(mapInstance) {
       if (!mapInstance || !mapInstance.isStyleLoaded()) return;
+
+      const styleKey = currentStyleKey || 'neon';
+      if (!['neon', 'synthwave', 'matrix'].includes(styleKey)) return;
+
+      const themes = {
+        neon: {
+          buildingFill: '#8b0000',
+          buildingOutline: '#ff1744',
+          buildingLine: '#dc143c',
+          motorwayCasing: '#4c1d95',
+          motorwayLine: '#a855f7',
+          trunkCasing: '#4c1d95',
+          trunkLine: '#a855f7',
+          majorCasing: '#004455',
+          majorLine: '#00f0ff',
+          minorLine: '#00f0ff',
+          minorOpacity: 0.38
+        },
+        synthwave: {
+          buildingFill: '#130526',
+          buildingOutline: '#ff00aa',
+          buildingLine: '#ff007f',
+          motorwayCasing: '#701a75',
+          motorwayLine: '#ff007f',
+          trunkCasing: '#581c87',
+          trunkLine: '#ff007f',
+          majorCasing: '#3b0764',
+          majorLine: '#a855f7',
+          minorLine: '#c084fc',
+          minorOpacity: 0.65
+        },
+        matrix: {
+          buildingFill: '#031809',
+          buildingOutline: '#00ff66',
+          buildingLine: '#00ff88',
+          motorwayCasing: '#044d18',
+          motorwayLine: '#00ff66',
+          trunkCasing: '#044d18',
+          trunkLine: '#39ff14',
+          majorCasing: '#022c0e',
+          majorLine: '#10b981',
+          minorLine: '#34d399',
+          minorOpacity: 0.65
+        }
+      };
+
+      const t = themes[styleKey];
+      if (!t) return;
 
       const layers = mapInstance.getStyle().layers || [];
       layers.forEach(l => {
         const id = l.id;
         const type = l.type;
 
-        // 1. BUILDINGS: Crimson Red with Crimson glow outline
+        // 1. BUILDINGS
         if (id.includes('building') || l['source-layer'] === 'building') {
           if (type === 'fill') {
             try {
-              mapInstance.setPaintProperty(id, 'fill-color', '#8b0000');
+              mapInstance.setPaintProperty(id, 'fill-color', t.buildingFill);
               mapInstance.setPaintProperty(id, 'fill-opacity', 0.85);
-              mapInstance.setPaintProperty(id, 'fill-outline-color', '#ff1744');
+              mapInstance.setPaintProperty(id, 'fill-outline-color', t.buildingOutline);
             } catch(e) {}
           } else if (type === 'line') {
             try {
-              mapInstance.setPaintProperty(id, 'line-color', '#dc143c');
+              mapInstance.setPaintProperty(id, 'line-color', t.buildingLine);
               mapInstance.setPaintProperty(id, 'line-opacity', 0.80);
             } catch(e) {}
           } else if (type === 'fill-extrusion') {
             try {
-              mapInstance.setPaintProperty(id, 'fill-extrusion-color', '#8b0000');
+              mapInstance.setPaintProperty(id, 'fill-extrusion-color', t.buildingFill);
               mapInstance.setPaintProperty(id, 'fill-extrusion-opacity', 0.85);
             } catch(e) {}
           }
         }
 
-        // 2. EXPRESSWAYS & MOTORWAYS: Transparent Purple
+        // 2. EXPRESSWAYS & MOTORWAYS
         else if (
           /(motorway|freeway|expressway)/i.test(id) &&
           !id.includes('route-') && !id.includes('gps-trail')
@@ -5447,19 +5465,17 @@
           if (type === 'line') {
             try {
               if (id.includes('casing')) {
-                mapInstance.setPaintProperty(id, 'line-color', '#4c1d95');
+                mapInstance.setPaintProperty(id, 'line-color', t.motorwayCasing);
                 mapInstance.setPaintProperty(id, 'line-opacity', 0.65);
               } else {
-                mapInstance.setPaintProperty(id, 'line-color', '#a855f7');
-                mapInstance.setPaintProperty(id, 'line-opacity', 0.70);
+                mapInstance.setPaintProperty(id, 'line-color', t.motorwayLine);
+                mapInstance.setPaintProperty(id, 'line-opacity', 0.85);
               }
             } catch(e) {}
           }
         }
 
-        // 3. HIGHWAY_MAJOR (In OpenMapTiles: primary, secondary, tertiary, trunk):
-        // Data-driven styling: Only 'trunk' (National Highway) is Transparent Purple;
-        // All city streets ('primary', 'secondary', 'tertiary') are Transparent Cyan!
+        // 3. HIGHWAY_MAJOR (Trunk vs City Avenues)
         else if (id.includes('highway_major') && !id.includes('route-')) {
           if (type === 'line') {
             try {
@@ -5467,42 +5483,32 @@
                 mapInstance.setPaintProperty(id, 'line-color', [
                   'case',
                   ['==', ['get', 'class'], 'trunk'],
-                  '#4c1d95',
-                  '#004455'
+                  t.trunkCasing,
+                  t.majorCasing
                 ]);
-                mapInstance.setPaintProperty(id, 'line-opacity', [
-                  'case',
-                  ['==', ['get', 'class'], 'trunk'],
-                  0.65,
-                  0.25
-                ]);
+                mapInstance.setPaintProperty(id, 'line-opacity', 0.65);
               } else {
                 mapInstance.setPaintProperty(id, 'line-color', [
                   'case',
                   ['==', ['get', 'class'], 'trunk'],
-                  '#a855f7',
-                  '#00f0ff'
+                  t.trunkLine,
+                  t.majorLine
                 ]);
-                mapInstance.setPaintProperty(id, 'line-opacity', [
-                  'case',
-                  ['==', ['get', 'class'], 'trunk'],
-                  0.70,
-                  0.38
-                ]);
+                mapInstance.setPaintProperty(id, 'line-opacity', 0.75);
               }
             } catch(e) {}
           }
         }
 
-        // 4. ALL CITY STREETS, MINOR ROADS, RESIDENTIAL, SERVICE, PATHS & BRIDGES: Transparent Cyan
+        // 4. ALL CITY STREETS, MINOR ROADS, RESIDENTIAL, SERVICE, PATHS & BRIDGES
         else if (
           (id.includes('road') || id.includes('highway') || id.includes('street') || id.includes('transportation') || id.includes('tunnel') || id.includes('bridge')) &&
           !id.includes('route-') && !id.includes('gps-trail') && !id.includes('measure')
         ) {
           if (type === 'line') {
             try {
-              mapInstance.setPaintProperty(id, 'line-color', '#00f0ff');
-              mapInstance.setPaintProperty(id, 'line-opacity', 0.38);
+              mapInstance.setPaintProperty(id, 'line-color', t.minorLine);
+              mapInstance.setPaintProperty(id, 'line-opacity', t.minorOpacity);
             } catch(e) {}
           }
         }
@@ -5525,6 +5531,12 @@
 
     map.on('style.load', () => {
       applyCyberpunkCustomTheme(map);
+      if (currentRouteCoords && currentRouteCoords.length > 0) {
+        drawRouteOnMap(currentRouteCoords, allComputedRoutes);
+      }
+      if (window.gpsTracker && window.gpsTracker.initTrailLayer) {
+        window.gpsTracker.initTrailLayer();
+      }
     });
 
     /* ==========================================================================
