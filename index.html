@@ -1001,6 +1001,14 @@
       animation: slideInLeft 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
+    /* Mobile-only tactical route deck elements hidden on desktop */
+    .mobile-sheet-handle,
+    .mobile-header-actions .mobile-sheet-toggle-btn,
+    .mobile-preview-bar,
+    .mobile-route-reopen-pill {
+      display: none !important;
+    }
+
     @keyframes slideInLeft {
       from { transform: translateX(-40px); opacity: 0; }
       to { transform: translateX(0); opacity: 1; }
@@ -2877,18 +2885,193 @@
         max-height: calc(100vh - 120px);
       }
 
-      /* Directions / Valhalla Mobile Drawer (Bottom-sheet style) */
+      /* Hide search, coords, and GPS HUD when directions drawer is open on mobile to maximize map visibility */
+      body.directions-drawer-open .search-panel-container {
+        display: none !important;
+      }
+      body.directions-drawer-open .hud-bottombar {
+        display: none !important;
+      }
+      body.directions-drawer-open .gps-hud-card {
+        display: none !important;
+      }
+      body.directions-drawer-open .map-controls-right {
+        top: calc(56px + env(safe-area-inset-top)) !important;
+      }
+
+      /* Mobile Sheet Drag Handle */
+      .mobile-sheet-handle {
+        display: block !important;
+        width: 44px;
+        height: 5px;
+        background: rgba(0, 240, 255, 0.5) !important;
+        border-radius: 3px;
+        margin: 6px auto 4px auto;
+        cursor: pointer;
+        flex-shrink: 0;
+        box-shadow: 0 0 8px rgba(0, 240, 255, 0.4);
+        touch-action: manipulation;
+      }
+      .mobile-sheet-handle:active {
+        background: var(--neon-yellow) !important;
+        box-shadow: 0 0 10px var(--neon-yellow);
+      }
+
+      /* Mobile Header Action Buttons */
+      .mobile-header-actions {
+        display: flex !important;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .mobile-sheet-toggle-btn {
+        display: inline-flex !important;
+        padding: 4px 8px !important;
+        font-size: 10px !important;
+        background: rgba(0, 240, 255, 0.15) !important;
+        border: 1px solid var(--neon-cyan) !important;
+        color: var(--neon-cyan) !important;
+        border-radius: 3px;
+        touch-action: manipulation;
+      }
+      .mobile-sheet-toggle-btn:hover,
+      .mobile-sheet-toggle-btn:active {
+        background: var(--neon-cyan) !important;
+        color: #000 !important;
+      }
+
+      /* Directions / Valhalla Mobile Drawer (Adaptive Bottom-Sheet) */
       .directions-drawer {
-        top: calc(50px + env(safe-area-inset-top));
+        top: auto;
+        bottom: calc(8px + env(safe-area-inset-bottom));
         left: 8px;
         right: 8px;
         width: auto;
         max-width: none;
-        max-height: calc(100vh - 65px - env(safe-area-inset-top));
-        bottom: calc(8px + env(safe-area-inset-bottom));
         clip-path: none;
-        border-radius: 6px;
-        z-index: 160;
+        border-radius: 8px;
+        border: 1px solid var(--neon-cyan);
+        box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.92), 0 0 22px rgba(0, 240, 255, 0.35);
+        z-index: 170;
+        transition: max-height 0.3s cubic-bezier(0.16, 1, 0.3, 1), transform 0.25s ease;
+      }
+
+      /* State A: Mobile Route Preview (Map First Mode - 70%+ of screen is visible map!) */
+      .directions-drawer.mobile-route-preview {
+        top: auto !important;
+        bottom: calc(8px + env(safe-area-inset-bottom)) !important;
+        max-height: 235px !important;
+        overflow-y: hidden !important;
+        background: rgba(6, 10, 18, 0.95) !important;
+        backdrop-filter: blur(20px) !important;
+      }
+
+      .directions-drawer.mobile-route-preview .directions-header {
+        padding: 4px 12px 6px 12px;
+      }
+      .directions-drawer.mobile-route-preview .directions-title {
+        font-size: 11px;
+        color: var(--neon-cyan);
+      }
+
+      /* In preview mode, hide the bulky form and turn list to leave the whole map visible */
+      .directions-drawer.mobile-route-preview .mode-selector,
+      .directions-drawer.mobile-route-preview .route-inputs,
+      .directions-drawer.mobile-route-preview .route-steps-container,
+      .directions-drawer.mobile-route-preview #route-summary-card,
+      .directions-drawer.mobile-route-preview .voice-nav-bar {
+        display: none !important;
+      }
+
+      /* Mobile Preview Bar: High-contrast telemetry pill */
+      .mobile-preview-bar {
+        display: none;
+        align-items: center;
+        justify-content: space-between;
+        padding: 5px 12px;
+        background: rgba(0, 240, 255, 0.08);
+        border-bottom: 1px solid rgba(0, 240, 255, 0.2);
+      }
+      .directions-drawer.mobile-route-preview .mobile-preview-bar {
+        display: flex !important;
+      }
+
+      .mobile-preview-info {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        min-width: 0;
+      }
+      .mobile-preview-pill {
+        font-family: var(--font-display);
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 0.8px;
+        color: var(--neon-yellow);
+        text-shadow: 0 0 8px rgba(252, 238, 10, 0.5);
+        white-space: nowrap;
+      }
+      .mobile-preview-metrics {
+        font-family: var(--font-mono);
+        font-size: 11px;
+        font-weight: 700;
+        color: #fff;
+        background: rgba(255, 255, 255, 0.08);
+        padding: 2px 6px;
+        border-radius: 2px;
+        white-space: nowrap;
+      }
+
+      /* Alternative routes in mobile preview: horizontal scrollable cards */
+      .directions-drawer.mobile-route-preview .route-alternatives-container {
+        display: flex !important;
+        margin: 4px 10px 2px 10px !important;
+      }
+      .directions-drawer.mobile-route-preview .alt-routes-header {
+        display: none !important;
+      }
+      .directions-drawer.mobile-route-preview .alt-routes-list {
+        display: flex !important;
+        gap: 6px !important;
+        overflow-x: auto !important;
+        padding-bottom: 2px !important;
+        -webkit-overflow-scrolling: touch !important;
+      }
+      .directions-drawer.mobile-route-preview .alt-route-card {
+        min-width: 95px !important;
+        padding: 5px 8px !important;
+        flex-shrink: 0 !important;
+      }
+      .directions-drawer.mobile-route-preview .alt-route-time {
+        font-size: 12.5px !important;
+      }
+      .directions-drawer.mobile-route-preview .alt-route-dist {
+        font-size: 9px !important;
+      }
+
+      /* Route actions in mobile preview */
+      .directions-drawer.mobile-route-preview .route-actions-row {
+        padding: 6px 10px 8px 10px !important;
+        gap: 8px !important;
+      }
+      .directions-drawer.mobile-route-preview #btn-start-nav {
+        flex: 2 !important;
+        height: 38px !important;
+        font-size: 11px !important;
+        letter-spacing: 1px !important;
+      }
+      .directions-drawer.mobile-route-preview #btn-clear-route {
+        flex: 1 !important;
+        height: 38px !important;
+        font-size: 10px !important;
+      }
+
+      /* State B: Mobile Route Expanded (When user taps STEPS/EDIT or inputs) */
+      .directions-drawer.mobile-route-expanded {
+        top: calc(52px + env(safe-area-inset-top)) !important;
+        bottom: calc(8px + env(safe-area-inset-bottom)) !important;
+        max-height: calc(100vh - 65px - env(safe-area-inset-top)) !important;
+        overflow-y: auto !important;
       }
 
       .route-inputs {
@@ -2906,6 +3089,92 @@
 
       .route-actions-row {
         padding: 8px 12px;
+      }
+
+      /* Floating Reopen Route Pill (Shown when drawer closed but route active on mobile) */
+      .mobile-route-reopen-pill {
+        position: absolute;
+        bottom: calc(10px + env(safe-area-inset-bottom));
+        left: 10px;
+        right: 10px;
+        background: rgba(6, 10, 18, 0.96);
+        backdrop-filter: blur(18px);
+        border: 1.5px solid var(--neon-cyan);
+        box-shadow: 0 0 20px rgba(0, 240, 255, 0.45), 0 4px 20px rgba(0, 0, 0, 0.85);
+        border-radius: 6px;
+        padding: 8px 12px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        z-index: 165;
+        animation: navCardPop 0.25s ease-out;
+      }
+
+      .reopen-pill-left {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        min-width: 0;
+        cursor: pointer;
+        flex: 1;
+      }
+
+      .reopen-live-dot {
+        width: 8px;
+        height: 8px;
+        background: var(--neon-yellow);
+        border-radius: 50%;
+        box-shadow: var(--glow-yellow);
+        animation: pulse-dot 1.2s infinite;
+        flex-shrink: 0;
+      }
+
+      .reopen-pill-text-col {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+      }
+
+      .reopen-pill-title {
+        font-family: var(--font-display);
+        font-size: 11px;
+        font-weight: 800;
+        color: var(--neon-yellow);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .reopen-pill-sub {
+        font-family: var(--font-mono);
+        font-size: 10px;
+        color: #fff;
+        white-space: nowrap;
+      }
+
+      .reopen-pill-right {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        flex-shrink: 0;
+      }
+
+      .reopen-pill-right .cyber-btn {
+        padding: 6px 10px;
+        font-size: 10px;
+        touch-action: manipulation;
+      }
+
+      #btn-reopen-start-nav {
+        background: rgba(252, 238, 10, 0.25);
+        border-color: var(--neon-yellow);
+        color: var(--neon-yellow);
+        font-weight: 800;
+      }
+      #btn-reopen-expand-deck {
+        border-color: var(--neon-cyan);
+        color: var(--neon-cyan);
       }
 
       /* Mobile GPS HUD Card: sleek, bottom fixed, collapsible */
@@ -3908,11 +4177,33 @@
        DIRECTIONS / OSRM HIGHWAY PRIMARY NAVIGATION DRAWER
        ========================================================================== -->
   <div class="directions-drawer" id="directions-drawer">
+    <!-- Sleek mobile sheet handle for tactile collapse/expand gestures -->
+    <div class="mobile-sheet-handle" id="mobile-sheet-handle" title="Tap to toggle Map / Route Details"></div>
+
     <div class="directions-header">
       <div class="directions-title" id="directions-drawer-title">TACTICAL ROUTE & NAVIGATION</div>
-      <button class="search-action-btn" id="btn-close-directions">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-      </button>
+      <div class="mobile-header-actions">
+        <button class="cyber-btn mobile-sheet-toggle-btn" id="btn-toggle-mobile-sheet" title="Toggle Map / Route Details">
+          <span id="mobile-sheet-toggle-text">📋 STEPS</span>
+        </button>
+        <button class="search-action-btn" id="btn-close-directions" title="Close Panel">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile-only compact route telemetry strip -->
+    <div class="mobile-preview-bar" id="mobile-preview-bar">
+      <div class="mobile-preview-info">
+        <span class="mobile-preview-pill" id="mobile-preview-pill">ROUTE 01 • FASTEST</span>
+        <span class="mobile-preview-metrics" id="mobile-preview-metrics">-- KM • -- MIN</span>
+      </div>
+      <div class="mobile-preview-actions">
+        <button class="cyber-btn" id="btn-mobile-expand-steps" style="padding: 4px 8px; font-size: 10px; border-color: var(--neon-cyan); color: var(--neon-cyan);">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+          <span>DETAILS</span>
+        </button>
+      </div>
     </div>
 
     <div class="mode-selector">
@@ -4014,6 +4305,21 @@
       <button class="cyber-btn danger" id="btn-clear-route" style="flex: 1; justify-content: center;">
         <span>CLEAR</span>
       </button>
+    </div>
+  </div>
+
+  <!-- Floating Mobile Route Reopen Card (Appears if user closes drawer while route is active on mobile) -->
+  <div class="mobile-route-reopen-pill" id="mobile-route-reopen-pill" style="display: none;">
+    <div class="reopen-pill-left" id="reopen-pill-trigger" title="Tap to open Tactical Route Deck">
+      <span class="reopen-live-dot"></span>
+      <div class="reopen-pill-text-col">
+        <span class="reopen-pill-title" id="reopen-pill-title">ROUTE 01 (FASTEST)</span>
+        <span class="reopen-pill-sub" id="reopen-pill-sub">-- KM • -- MIN</span>
+      </div>
+    </div>
+    <div class="reopen-pill-right">
+      <button class="cyber-btn" id="btn-reopen-start-nav">START NAV</button>
+      <button class="cyber-btn" id="btn-reopen-expand-deck">▲ ROUTES</button>
     </div>
   </div>
 
@@ -6057,7 +6363,34 @@
       document.getElementById('route-eta-val').innerText = `${sel.durationMin} MIN`;
       document.getElementById('route-engine-val').innerText = sel.engineName;
       document.getElementById('voice-status-bar').style.display = 'flex';
-      document.getElementById('directions-drawer').style.display = 'flex';
+
+      const drawer = document.getElementById('directions-drawer');
+      drawer.style.display = 'flex';
+      document.body.classList.add('directions-drawer-open');
+
+      // Update mobile preview bar badges & reopen pill
+      const mPrevPill = document.getElementById('mobile-preview-pill');
+      if (mPrevPill) mPrevPill.innerText = `${sel.name} • ${sel.tag || 'RECOMMENDED'}`;
+      const mPrevStats = document.getElementById('mobile-preview-metrics');
+      if (mPrevStats) mPrevStats.innerText = `${sel.distanceKm} KM • ${sel.durationMin} MIN`;
+
+      const mReopenTitle = document.getElementById('reopen-pill-title');
+      if (mReopenTitle) mReopenTitle.innerText = `${sel.name} (${sel.tag || 'RECOMMENDED'})`;
+      const mReopenSub = document.getElementById('reopen-pill-sub');
+      if (mReopenSub) mReopenSub.innerText = `${sel.distanceKm} KM • ${sel.durationMin} MIN`;
+
+      const reopenPill = document.getElementById('mobile-route-reopen-pill');
+      if (reopenPill) reopenPill.style.display = 'none';
+
+      // On mobile view, automatically default to the compact preview bottom-sheet so the entire map is completely visible!
+      if (window.innerWidth <= 768) {
+        drawer.classList.add('mobile-route-preview');
+        drawer.classList.remove('mobile-route-expanded');
+        const toggleBtnText = document.getElementById('mobile-sheet-toggle-text');
+        if (toggleBtnText) toggleBtnText.innerText = '📋 STEPS';
+      } else {
+        drawer.classList.remove('mobile-route-preview', 'mobile-route-expanded');
+      }
 
       const netEl = document.getElementById('net-status');
       if (netEl) netEl.innerText = sel.engineName;
@@ -6290,7 +6623,29 @@
       let allCoords = [...activeCoords];
       alternates.forEach(alt => { allCoords = allCoords.concat(alt.coords); });
       const bounds = allCoords.reduce((b, coord) => b.extend(coord), new maplibregl.LngLatBounds(allCoords[0], allCoords[0]));
-      map.fitBounds(bounds, { padding: 80, duration: 1500 });
+
+      if (window.innerWidth <= 768) {
+        // Generous bottom padding to frame the route perfectly in the visible map above the bottom sheet
+        map.fitBounds(bounds, {
+          padding: { top: 60, bottom: 250, left: 24, right: 24 },
+          duration: 1200
+        });
+      } else {
+        map.fitBounds(bounds, { padding: 80, duration: 1500 });
+      }
+    }
+
+    function fitCurrentRouteBoundsMobile() {
+      if (!allComputedRoutes || allComputedRoutes.length === 0) return;
+      const sel = allComputedRoutes[selectedRouteIndex] || allComputedRoutes[0];
+      if (!sel || !sel.coords || sel.coords.length === 0) return;
+      let allCoords = [...sel.coords];
+      allComputedRoutes.forEach(r => { if (r.coords) allCoords = allCoords.concat(r.coords); });
+      const bounds = allCoords.reduce((b, coord) => b.extend(coord), new maplibregl.LngLatBounds(allCoords[0], allCoords[0]));
+      map.fitBounds(bounds, {
+        padding: { top: 60, bottom: 250, left: 24, right: 24 },
+        duration: 900
+      });
     }
 
     /* ==========================================================================
@@ -6444,6 +6799,9 @@
         document.getElementById('btn-auto-recenter')?.classList.remove('pulse-warn');
 
         document.body.classList.add('nav-mode-active');
+        document.body.classList.remove('directions-drawer-open');
+        const reopenPill = document.getElementById('mobile-route-reopen-pill');
+        if (reopenPill) reopenPill.style.display = 'none';
         document.getElementById('android-auto-nav').style.display = 'flex';
         document.getElementById('directions-drawer').style.display = 'none';
         if (window.gpsTracker) {
@@ -6924,6 +7282,16 @@
       allComputedRoutes = [];
       selectedRouteIndex = 0;
       clearAlternativeMapRoutes();
+
+      document.body.classList.remove('directions-drawer-open');
+      const reopenPill = document.getElementById('mobile-route-reopen-pill');
+      if (reopenPill) reopenPill.style.display = 'none';
+
+      const drawer = document.getElementById('directions-drawer');
+      if (drawer) {
+        drawer.classList.remove('mobile-route-preview', 'mobile-route-expanded');
+      }
+
       const altContainer = document.getElementById('route-alternatives-container');
       if (altContainer) altContainer.style.display = 'none';
       const altList = document.getElementById('alt-routes-list');
@@ -9406,11 +9774,111 @@
     // Navigation buttons
     document.getElementById('btn-open-directions').addEventListener('click', () => {
       const d = document.getElementById('directions-drawer');
-      d.style.display = d.style.display === 'flex' ? 'none' : 'flex';
+      const isVisible = d.style.display === 'flex';
+      if (isVisible) {
+        d.style.display = 'none';
+        d.classList.remove('mobile-route-preview', 'mobile-route-expanded');
+        document.body.classList.remove('directions-drawer-open');
+        if (window.innerWidth <= 768 && currentRouteCoords && currentRouteCoords.length > 0) {
+          const reopenPill = document.getElementById('mobile-route-reopen-pill');
+          if (reopenPill) reopenPill.style.display = 'flex';
+        }
+      } else {
+        d.style.display = 'flex';
+        document.body.classList.add('directions-drawer-open');
+        const reopenPill = document.getElementById('mobile-route-reopen-pill');
+        if (reopenPill) reopenPill.style.display = 'none';
+
+        if (window.innerWidth <= 768) {
+          if (currentRouteCoords && currentRouteCoords.length > 0) {
+            d.classList.add('mobile-route-preview');
+            d.classList.remove('mobile-route-expanded');
+            const toggleBtnText = document.getElementById('mobile-sheet-toggle-text');
+            if (toggleBtnText) toggleBtnText.innerText = '📋 STEPS';
+            fitCurrentRouteBoundsMobile();
+          } else {
+            d.classList.remove('mobile-route-preview');
+            d.classList.add('mobile-route-expanded');
+            const toggleBtnText = document.getElementById('mobile-sheet-toggle-text');
+            if (toggleBtnText) toggleBtnText.innerText = '🗺️ VIEW MAP';
+          }
+        }
+      }
       cyberAudio.playConfirm();
     });
+
     document.getElementById('btn-close-directions').addEventListener('click', () => {
-      document.getElementById('directions-drawer').style.display = 'none';
+      const d = document.getElementById('directions-drawer');
+      d.style.display = 'none';
+      d.classList.remove('mobile-route-preview', 'mobile-route-expanded');
+      document.body.classList.remove('directions-drawer-open');
+      if (window.innerWidth <= 768 && currentRouteCoords && currentRouteCoords.length > 0) {
+        const reopenPill = document.getElementById('mobile-route-reopen-pill');
+        if (reopenPill) {
+          const sel = allComputedRoutes[selectedRouteIndex] || allComputedRoutes[0];
+          if (sel) {
+            const rTitle = document.getElementById('reopen-pill-title');
+            if (rTitle) rTitle.innerText = `${sel.name} (${sel.tag || 'RECOMMENDED'})`;
+            const rSub = document.getElementById('reopen-pill-sub');
+            if (rSub) rSub.innerText = `${sel.distanceKm} KM • ${sel.durationMin} MIN`;
+          }
+          reopenPill.style.display = 'flex';
+        }
+      }
+      cyberAudio.playConfirm();
+    });
+
+    // Mobile Tactical Route Sheet Controls & Touch Listeners
+    function toggleMobileDirectionsSheet() {
+      if (window.innerWidth > 768) return;
+      const d = document.getElementById('directions-drawer');
+      if (!d) return;
+      const isPreview = d.classList.contains('mobile-route-preview');
+      if (isPreview) {
+        d.classList.remove('mobile-route-preview');
+        d.classList.add('mobile-route-expanded');
+        const toggleBtnText = document.getElementById('mobile-sheet-toggle-text');
+        if (toggleBtnText) toggleBtnText.innerText = '🗺️ VIEW MAP';
+      } else {
+        d.classList.remove('mobile-route-expanded');
+        d.classList.add('mobile-route-preview');
+        const toggleBtnText = document.getElementById('mobile-sheet-toggle-text');
+        if (toggleBtnText) toggleBtnText.innerText = '📋 STEPS';
+        if (currentRouteCoords && currentRouteCoords.length > 0) {
+          fitCurrentRouteBoundsMobile();
+        }
+      }
+      cyberAudio.playConfirm();
+    }
+
+    document.getElementById('btn-toggle-mobile-sheet')?.addEventListener('click', toggleMobileDirectionsSheet);
+    document.getElementById('btn-mobile-expand-steps')?.addEventListener('click', toggleMobileDirectionsSheet);
+    document.getElementById('mobile-sheet-handle')?.addEventListener('click', toggleMobileDirectionsSheet);
+
+    function restoreMobileDirectionsSheet() {
+      const reopenPill = document.getElementById('mobile-route-reopen-pill');
+      if (reopenPill) reopenPill.style.display = 'none';
+      const d = document.getElementById('directions-drawer');
+      if (d) {
+        d.style.display = 'flex';
+        document.body.classList.add('directions-drawer-open');
+        if (window.innerWidth <= 768) {
+          d.classList.add('mobile-route-preview');
+          d.classList.remove('mobile-route-expanded');
+          const toggleBtnText = document.getElementById('mobile-sheet-toggle-text');
+          if (toggleBtnText) toggleBtnText.innerText = '📋 STEPS';
+          fitCurrentRouteBoundsMobile();
+        }
+      }
+      cyberAudio.playConfirm();
+    }
+
+    document.getElementById('reopen-pill-trigger')?.addEventListener('click', restoreMobileDirectionsSheet);
+    document.getElementById('btn-reopen-expand-deck')?.addEventListener('click', restoreMobileDirectionsSheet);
+    document.getElementById('btn-reopen-start-nav')?.addEventListener('click', () => {
+      const reopenPill = document.getElementById('mobile-route-reopen-pill');
+      if (reopenPill) reopenPill.style.display = 'none';
+      startRealtimeNavigation();
     });
     document.getElementById('btn-calc-route')?.addEventListener('click', () => calculateValhallaRoute(false));
     document.getElementById('btn-start-nav')?.addEventListener('click', startRealtimeNavigation);
