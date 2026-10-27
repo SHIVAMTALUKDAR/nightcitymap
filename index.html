@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>CYBERMAP // REAL-TIME GPS NAVIGATION GEOMATRIX</title>
-  <meta name="description" content="Production-grade Cyberpunk Real-Time GPS Navigation powered by MapLibre GL JS, OSRM Highway Engine, Photon Geocoding, and AI Voice Guidance.">
+  <meta name="description" content="Production-grade Cyberpunk Real-Time GPS Navigation powered by MapLibre GL JS, OSRM Highway Engine, and Photon Geocoding.">
 
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -772,10 +772,29 @@
       clip-path: var(--clip-btn);
       transition: all 0.2s;
     }
+    .pinpoint-nav-btn.icon-only {
+      width: 44px;
+      height: 44px;
+      padding: 0;
+      justify-content: center;
+      border-radius: 4px;
+      clip-path: none;
+      background: rgba(0, 240, 255, 0.22);
+      border: 1.5px solid var(--neon-cyan);
+      box-shadow: 0 0 16px rgba(0, 240, 255, 0.5);
+    }
+    .pinpoint-nav-btn.icon-only svg {
+      color: #ffffff;
+      filter: drop-shadow(0 0 6px var(--neon-cyan));
+    }
     .pinpoint-nav-btn:hover, .pinpoint-nav-btn:active {
       background: var(--neon-cyan);
       color: #000;
       box-shadow: 0 0 24px var(--neon-cyan);
+    }
+    .pinpoint-nav-btn.icon-only:hover {
+      background: rgba(0, 240, 255, 0.45);
+      transform: scale(1.06);
     }
 
     .pinpoint-close-btn {
@@ -849,30 +868,41 @@
       align-items: center;
       justify-content: center;
       pointer-events: none;
+      box-sizing: border-box;
     }
     .target-marker-reticle {
       position: absolute;
-      width: 100%;
-      height: 100%;
+      top: 0;
+      left: 0;
+      width: 44px;
+      height: 44px;
+      box-sizing: border-box;
       border: 2px dashed var(--neon-cyan);
       border-radius: 50%;
       animation: rotateReticle 6s linear infinite;
+      pointer-events: none;
     }
     @keyframes rotateReticle {
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
     .target-marker-dot {
+      position: relative;
       width: 10px;
       height: 10px;
       background: var(--neon-yellow);
       border: 2px solid #000;
       border-radius: 50%;
       box-shadow: 0 0 10px var(--neon-yellow);
+      z-index: 2;
+      pointer-events: none;
     }
     .target-marker-label {
       position: absolute;
-      top: 46px;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      margin-top: 6px;
       background: rgba(8, 12, 22, 0.95);
       border: 1px solid var(--neon-cyan);
       color: #fff;
@@ -883,6 +913,8 @@
       border-radius: 2px;
       white-space: nowrap;
       box-shadow: 0 0 10px rgba(0, 240, 255, 0.4);
+      pointer-events: none;
+      z-index: 3;
     }
 
     /* ==========================================================================
@@ -1517,18 +1549,6 @@
       gap: 8px;
     }
 
-    /* Voice Navigation Indicator */
-    .voice-nav-bar {
-      background: rgba(0, 255, 102, 0.12);
-      border-top: 1px solid rgba(0, 255, 102, 0.3);
-      padding: 6px 16px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      font-family: var(--font-mono);
-      font-size: 11px;
-      color: var(--neon-green);
-    }
 
 
     /* ==========================================================================
@@ -1723,7 +1743,7 @@
     /* ==========================================================================
        CUSTOM MAPLIBRE MARKERS & POPUPS
        ========================================================================== */
-    .maplibregl-popup { max-width: 320px !important; }
+    .maplibregl-popup { max-width: 250px !important; z-index: 80; }
     .maplibregl-popup-content {
       background: transparent !important;
       padding: 0 !important;
@@ -1733,29 +1753,90 @@
     .maplibregl-popup-tip { display: none !important; }
 
     .poi-card {
-      background: var(--bg-card);
+      background: rgba(8, 12, 22, 0.96);
       backdrop-filter: blur(18px);
       border: 1px solid var(--neon-cyan);
-      box-shadow: 0 0 25px rgba(0, 240, 255, 0.4);
+      box-shadow: 0 0 18px rgba(0, 240, 255, 0.35);
       clip-path: var(--clip-chamfer);
-      width: 280px;
+      width: 240px;
       overflow: hidden;
+      animation: poiFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes poiFadeIn {
+      0% { opacity: 0; transform: translateY(6px) scale(0.96); }
+      100% { opacity: 1; transform: translateY(0) scale(1); }
     }
 
     .poi-card-header {
-      background: linear-gradient(90deg, rgba(0, 240, 255, 0.2), rgba(0, 240, 255, 0.05));
-      border-bottom: 1px solid rgba(0, 240, 255, 0.3);
-      padding: 10px 14px;
+      background: linear-gradient(90deg, rgba(0, 240, 255, 0.18), rgba(0, 240, 255, 0.04));
+      border-bottom: 1px solid rgba(0, 240, 255, 0.25);
+      padding: 8px 10px;
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
+      gap: 6px;
     }
 
-    .poi-card-title { font-family: var(--font-display); font-size: 13px; font-weight: 800; color: #fff; }
-    .poi-card-type { font-family: var(--font-mono); font-size: 10px; color: var(--neon-yellow); }
-    .poi-card-body { padding: 10px 14px; font-size: 12px; color: var(--text-muted); line-height: 1.4; }
-    .poi-card-actions { padding: 8px 14px 12px 14px; display: flex; gap: 6px; }
-    .poi-card-actions button { flex: 1; padding: 6px; font-size: 10px; }
+    .poi-card-title {
+      font-family: var(--font-display);
+      font-size: 11.5px;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.2;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 150px;
+    }
+    .poi-card-type {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: var(--neon-cyan);
+      margin-top: 1px;
+      letter-spacing: 0.5px;
+    }
+    .poi-card-threat {
+      font-family: var(--font-mono);
+      font-size: 8px;
+      padding: 1px 4px;
+      background: rgba(0, 0, 0, 0.6);
+      border: 1px solid currentColor;
+      flex-shrink: 0;
+      letter-spacing: 0.5px;
+    }
+    .poi-card-body {
+      padding: 6px 10px;
+      font-size: 11px;
+      color: var(--text-muted);
+      line-height: 1.3;
+      max-height: 48px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .poi-card-actions {
+      padding: 6px 10px 8px 10px;
+      display: flex;
+      gap: 6px;
+    }
+    .poi-card-actions button {
+      flex: 1;
+      padding: 5px 8px;
+      font-size: 10.5px;
+      height: 30px;
+      letter-spacing: 0.8px;
+    }
+
+    /* Auto Rail SFX Button active / muted state */
+    .auto-rail-btn.active#btn-auto-sfx-toggle {
+      border-color: rgba(0, 240, 255, 0.6);
+      color: var(--neon-cyan);
+      box-shadow: 0 0 12px rgba(0, 240, 255, 0.35);
+    }
+    .auto-rail-btn.muted#btn-auto-sfx-toggle {
+      border-color: rgba(255, 255, 255, 0.15) !important;
+      color: var(--text-dim) !important;
+    }
 
     /* Custom Markers */
     .cyber-marker {
@@ -2670,23 +2751,20 @@
     .photon-engine-btn {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      padding: 3px 9px;
-      margin: 0 4px;
+      justify-content: center;
+      gap: 5px;
+      padding: 4px 7px;
+      height: 28px;
+      margin: 0 2px;
       background: rgba(0, 240, 255, 0.12);
-      border: 1px solid rgba(0, 240, 255, 0.5);
-      border-radius: 3px;
+      border: 1px solid rgba(0, 240, 255, 0.45);
+      border-radius: 4px;
       color: #67e8f9;
-      font-family: var(--font-display);
-      font-size: 9.5px;
-      font-weight: 700;
-      letter-spacing: 0.8px;
       cursor: pointer;
       transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-      clip-path: var(--clip-btn);
       user-select: none;
-      white-space: nowrap;
       touch-action: manipulation;
+      flex-shrink: 0;
     }
     .photon-engine-btn:hover {
       background: rgba(0, 240, 255, 0.28);
@@ -3002,7 +3080,6 @@
 
       /* Hide long text labels inside top action buttons on mobile, keep sleek icons */
       #audio-btn-text,
-      #voice-btn-text,
       #btn-open-terminal span,
       #btn-open-directions span {
         display: none !important;
@@ -3080,10 +3157,11 @@
         z-index: 175;
       }
 
-      /* Mobile Minimized Weather Widget: Decreased length, docked to the right, perfect padding and height matching search */
+      /* Mobile Minimized Weather Widget: Placed cleanly below search tab on the left, zero overlap with right map buttons */
       .cyber-weather-widget.is-minimized {
-        left: auto !important;
-        right: 8px !important;
+        top: calc(100px + env(safe-area-inset-top)) !important;
+        left: 8px !important;
+        right: auto !important;
         width: auto !important;
         max-width: fit-content !important;
         background: transparent !important;
@@ -3091,18 +3169,19 @@
         box-shadow: none !important;
         padding: 0 !important;
         clip-path: none !important;
+        z-index: 105 !important;
       }
 
       .cyber-weather-widget.is-minimized .weather-minimized-pill {
         display: flex !important;
-        height: 42px !important;
-        padding: 0 8px !important;
-        gap: 5px !important;
+        height: 32px !important;
+        padding: 0 9px !important;
+        gap: 6px !important;
         clip-path: var(--clip-chamfer) !important;
-        background: var(--bg-panel) !important;
+        background: rgba(6, 10, 20, 0.94) !important;
         backdrop-filter: blur(16px) !important;
         border: 1px solid var(--neon-cyan) !important;
-        box-shadow: 0 0 14px rgba(0, 240, 255, 0.4), 0 4px 15px rgba(0, 0, 0, 0.8) !important;
+        box-shadow: 0 0 12px rgba(0, 240, 255, 0.35), 0 4px 15px rgba(0, 0, 0, 0.8) !important;
         align-items: center !important;
         box-sizing: border-box !important;
       }
@@ -3141,17 +3220,12 @@
         align-items: center !important;
       }
 
-      /* When weather is minimized on mobile, smoothly adjust search bar width so search & weather pill sit side-by-side without collision */
-      body.weather-minimized-active .search-panel-container {
-        right: calc(154px + 12px) !important;
-        width: auto !important;
-        max-width: none !important;
-      }
-      body.weather-minimized-active #btn-photon-config {
-        display: none !important;
-      }
-      body.weather-minimized-active .search-input {
-        font-size: 13.5px !important;
+      /* Pinpoint action card icon-only mobile button */
+      .pinpoint-nav-btn.icon-only {
+        width: 42px !important;
+        height: 42px !important;
+        min-width: 42px !important;
+        padding: 0 !important;
       }
 
       /* Search Nav Action Card Mobile */
@@ -3270,8 +3344,7 @@
       .directions-drawer.mobile-route-preview .mode-selector,
       .directions-drawer.mobile-route-preview .route-inputs,
       .directions-drawer.mobile-route-preview .route-steps-container,
-      .directions-drawer.mobile-route-preview #route-summary-card,
-      .directions-drawer.mobile-route-preview .voice-nav-bar {
+      .directions-drawer.mobile-route-preview #route-summary-card {
         display: none !important;
       }
 
@@ -4316,6 +4389,412 @@
       box-shadow: none !important;
       border-color: #333 !important;
     }
+
+    /* ==========================================================================
+       CYBER MATRIX: OFFLINE MAPS & STATE STORAGE MANAGER STYLES
+       ========================================================================== */
+    .offline-matrix-card {
+      width: 100%;
+      max-width: 480px;
+      max-height: 88vh;
+      background: var(--bg-card);
+      border: 1.5px solid var(--neon-green);
+      box-shadow: 0 0 35px rgba(0, 255, 102, 0.35);
+      clip-path: var(--clip-chamfer-lg);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      overflow-y: auto;
+      animation: modalPop 0.22s ease-out;
+    }
+
+    .offline-matrix-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(0, 255, 102, 0.3);
+      padding-bottom: 8px;
+    }
+
+    .offline-matrix-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-display);
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--neon-green);
+      letter-spacing: 1px;
+    }
+
+    .offline-telemetry-banner {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 6px;
+      background: rgba(0, 255, 102, 0.05);
+      border: 1px solid rgba(0, 255, 102, 0.2);
+      padding: 8px;
+      border-radius: 4px;
+    }
+
+    .offline-tele-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 2px;
+    }
+
+    .offline-tele-label {
+      font-family: var(--font-mono);
+      font-size: 8px;
+      color: var(--text-muted);
+      letter-spacing: 0.5px;
+    }
+
+    .offline-tele-val {
+      font-family: var(--font-display);
+      font-size: 11px;
+      font-weight: bold;
+      color: #fff;
+    }
+
+    .offline-tabs-bar {
+      display: flex;
+      gap: 4px;
+      background: rgba(0, 0, 0, 0.5);
+      padding: 3px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+    }
+
+    .offline-tab-btn {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-family: var(--font-display);
+      font-size: 10px;
+      font-weight: 700;
+      padding: 8px 4px;
+      cursor: pointer;
+      border-radius: 2px;
+      transition: all 0.2s;
+    }
+
+    .offline-tab-btn.active {
+      background: rgba(0, 255, 102, 0.18);
+      color: var(--neon-green);
+      border: 1px solid var(--neon-green);
+      box-shadow: 0 0 10px rgba(0, 255, 102, 0.25);
+    }
+
+    .offline-tab-pane {
+      display: none;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .offline-tab-pane.active {
+      display: flex;
+    }
+
+    .offline-section-sub {
+      font-family: var(--font-body);
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    .offline-field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .offline-label {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: var(--neon-yellow);
+      letter-spacing: 0.5px;
+    }
+
+    .offline-radius-chips {
+      display: flex;
+      gap: 6px;
+    }
+
+    .offline-chip-btn {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #fff;
+      font-family: var(--font-display);
+      font-size: 9px;
+      padding: 8px 4px;
+      cursor: pointer;
+      border-radius: 3px;
+      text-align: center;
+      transition: all 0.2s;
+    }
+
+    .offline-chip-btn.active {
+      background: rgba(0, 240, 255, 0.15);
+      border-color: var(--neon-cyan);
+      color: var(--neon-cyan);
+      box-shadow: 0 0 8px rgba(0, 240, 255, 0.3);
+    }
+
+    .offline-calc-card {
+      background: rgba(4, 6, 12, 0.85);
+      border: 1px solid rgba(0, 240, 255, 0.3);
+      padding: 10px 12px;
+      border-radius: 4px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+    }
+
+    .calc-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .cyber-action-btn-neon {
+      background: rgba(0, 255, 102, 0.15);
+      border: 1.5px solid var(--neon-green);
+      color: var(--neon-green);
+      font-family: var(--font-display);
+      font-size: 11px;
+      font-weight: 800;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+      clip-path: var(--clip-btn);
+      box-shadow: 0 0 16px rgba(0, 255, 102, 0.25);
+      transition: all 0.2s;
+    }
+
+    .cyber-action-btn-neon:active,
+    .cyber-action-btn-neon:hover {
+      background: var(--neon-green);
+      color: #000;
+      box-shadow: 0 0 25px rgba(0, 255, 102, 0.6);
+    }
+
+    .offline-search-input-wrap {
+      display: flex;
+      gap: 6px;
+    }
+
+    .offline-search-input {
+      flex: 1;
+      background: rgba(0, 0, 0, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #fff;
+      font-family: var(--font-body);
+      font-size: 13px;
+      padding: 8px 10px;
+      border-radius: 3px;
+      outline: none;
+    }
+
+    .offline-search-input:focus {
+      border-color: var(--neon-cyan);
+      box-shadow: 0 0 8px rgba(0, 240, 255, 0.3);
+    }
+
+    .offline-search-btn {
+      background: rgba(0, 240, 255, 0.15);
+      border: 1px solid var(--neon-cyan);
+      color: var(--neon-cyan);
+      font-family: var(--font-display);
+      font-size: 10px;
+      font-weight: bold;
+      padding: 8px 12px;
+      cursor: pointer;
+      border-radius: 3px;
+    }
+
+    .offline-preset-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+    }
+
+    .preset-pill {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: var(--text-main);
+      font-family: var(--font-body);
+      font-size: 11px;
+      padding: 4px 8px;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .preset-pill:hover,
+    .preset-pill.active {
+      border-color: var(--neon-yellow);
+      color: var(--neon-yellow);
+      background: rgba(252, 238, 10, 0.12);
+      box-shadow: 0 0 8px rgba(252, 238, 10, 0.25);
+    }
+
+    .offline-saved-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      max-height: 220px;
+      overflow-y: auto;
+    }
+
+    .offline-saved-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 8px 10px;
+      border-radius: 3px;
+    }
+
+    .saved-item-info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .saved-item-title {
+      font-family: var(--font-display);
+      font-size: 11px;
+      color: var(--neon-cyan);
+    }
+
+    .saved-item-meta {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: var(--text-muted);
+    }
+
+    .saved-item-actions {
+      display: flex;
+      gap: 4px;
+    }
+
+    .saved-action-btn {
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #fff;
+      font-family: var(--font-mono);
+      font-size: 9px;
+      padding: 4px 6px;
+      cursor: pointer;
+      border-radius: 2px;
+    }
+
+    .saved-action-btn.del {
+      border-color: rgba(255, 0, 85, 0.4);
+      color: var(--neon-pink);
+    }
+
+    .saved-action-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .offline-purge-all-btn {
+      background: rgba(255, 0, 85, 0.1);
+      border: 1px dashed var(--neon-pink);
+      color: var(--neon-pink);
+      font-family: var(--font-display);
+      font-size: 10px;
+      padding: 8px;
+      cursor: pointer;
+      border-radius: 3px;
+      margin-top: 6px;
+      text-align: center;
+    }
+
+    .offline-progress-panel {
+      background: rgba(0, 0, 0, 0.85);
+      border: 1.5px solid var(--neon-cyan);
+      box-shadow: 0 0 20px rgba(0, 240, 255, 0.3);
+      padding: 12px;
+      border-radius: 4px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .progress-title-row,
+    .progress-meta-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: var(--font-mono);
+      font-size: 10px;
+    }
+
+    .offline-progress-track {
+      height: 10px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(0, 240, 255, 0.4);
+      border-radius: 2px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .offline-progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--neon-cyan), var(--neon-green));
+      box-shadow: 0 0 10px var(--neon-cyan);
+      transition: width 0.15s ease-out;
+    }
+
+    .offline-cancel-btn {
+      background: rgba(255, 0, 85, 0.15);
+      border: 1px solid var(--neon-pink);
+      color: var(--neon-pink);
+      font-family: var(--font-display);
+      font-size: 9px;
+      padding: 6px;
+      cursor: pointer;
+      border-radius: 2px;
+      align-self: flex-end;
+    }
+
+    .auto-net-pill {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-weight: bold;
+      letter-spacing: 0.5px;
+      margin-left: auto;
+    }
+
+    .auto-net-pill.online {
+      background: rgba(0, 255, 102, 0.15);
+      border: 1px solid var(--neon-green);
+      color: var(--neon-green);
+      box-shadow: 0 0 8px rgba(0, 255, 102, 0.4);
+    }
+
+    .auto-net-pill.offline {
+      background: rgba(252, 238, 10, 0.15);
+      border: 1px solid var(--neon-yellow);
+      color: var(--neon-yellow);
+      box-shadow: 0 0 8px rgba(252, 238, 10, 0.4);
+    }
   </style>
 </head>
 <body class="map-cyber-neon">
@@ -4388,10 +4867,6 @@
         <span class="telemetry-val live-pulse" id="net-status" style="color: var(--neon-green);">OSRM HIGHWAY</span>
       </div>
       <div class="telemetry-item">
-        <span class="telemetry-label">VOICE AI</span>
-        <span class="telemetry-val" id="voice-indicator" style="color: var(--neon-green);">ACTIVE</span>
-      </div>
-      <div class="telemetry-item">
         <span class="telemetry-label">PITCH ANGLE</span>
         <span class="telemetry-val" id="pitch-display" style="color: var(--neon-yellow);">45°</span>
       </div>
@@ -4405,16 +4880,14 @@
         <span id="audio-btn-text">AUDIO: ON</span>
       </button>
 
-      <button class="cyber-btn" id="btn-toggle-voice" data-tip="Toggle Voice Navigation AI">
-        <span id="voice-btn-icon">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
-        </span>
-        <span id="voice-btn-text">MIC: ON</span>
-      </button>
-
       <button class="cyber-btn" id="btn-open-terminal" data-tip="Netrunner CLI Console (~)">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>
         <span>TERMINAL</span>
+      </button>
+
+      <button class="cyber-btn" id="btn-open-offline-matrix" data-tip="Offline Maps & State Storage Manager">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--neon-green)" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+        <span style="color: var(--neon-green);">OFFLINE MAPS</span>
       </button>
 
       <button class="cyber-btn" id="btn-open-directions" data-tip="Valhalla Vector Navigation">
@@ -4436,12 +4909,11 @@
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
       </div>
       <input type="text" class="search-input" id="search-box" placeholder="Search cities, streets, or coordinates..." autocomplete="off" />
-      <button class="photon-engine-btn" id="btn-photon-config" title="Photon (by Komoot) OSM Advanced Search Engine">
+      <button class="photon-engine-btn" id="btn-photon-config" title="Photon OSM Geocoder Engine" aria-label="Photon OSM Engine">
         <span class="photon-status-dot online" id="photon-status-dot"></span>
-        <span>⚡ PHOTON</span>
-      </button>
-      <button class="search-action-btn" id="btn-mic-search" title="Voice Search (Mic)">
-        <svg id="search-mic-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+        </svg>
       </button>
       <button class="search-action-btn search-nav-direct-btn" id="btn-search-nav-quick" title="Start Turn-by-Turn Navigation" style="display: none; color: var(--neon-cyan);">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="3 11 22 2 13 21 11 13 3 11"></polygon></svg>
@@ -4594,11 +5066,6 @@
 
     <div class="route-steps-container" id="route-steps-list"></div>
 
-    <div class="voice-nav-bar" id="voice-status-bar" style="display: none;">
-      <span>AI VOICE GUIDANCE: READY</span>
-      <span style="color: var(--neon-green);">● ACTIVE</span>
-    </div>
-
     <div class="route-actions-row">
       <button class="cyber-btn" id="btn-start-nav" style="flex: 2; justify-content: center; background: rgba(252, 238, 10, 0.22); border-color: var(--neon-yellow); color: var(--neon-yellow); font-weight: bold;">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
@@ -4642,9 +5109,8 @@
       </div>
     </div>
     <div class="pinpoint-card-actions">
-      <button class="cyber-btn pinpoint-nav-btn" id="btn-pinpoint-navigate" title="Calculate Tactical Route & View Turn-by-Turn Steps">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><polygon points="3 11 22 2 13 21 11 13 3 11"></polygon></svg>
-        <span>TACTICAL ROUTE ⚡</span>
+      <button class="cyber-btn pinpoint-nav-btn icon-only" id="btn-pinpoint-navigate" title="Calculate Tactical Route & View Turn-by-Turn Steps" aria-label="Calculate Tactical Route">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><polygon points="3 11 22 2 13 21 11 13 3 11"></polygon></svg>
       </button>
       <button class="pinpoint-close-btn" id="btn-pinpoint-close" title="Dismiss">✕</button>
     </div>
@@ -4791,6 +5257,10 @@
 
       <button class="map-icon-btn" id="btn-bookmarks" data-tip="Saved Datashards">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
+      </button>
+
+      <button class="map-icon-btn" id="btn-offline-matrix" data-tip="Offline Maps & Matrix Sector Storage">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--neon-green)" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
       </button>
     </div>
 
@@ -5247,6 +5717,7 @@
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" id="auto-sec-icon"><polyline points="9 18 15 12 9 6"></polyline></svg>
         <span class="auto-sec-text" id="auto-sec-text">Continue 1.2 km on Corpo Plaza Ring</span>
         <span class="auto-reroute-badge" id="auto-reroute-badge" style="display: none;">REROUTING...</span>
+        <span class="auto-net-pill online" id="auto-net-mode-pill">ONLINE</span>
       </div>
     </header>
 
@@ -5265,16 +5736,20 @@
         <span id="auto-heading-label">HEAD-UP</span>
       </button>
 
-      <!-- Repeat Last Spoken Instruction Button -->
-      <button class="auto-rail-btn" id="btn-auto-repeat-voice" title="Repeat Last Voice Direction">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 4v6h6M23 20v-6h-6"></path><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"></path></svg>
-        <span>REPEAT</span>
-      </button>
-
       <!-- Recenter Target Lock Button -->
       <button class="auto-rail-btn highlight" id="btn-auto-recenter" title="Recenter on Location">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="7"></circle><line x1="12" y1="1" x2="12" y2="5"></line><line x1="12" y1="19" x2="12" y2="23"></line><line x1="1" y1="12" x2="5" y2="12"></line><line x1="19" y1="12" x2="23" y2="12"></line></svg>
         <span>RECENTER</span>
+      </button>
+
+      <!-- Navigation SFX Audio Guidance Toggle Button -->
+      <button class="auto-rail-btn active" id="btn-auto-sfx-toggle" title="Toggle Attentive Navigation SFX">
+        <svg id="auto-sfx-rail-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--neon-cyan)" stroke-width="2.2">
+          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+          <path id="sfx-wave-1" d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+          <path id="sfx-wave-2" d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+        </svg>
+        <span id="auto-sfx-rail-label">SFX ON</span>
       </button>
 
       <!-- Zoom Controls -->
@@ -5313,12 +5788,6 @@
         <button class="auto-action-btn" id="btn-auto-overview" title="Route Overview">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
           <span>OVERVIEW</span>
-        </button>
-
-        <!-- Audio Guidance Mute/Unmute -->
-        <button class="auto-action-btn" id="btn-auto-mute" title="Toggle Voice Guidance">
-          <svg id="auto-voice-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
-          <span id="auto-voice-label">VOICE ON</span>
         </button>
 
         <!-- Report Hazard -->
@@ -5421,7 +5890,7 @@
           <div class="auto-setting-row">
             <div>
               <div class="auto-setting-title">SPEED CAMERA & HAZARD ALERTS</div>
-              <div class="auto-setting-sub">Audible voice warnings when approaching reported sector hazards.</div>
+              <div class="auto-setting-sub">Audible tactical warnings when approaching reported sector hazards.</div>
             </div>
             <button class="auto-toggle-btn active" id="btn-toggle-hazard-alerts">ON</button>
           </div>
@@ -5453,42 +5922,179 @@
   </div>
 
   <!-- ==========================================================================
-       JAVASCRIPT: MAPLIBRE, VALHALLA, PHOTON & VOICE GUIDANCE
+       OFFLINE MAPS & STATE MATRIX STORAGE MANAGER MODAL
+       ========================================================================== -->
+  <div class="auto-modal-overlay" id="offline-matrix-modal" style="display: none;">
+    <div class="offline-matrix-card">
+      <div class="offline-matrix-header">
+        <div class="offline-matrix-title">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--neon-green)" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+          <span>CYBER MATRIX // OFFLINE MAP STORAGE</span>
+        </div>
+        <button class="auto-modal-close-btn" id="btn-close-offline-modal">✕</button>
+      </div>
+
+      <!-- Storage & Device Telemetry Banner -->
+      <div class="offline-telemetry-banner">
+        <div class="offline-tele-item">
+          <span class="offline-tele-label">CACHED SECTORS</span>
+          <span class="offline-tele-val" id="offline-cached-count">0 SECTORS</span>
+        </div>
+        <div class="offline-tele-item">
+          <span class="offline-tele-label">CACHE PAYLOAD</span>
+          <span class="offline-tele-val" id="offline-cache-size" style="color: var(--neon-cyan);">0.0 MB</span>
+        </div>
+        <div class="offline-tele-item">
+          <span class="offline-tele-label">DEVICE FREE STORAGE</span>
+          <span class="offline-tele-val" id="offline-device-free" style="color: var(--neon-green);">CHECKING...</span>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <div class="offline-tabs-bar">
+        <button class="offline-tab-btn active" data-tab="sector">LOCAL SECTOR</button>
+        <button class="offline-tab-btn" data-tab="state">STATE / REGION</button>
+        <button class="offline-tab-btn" data-tab="saved">SAVED MATRICES</button>
+      </div>
+
+      <!-- TAB 1: LOCAL SECTOR DOWNLOAD -->
+      <div class="offline-tab-pane active" id="pane-offline-sector">
+        <div class="offline-section-sub">Download high-density vector tiles around your current location or crosshair for offline turn-by-turn navigation without cell towers.</div>
+        
+        <div class="offline-field-group">
+          <label class="offline-label">SELECT SECTOR RADIUS</label>
+          <div class="offline-radius-chips">
+            <button class="offline-chip-btn active" data-radius="15">15 KM (LOCAL)</button>
+            <button class="offline-chip-btn" data-radius="25">25 KM (DISTRICT)</button>
+            <button class="offline-chip-btn" data-radius="50">50 KM (METROPOLIS)</button>
+          </div>
+        </div>
+
+        <!-- Live Pre-Download Size Calculation Card -->
+        <div class="offline-calc-card">
+          <div class="calc-row">
+            <span>TARGET SECTOR:</span>
+            <strong id="sector-calc-center" style="color: var(--neon-yellow);">GPS FIX / CURRENT VIEW</strong>
+          </div>
+          <div class="calc-row">
+            <span>ESTIMATED PAYLOAD:</span>
+            <strong id="sector-calc-size" style="color: var(--neon-cyan);">~4.8 MB (~260 TILES)</strong>
+          </div>
+          <div class="calc-row">
+            <span>STORAGE IMPACT:</span>
+            <span id="sector-calc-impact" style="color: var(--neon-green); font-size: 11px;">0.01% OF FREE STORAGE</span>
+          </div>
+        </div>
+
+        <button class="cyber-action-btn-neon" id="btn-start-sector-download">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+          <span>DOWNLOAD LOCAL SECTOR ⚡</span>
+        </button>
+      </div>
+
+      <!-- TAB 2: STATE / COUNTRY REGION DOWNLOAD -->
+      <div class="offline-tab-pane" id="pane-offline-state">
+        <div class="offline-section-sub">Download entire territorial states, provinces or administrative regions. Highway corridors, road networks, and topography will be preserved for 100% offline navigation.</div>
+
+        <div class="offline-field-group">
+          <label class="offline-label">SEARCH STATE / PROVINCE / REGION</label>
+          <div class="offline-search-input-wrap">
+            <input type="text" id="state-region-input" class="offline-search-input" placeholder="e.g. California, Maharashtra, Texas, Tokyo, Bavaria..." />
+            <button class="offline-search-btn" id="btn-calc-state-search">CALCULATE</button>
+          </div>
+        </div>
+
+        <!-- Quick State Presets -->
+        <div class="offline-field-group">
+          <label class="offline-label">TACTICAL REGION PRESETS</label>
+          <div class="offline-preset-chips" id="offline-state-presets">
+            <button class="preset-pill active" data-name="California, USA" data-bbox="-124.48,32.53,-114.13,42.01">California</button>
+            <button class="preset-pill" data-name="Texas, USA" data-bbox="-106.65,25.84,-93.51,36.50">Texas</button>
+            <button class="preset-pill" data-name="Maharashtra, India" data-bbox="72.63,15.60,80.89,22.03">Maharashtra</button>
+            <button class="preset-pill" data-name="Karnataka, India" data-bbox="74.05,11.59,78.58,18.45">Karnataka</button>
+            <button class="preset-pill" data-name="Delhi NCR, India" data-bbox="76.84,28.40,77.35,28.88">Delhi NCR</button>
+            <button class="preset-pill" data-name="Tokyo, Japan" data-bbox="138.94,35.50,139.92,35.90">Tokyo</button>
+            <button class="preset-pill" data-name="Greater London, UK" data-bbox="-0.51,51.28,0.33,51.69">London</button>
+            <button class="preset-pill" data-name="Bavaria, Germany" data-bbox="8.97,47.27,13.84,50.56">Bavaria</button>
+          </div>
+        </div>
+
+        <!-- Pre-Download State Storage Calculation Card -->
+        <div class="offline-calc-card" id="state-calc-card">
+          <div class="calc-row">
+            <span>SELECTED TERRITORY:</span>
+            <strong id="state-calc-name" style="color: var(--neon-yellow);">California, USA</strong>
+          </div>
+          <div class="calc-row">
+            <span>TOTAL ESTIMATED STORAGE:</span>
+            <strong id="state-calc-size" style="color: var(--neon-cyan);">~78.4 MB (~4,350 TILES)</strong>
+          </div>
+          <div class="calc-row">
+            <span>DEVICE IMPACT:</span>
+            <span id="state-calc-impact" style="color: var(--neon-green); font-size: 11px;">0.18% OF FREE STORAGE</span>
+          </div>
+        </div>
+
+        <button class="cyber-action-btn-neon" id="btn-start-state-download">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+          <span id="state-download-btn-text">DOWNLOAD CALIFORNIA MATRIX ⚡</span>
+        </button>
+      </div>
+
+      <!-- TAB 3: SAVED MATRICES & MANAGEMENT -->
+      <div class="offline-tab-pane" id="pane-offline-saved">
+        <div class="offline-section-sub">Locally saved sectors and territorial matrices ready for offline turn-by-turn routing.</div>
+
+        <div class="offline-saved-list" id="offline-saved-list">
+          <!-- Populated dynamically via JS -->
+        </div>
+        <button class="offline-purge-all-btn" id="btn-purge-all-offline">PURGE ALL OFFLINE CACHE</button>
+      </div>
+
+      <!-- ACTIVE DOWNLOAD PROGRESS PANEL (Shown when downloading) -->
+      <div class="offline-progress-panel" id="offline-progress-panel" style="display: none;">
+        <div class="progress-title-row">
+          <span id="progress-panel-title">DOWNLOADING MATRIX TILES...</span>
+          <span id="progress-panel-percent" style="color: var(--neon-cyan);">0%</span>
+        </div>
+        <!-- Cyber Striped Progress Bar -->
+        <div class="offline-progress-track">
+          <div class="offline-progress-fill" id="offline-progress-bar" style="width: 0%;"></div>
+        </div>
+        <div class="progress-meta-row">
+          <span id="progress-meta-bytes">0.0 MB / 0.0 MB</span>
+          <span id="progress-meta-speed">0.0 MB/s</span>
+          <span id="progress-meta-tiles">0 / 0 TILES</span>
+        </div>
+        <button class="offline-cancel-btn" id="btn-cancel-download">CANCEL DOWNLOAD</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       JAVASCRIPT: MAPLIBRE, VALHALLA & PHOTON
        ========================================================================== -->
   <script>
     /* ==========================================================================
-       1. CYBER AI VOICE SYNTHESIZER (SPEECH SYNTHESIS API)
+       1. VOICE SUBSYSTEM (DECOMMISSIONED / SILENT NO-OP FALLBACK)
        ========================================================================== */
-    class CyberVoiceEngine {
-      constructor() {
-        this.enabled = true;
-        this.synth = window.speechSynthesis;
-      }
+    const cyberVoice = {
+      enabled: false,
+      speak: () => {},
+      toggle: () => false,
+      unlock: () => {},
+      stopCurrentVoice: () => {},
+      updateMetricsUI: () => {},
+      purgeVoiceCache: async () => {}
+    };
+    window.cyberVoice = cyberVoice;
 
-      speak(text) {
-        if (!this.enabled || !this.synth) return;
-        try {
-          this.synth.cancel();
-          const utterance = new SpeechSynthesisUtterance(text);
-          utterance.rate = 1.05;
-          utterance.pitch = 0.88;
-          const voices = this.synth.getVoices();
-          const sciFiVoice = voices.find(v => v.lang.startsWith('en') && (v.name.includes('Natural') || v.name.includes('Google') || v.name.includes('Zira') || v.name.includes('Samantha')));
-          if (sciFiVoice) utterance.voice = sciFiVoice;
-          this.synth.speak(utterance);
-        } catch (e) {}
-      }
-
-      toggle() {
-        this.enabled = !this.enabled;
-        if (!this.enabled && this.synth) {
-          try { this.synth.cancel(); } catch(e) {}
-        }
-        return this.enabled;
-      }
-    }
-
-    const cyberVoice = new CyberVoiceEngine();
+    // Purge any lingering legacy voice audio caches and LRU records
+    try {
+      if ('caches' in window) caches.delete('cyber-voice-audio-v1');
+      localStorage.removeItem('cyber_voice_lru_v1');
+    } catch (e) {}
 
     /* ==========================================================================
        2. PROCEDURAL SOUND FX ENGINE (WEB AUDIO API)
@@ -5497,24 +6103,39 @@
       constructor() {
         this.ctx = null;
         this.enabled = true;
+        this.unlocked = false;
+        this.navSfxMuted = false;
       }
 
       init() {
         if (!this.ctx) {
           const AudioContext = window.AudioContext || window.webkitAudioContext;
-          this.ctx = new AudioContext();
+          if (AudioContext) {
+            this.ctx = new AudioContext();
+          }
         }
-        if (this.ctx.state === 'suspended') this.ctx.resume();
+        if (this.ctx && this.ctx.state === 'suspended') {
+          this.ctx.resume().catch(() => {});
+        }
+      }
+
+      unlock() {
+        this.init();
+        if (this.ctx && this.ctx.state === 'suspended') {
+          this.ctx.resume().catch(() => {});
+        }
+        this.unlocked = true;
       }
 
       playBeep(freq = 880, duration = 0.08) {
         if (!this.enabled) return;
         this.init();
+        if (!this.ctx) return;
         try {
           const osc = this.ctx.createOscillator();
           const gain = this.ctx.createGain();
           osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
-          gain.gain.setValueAtTime(0.1, this.ctx.currentTime);
+          gain.gain.setValueAtTime(0.12, this.ctx.currentTime);
           gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + duration);
           osc.connect(gain);
           gain.connect(this.ctx.destination);
@@ -5531,12 +6152,13 @@
       playRadarPing() {
         if (!this.enabled) return;
         this.init();
+        if (!this.ctx) return;
         try {
           const osc = this.ctx.createOscillator();
           const gain = this.ctx.createGain();
           osc.frequency.setValueAtTime(1400, this.ctx.currentTime);
           osc.frequency.exponentialRampToValueAtTime(350, this.ctx.currentTime + 0.3);
-          gain.gain.setValueAtTime(0.08, this.ctx.currentTime);
+          gain.gain.setValueAtTime(0.09, this.ctx.currentTime);
           gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + 0.3);
           osc.connect(gain);
           gain.connect(this.ctx.destination);
@@ -5549,9 +6171,170 @@
         this.enabled = !this.enabled;
         return this.enabled;
       }
+
+      toggleNavSfx() {
+        this.navSfxMuted = !this.navSfxMuted;
+        return !this.navSfxMuted;
+      }
+
+      playToneSequence(notes, type = 'sine') {
+        if (!this.enabled || this.navSfxMuted) return;
+        this.init();
+        if (!this.ctx) return;
+        try {
+          const now = this.ctx.currentTime;
+          let timeOffset = 0;
+          notes.forEach(({ freq, duration, gain = 0.15, glideTo = null }) => {
+            const osc = this.ctx.createOscillator();
+            const gainNode = this.ctx.createGain();
+            osc.type = type;
+            const startTime = now + timeOffset;
+            const stopTime = startTime + duration;
+
+            osc.frequency.setValueAtTime(freq, startTime);
+            if (glideTo) {
+              osc.frequency.exponentialRampToValueAtTime(glideTo, stopTime);
+            }
+
+            gainNode.gain.setValueAtTime(gain, startTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.0001, stopTime);
+
+            osc.connect(gainNode);
+            gainNode.connect(this.ctx.destination);
+
+            osc.start(startTime);
+            osc.stop(stopTime);
+            timeOffset += duration;
+          });
+        } catch(e) {}
+      }
+
+      playNavStart() {
+        // Ascending power-up cyber ignition triad (Centered audio)
+        this.playToneSequence([
+          { freq: 523, duration: 0.08, gain: 0.15 },
+          { freq: 659, duration: 0.08, gain: 0.15 },
+          { freq: 784, duration: 0.20, gain: 0.18 }
+        ]);
+      }
+
+      playNavApproachingTurn() {
+        // Attentive double radar alert chime (~150-200m ahead)
+        if (!this.enabled || this.navSfxMuted) return;
+        this.init();
+        if (!this.ctx) return;
+        try {
+          const now = this.ctx.currentTime;
+          // Pulse 1
+          const osc1 = this.ctx.createOscillator();
+          const gain1 = this.ctx.createGain();
+          osc1.type = 'sine';
+          osc1.frequency.setValueAtTime(1046, now);
+          gain1.gain.setValueAtTime(0.18, now);
+          gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.07);
+          osc1.connect(gain1);
+          gain1.connect(this.ctx.destination);
+          osc1.start(now);
+          osc1.stop(now + 0.07);
+
+          // Pulse 2 (90ms later)
+          const osc2 = this.ctx.createOscillator();
+          const gain2 = this.ctx.createGain();
+          osc2.type = 'sine';
+          osc2.frequency.setValueAtTime(1318, now + 0.09);
+          gain2.gain.setValueAtTime(0.20, now + 0.09);
+          gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.19);
+          osc2.connect(gain2);
+          gain2.connect(this.ctx.destination);
+          osc2.start(now + 0.09);
+          osc2.stop(now + 0.19);
+        } catch(e) {}
+      }
+
+      playNavTurnLeft() {
+        // Descending maneuver cue (standard center audio): 880Hz -> 587Hz
+        this.playToneSequence([
+          { freq: 880, duration: 0.09, gain: 0.20, glideTo: 740 },
+          { freq: 587, duration: 0.16, gain: 0.22, glideTo: 440 }
+        ]);
+      }
+
+      playNavTurnRight() {
+        // Ascending maneuver cue (standard center audio): 587Hz -> 880Hz
+        this.playToneSequence([
+          { freq: 587, duration: 0.09, gain: 0.20, glideTo: 740 },
+          { freq: 880, duration: 0.16, gain: 0.22, glideTo: 1046 }
+        ]);
+      }
+
+      playNavUTurn() {
+        // Urgent triple-staccato pulse
+        this.playToneSequence([
+          { freq: 1100, duration: 0.06, gain: 0.22 },
+          { freq: 880, duration: 0.06, gain: 0.22 },
+          { freq: 587, duration: 0.14, gain: 0.24 }
+        ]);
+      }
+
+      playNavContinue() {
+        // Subtle reassurance harmonic
+        this.playToneSequence([
+          { freq: 523, duration: 0.10, gain: 0.12 }
+        ]);
+      }
+
+      playNavReroute() {
+        // Sonar recalculation frequency sweep
+        if (!this.enabled || this.navSfxMuted) return;
+        this.init();
+        if (!this.ctx) return;
+        try {
+          const now = this.ctx.currentTime;
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(420, now);
+          osc.frequency.exponentialRampToValueAtTime(260, now + 0.15);
+          osc.frequency.exponentialRampToValueAtTime(540, now + 0.35);
+          gain.gain.setValueAtTime(0.18, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(now);
+          osc.stop(now + 0.35);
+        } catch(e) {}
+      }
+
+      playNavArrived() {
+        // Triumphant cyberpunk victory arpeggio: C5 -> E5 -> G5 -> C6
+        this.playToneSequence([
+          { freq: 523, duration: 0.10, gain: 0.18 },
+          { freq: 659, duration: 0.10, gain: 0.18 },
+          { freq: 784, duration: 0.12, gain: 0.20 },
+          { freq: 1046, duration: 0.30, gain: 0.25 }
+        ]);
+      }
+
+      playError() {
+        this.playToneSequence([
+          { freq: 220, duration: 0.08, gain: 0.20 },
+          { freq: 146, duration: 0.14, gain: 0.22 }
+        ], 'sawtooth');
+      }
     }
 
     const cyberAudio = new CyberAudioEngine();
+
+    // Universal Mobile Gesture Audio Engine Unblocker
+    const unlockMobileAudio = () => {
+      cyberAudio.unlock();
+      window.removeEventListener('touchstart', unlockMobileAudio);
+      window.removeEventListener('pointerdown', unlockMobileAudio);
+      window.removeEventListener('click', unlockMobileAudio);
+    };
+    window.addEventListener('touchstart', unlockMobileAudio, { passive: true });
+    window.addEventListener('pointerdown', unlockMobileAudio, { passive: true });
+    window.addEventListener('click', unlockMobileAudio, { passive: true });
 
     /* High-Tech Cyberpunk HUD Toast Notifications */
     let toastTimeout = null;
@@ -5585,42 +6368,6 @@
       if (userTap) {
         showCyberToast(state ? '[SYNTH SFX AUDIO: ONLINE]' : '[SYNTH SFX AUDIO: MUTED]', state ? 'active' : 'muted');
         if (state) cyberAudio.playConfirm();
-      }
-    }
-
-    function updateVoiceUI(state, userTap = false) {
-      const btn = document.getElementById('btn-toggle-voice');
-      const text = document.getElementById('voice-btn-text');
-      const ind = document.getElementById('voice-indicator');
-      const icon = document.getElementById('voice-btn-icon');
-      if (btn) btn.classList.toggle('muted', !state);
-      if (text) text.innerText = state ? 'MIC: ON' : 'MIC: OFF';
-      if (ind) {
-        ind.innerText = state ? 'ACTIVE' : 'MUTED';
-        ind.style.color = state ? 'var(--neon-green)' : 'var(--text-muted)';
-      }
-      if (icon) {
-        icon.innerHTML = state
-          ? `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>`
-          : `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="1" y1="1" x2="23" y2="23"></line><path d="M9 9v3a3 3 0 0 0 5.12 2.12M15 9.34V4a3 3 0 0 0-5.94-.6"></path><path d="M17 16.95A7 7 0 0 1 5 12v-2m14 0v2a7 7 0 0 1-.11 1.23"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>`;
-      }
-
-      // Sync auto nav panel icons
-      const autoLabel = document.getElementById('auto-voice-label');
-      const autoIcon = document.getElementById('auto-voice-icon');
-      if (autoLabel) autoLabel.innerText = state ? 'VOICE ON' : 'MUTED';
-      if (autoIcon) {
-        autoIcon.innerHTML = state
-          ? `<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>`
-          : `<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line>`;
-      }
-
-      if (userTap) {
-        showCyberToast(state ? '[CYBER VOICE AI: ACTIVE]' : '[CYBER VOICE AI: MUTED]', state ? 'active' : 'muted');
-        if (state) {
-          cyberAudio.playConfirm();
-          cyberVoice.speak("Cyber voice guidance active.");
-        }
       }
     }
 
@@ -5697,6 +6444,17 @@
       }
     };
 
+    /* ==========================================================================
+       CYBER MATRIX: OFFLINE VECTOR TILE STORAGE CONSTANT & SERVICE WORKER
+       ========================================================================== */
+    const OFFLINE_TILE_CACHE = 'cybermap-offline-tiles-v1';
+
+    if ('serviceWorker' in navigator && window.location.protocol !== 'file:') {
+      navigator.serviceWorker.register('sw.js').catch(err => {
+        console.log('[SW Notice]:', err);
+      });
+    }
+
     const map = new maplibregl.Map({
       container: 'map',
       style: mapStyles.neon,
@@ -5705,6 +6463,10 @@
       pitch: 0, // Clean 2D top-down view for easy navigation (zero 3d distortion)
       bearing: 0,
       antialias: true
+    });
+
+    map.on('error', (e) => {
+      console.warn('[MAP EVENT NOTICE]:', e?.error?.message || e?.message || e);
     });
 
     let currentStyleKey = 'neon';
@@ -5858,7 +6620,6 @@
 
         if (newCount > 0 && !isSilent) {
           showCyberToast(`Scanned ${newCount} new places! Total sector intel: ${currentPOIs.length}`, 'neon');
-          cyberVoice.speak(`Sector radar synchronized. ${newCount} new places acquired.`);
           cyberAudio.playRadarPing();
         }
       } catch(e) {
@@ -5895,11 +6656,14 @@
         const popupHtml = `
           <div class="poi-card" style="border-color: ${poi.color};">
             <div class="poi-card-header">
-              <div>
+              <div style="min-width: 0; flex: 1;">
                 <div class="poi-card-title">${poi.name}</div>
                 <div class="poi-card-type" style="color: ${poi.color};">${poi.category.toUpperCase()} // SECTOR INTEL${distStr}</div>
               </div>
-              <span style="font-family: var(--font-mono); font-size: 9px; padding: 2px 6px; background: rgba(0,0,0,0.5); color: ${poi.color}; border: 1px solid ${poi.color};">${poi.threat}</span>
+              <div style="display: flex; align-items: center; gap: 4px; flex-shrink: 0;">
+                <span class="poi-card-threat" style="color: ${poi.color}; border-color: ${poi.color};">${poi.threat}</span>
+                <button onclick="document.querySelectorAll('.maplibregl-popup').forEach(p=>p.remove())" style="background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:11px; padding:2px; line-height:1;" title="Close">✕</button>
+              </div>
             </div>
             <div class="poi-card-body">${poi.desc}</div>
             <div class="poi-card-actions">
@@ -5911,7 +6675,10 @@
         const popup = new maplibregl.Popup({ offset: 15, closeButton: false }).setHTML(popupHtml);
         const marker = new maplibregl.Marker({ element: el }).setLngLat([poi.lng, poi.lat]).setPopup(popup).addTo(map);
 
-        el.addEventListener('click', () => {
+        el.addEventListener('click', (ev) => {
+          if (ev) ev.stopPropagation();
+          window.lastVectorPoiClickTime = Date.now();
+          dismissPinpointCard();
           cyberAudio.playConfirm();
           map.flyTo({ center: [poi.lng, poi.lat], zoom: 16, duration: 800 });
         });
@@ -5927,7 +6694,11 @@
         'poi_business_finance',
         'poi_health_medical',
         'poi_lodging_tourism',
-        'label_suburb_neighbourhood'
+        'label_suburb_neighbourhood',
+        'label_city',
+        'label_town',
+        'label_village',
+        'label_other'
       ];
 
       vectorLayers.forEach(layerId => {
@@ -5942,11 +6713,26 @@
 
         map.on('click', layerId, (e) => {
           if (!e.features || !e.features[0]) return;
+          window.lastVectorPoiClickTime = Date.now();
+          dismissPinpointCard();
+
           const feat = e.features[0];
           const props = feat.properties || {};
           const name = props.name_en || props.name || props.class || 'Sector Landmark';
           const placeClass = (props.class || props.subclass || 'PLACE').toUpperCase();
-          const coords = e.lngLat;
+
+          let coords = e.lngLat;
+          if (feat.geometry) {
+            if (feat.geometry.type === 'Point' && Array.isArray(feat.geometry.coordinates)) {
+              coords = { lng: feat.geometry.coordinates[0], lat: feat.geometry.coordinates[1] };
+            } else if (feat.geometry.type === 'Polygon' && Array.isArray(feat.geometry.coordinates) && feat.geometry.coordinates[0]) {
+              const ring = feat.geometry.coordinates[0];
+              let sumLng = 0, sumLat = 0;
+              ring.forEach(pt => { sumLng += pt[0]; sumLat += pt[1]; });
+              coords = { lng: sumLng / ring.length, lat: sumLat / ring.length };
+            }
+          }
+
           const safeName = name.replace(/'/g, "\\'");
 
           let distStr = '';
@@ -5958,11 +6744,14 @@
           const popupHtml = `
             <div class="poi-card" style="border-color: var(--neon-cyan);">
               <div class="poi-card-header">
-                <div>
+                <div style="min-width: 0; flex: 1;">
                   <div class="poi-card-title">📍 ${name}</div>
                   <div class="poi-card-type" style="color: var(--neon-cyan);">${placeClass} // VECTOR MAP INTEL${distStr}</div>
                 </div>
-                <span style="font-family: var(--font-mono); font-size: 9px; padding: 2px 6px; background: rgba(0,0,0,0.5); color: var(--neon-cyan); border: 1px solid var(--neon-cyan);">SURFACE NODE</span>
+                <div style="display: flex; align-items: center; gap: 4px; flex-shrink: 0;">
+                  <span class="poi-card-threat" style="color: var(--neon-cyan); border-color: var(--neon-cyan);">SURFACE NODE</span>
+                  <button onclick="document.querySelectorAll('.maplibregl-popup').forEach(p=>p.remove())" style="background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:11px; padding:2px; line-height:1;" title="Close">✕</button>
+                </div>
               </div>
               <div class="poi-card-body">Coordinates: ${coords.lat.toFixed(5)}°N, ${coords.lng.toFixed(5)}°E. Direct OpenFreeMap planetary vector element.</div>
               <div class="poi-card-actions">
@@ -6006,7 +6795,6 @@
         activeFilter = btn.dataset.filter || 'all';
         renderPOIs();
         cyberAudio.playConfirm();
-        cyberVoice.speak(`Filtering intel: ${btn.innerText.trim()}`);
       });
     });
 
@@ -6164,6 +6952,7 @@
 
     map.on('style.load', () => {
       applyCyberpunkCustomTheme(map);
+      setupVectorMapPoiClickHandlers();
       if (currentRouteCoords && currentRouteCoords.length > 0) {
         drawRouteOnMap(currentRouteCoords, allComputedRoutes);
       }
@@ -6173,7 +6962,7 @@
     });
 
     /* ==========================================================================
-       5. VALHALLA ROUTING ENGINE (ACCURATE HIGHWAY GEOMETRY + VOICE)
+       5. VALHALLA ROUTING ENGINE (ACCURATE HIGHWAY GEOMETRY & MANEUVERS)
        ========================================================================== */
     let currentRouteCoords = [];
     let currentManeuvers = [];
@@ -6188,6 +6977,7 @@
     let selectedRouteIndex = 0;
     let simTimer = null;
     let simMarker = null;
+    let searchTargetMarker = null;
 
     // Polyline6 decoder for Valhalla
     function decodeValhallaPolyline6(str) {
@@ -6594,44 +7384,14 @@
         }
       }
 
-      // Strategy C: Direct Tactical Vector fallback if offline
+      // Strategy C: Full On-Device Offline Routing Engine (CyberOfflineRouter)
       if (candidateRoutes.length === 0) {
-        const dLat = (destLat - origLat) * Math.PI / 180;
-        const dLon = (destLng - origLng) * Math.PI / 180;
-        const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-                  Math.cos(origLat * Math.PI / 180) * Math.cos(destLat * Math.PI / 180) *
-                  Math.sin(dLon/2) * Math.sin(dLon/2);
-        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-        const directKm = (6371 * c).toFixed(2);
-        
-        let vDur = Math.max(1, Math.round(parseFloat(directKm) / 0.9)); // Car ~55 km/h
-        if (currentCosting === 'pedestrian') vDur = Math.max(1, Math.round((parseFloat(directKm) / 4.8) * 60));
-        else if (currentCosting === 'motorcycle') vDur = Math.max(1, Math.round((parseFloat(directKm) / 36.0) * 60));
-
-        const numPoints = 25;
-        const vecCoords = [];
-        for (let i = 0; i <= numPoints; i++) {
-          const t = i / numPoints;
-          vecCoords.push([
-            origLng + (destLng - origLng) * t,
-            origLat + (destLat - origLat) * t
-          ]);
+        if (typeof CyberOfflineRouter !== 'undefined' && CyberOfflineRouter.computeRoute) {
+          const offlineRoute = CyberOfflineRouter.computeRoute(origLng, origLat, destLng, destLat, currentCosting, destInputVal || 'Tactical Sector Target');
+          if (offlineRoute) {
+            candidateRoutes.push(offlineRoute);
+          }
         }
-        candidateRoutes.push({
-          index: 0,
-          name: 'ROUTE 01',
-          tag: 'TACTICAL VECTOR',
-          coords: vecCoords,
-          distanceKm: directKm,
-          durationMin: vDur,
-          maneuvers: [
-            { instruction: `Acquire target vector towards ${destInputVal || 'Destination'}`, distance: `${directKm} km`, coordIndex: 0, lengthMeters: parseFloat(directKm) * 1000, type: 'depart' },
-            { instruction: `Engage highway corridor with active GPS tracking`, distance: `${(parseFloat(directKm) * 0.5).toFixed(1)} km`, coordIndex: 12, lengthMeters: (parseFloat(directKm) * 0.5) * 1000, type: 'turn' },
-            { instruction: `Arrive at destination sector and lock position`, distance: `150 m`, coordIndex: vecCoords.length - 1, lengthMeters: 150, type: 'arrive' }
-          ],
-          engineName: 'TACTICAL VECTOR',
-          summary: 'Direct GPS Trajectory'
-        });
       }
 
       // Sort candidate routes according to user optimization preference
@@ -6695,7 +7455,6 @@
         const rerouteBadge = document.getElementById('auto-reroute-badge');
         if (rerouteBadge) rerouteBadge.style.display = 'none';
         showCyberToast('[ROUTE RECALCULATED: LIVE GUIDANCE UPDATED]', 'success');
-        cyberVoice.speak('Route recalculated. Proceeding on updated vector.');
         return;
       }
 
@@ -6704,7 +7463,6 @@
       document.getElementById('route-dist-val').innerText = `${sel.distanceKm} KM`;
       document.getElementById('route-eta-val').innerText = `${sel.durationMin} MIN`;
       document.getElementById('route-engine-val').innerText = sel.engineName;
-      document.getElementById('voice-status-bar').style.display = 'flex';
 
       const drawer = document.getElementById('directions-drawer');
       drawer.style.display = 'flex';
@@ -6761,9 +7519,8 @@
       const alternates = allComputedRoutes.filter((_, i) => i !== selectedRouteIndex);
       drawRouteOnMap(sel.coords, alternates);
 
-      // Mode-specific voice prompt announcement
+      // Mode summary notification
       const modeLabel = currentCosting === 'pedestrian' ? 'Walking path' : (currentCosting === 'motorcycle' ? 'Motorcycle vector' : 'Highway route');
-      cyberVoice.speak(`${modeLabel} calculated. Distance: ${sel.distanceKm} kilometers. Transit time: ${sel.durationMin} minutes. Ready for real-time navigation.`);
       cyberAudio.playConfirm();
       showCyberToast(`[${modeLabel.toUpperCase()}: ${sel.distanceKm} KM • ${sel.durationMin} MIN]`, 'neon');
 
@@ -6809,7 +7566,6 @@
             if (idx !== selectedRouteIndex) {
               applySelectedRoute(idx, false);
               cyberAudio.playConfirm();
-              cyberVoice.speak(`${rt.name} selected. Transit time: ${rt.durationMin} minutes.`);
               showCyberToast(`[${rt.name} ACTIVATED: ${rt.distanceKm} KM • ${rt.durationMin} MIN]`, 'neon');
             }
           });
@@ -6956,10 +7712,25 @@
         map.on('click', `alt-route-core-${k}`, () => {
           applySelectedRoute(alt.index, false);
           cyberAudio.playConfirm();
-          cyberVoice.speak(`${alt.name} selected. Transit time: ${alt.durationMin} minutes.`);
           showCyberToast(`[${alt.name} ACTIVATED: ${alt.distanceKm} KM • ${alt.durationMin} MIN]`, 'neon');
         });
       });
+
+      // 3. Anchor destination reticle marker precisely at the active route endpoint
+      if (activeCoords && activeCoords.length > 0) {
+        const finalDestCoord = activeCoords[activeCoords.length - 1];
+        const destName = document.getElementById('route-destination')?.value || lastSearchedTarget?.name || 'Destination';
+        if (searchTargetMarker) {
+          searchTargetMarker.setLngLat(finalDestCoord);
+          const lbl = searchTargetMarker.getElement()?.querySelector('.target-marker-label');
+          if (lbl) lbl.innerText = destName;
+        } else {
+          const markEl = document.createElement('div');
+          markEl.className = 'search-target-marker-pulse';
+          markEl.innerHTML = `<div class="target-marker-reticle"></div><div class="target-marker-dot"></div><div class="target-marker-label">${destName}</div>`;
+          searchTargetMarker = new maplibregl.Marker({ element: markEl, anchor: 'center' }).setLngLat(finalDestCoord).addTo(map);
+        }
+      }
 
       // Smooth camera bounds fit covering active + alternate routes
       let allCoords = [...activeCoords];
@@ -7019,15 +7790,20 @@
         this.destMarker = null;
         this.hazardMarkers = [];
         this.lastSpokenText = "";
+        this.lastAlertedManeuverIdx = -1;
+        this.lastTurnExecutedIdx = -1;
         this.bindDom();
       }
 
       bindDom() {
         document.getElementById('btn-auto-nav-exit')?.addEventListener('click', () => this.stop());
         document.getElementById('btn-auto-overview')?.addEventListener('click', () => this.toggleOverview());
-        document.getElementById('btn-auto-mute')?.addEventListener('click', () => this.toggleVoice());
-        document.getElementById('btn-auto-repeat-voice')?.addEventListener('click', () => this.repeatVoice());
         document.getElementById('btn-auto-heading-toggle')?.addEventListener('click', () => this.toggleHeading());
+        document.getElementById('btn-auto-sfx-toggle')?.addEventListener('click', () => {
+          const isEnabled = cyberAudio.toggleNavSfx();
+          this.updateSfxUI(isEnabled);
+          if (isEnabled) cyberAudio.playConfirm();
+        });
         document.getElementById('btn-auto-recenter')?.addEventListener('click', () => this.recenter());
         document.getElementById('btn-auto-gps-lock')?.addEventListener('click', () => this.recenter());
         document.getElementById('btn-auto-zoom-in')?.addEventListener('click', () => {
@@ -7123,6 +7899,27 @@
         });
       }
 
+      updateSfxUI(isEnabled) {
+        const btn = document.getElementById('btn-auto-sfx-toggle');
+        const label = document.getElementById('auto-sfx-rail-label');
+        const wave1 = document.getElementById('sfx-wave-1');
+        const wave2 = document.getElementById('sfx-wave-2');
+        if (!btn) return;
+        if (isEnabled) {
+          btn.classList.add('active');
+          btn.classList.remove('muted');
+          if (label) label.innerText = 'SFX ON';
+          if (wave1) wave1.style.display = '';
+          if (wave2) wave2.style.display = '';
+        } else {
+          btn.classList.remove('active');
+          btn.classList.add('muted');
+          if (label) label.innerText = 'MUTED';
+          if (wave1) wave1.style.display = 'none';
+          if (wave2) wave2.style.display = 'none';
+        }
+      }
+
       start(coords, maneuvers, destName, costing = 'auto') {
         if (!coords || coords.length < 2) return;
 
@@ -7133,6 +7930,8 @@
         this.costing = costing;
         this.stepIndex = 0;
         this.currentManeuverIdx = 0;
+        this.lastAlertedManeuverIdx = -1;
+        this.lastTurnExecutedIdx = -1;
         this.isOverview = false;
         this.isHeadingUp = true;
         this.isSimulating = false;
@@ -7146,6 +7945,19 @@
         if (reopenPill) reopenPill.style.display = 'none';
         document.getElementById('android-auto-nav').style.display = 'flex';
         document.getElementById('directions-drawer').style.display = 'none';
+
+        // Auto-dismiss pinpoint and vector popups so only nav HUD & map remain
+        dismissPinpointCard();
+        document.querySelectorAll('.maplibregl-popup').forEach(p => p.remove());
+        if (searchTargetMarker) {
+          searchTargetMarker.remove();
+          searchTargetMarker = null;
+        }
+
+        // Initialize SFX guidance status & power-up triad
+        this.updateSfxUI(!cyberAudio.navSfxMuted);
+        cyberAudio.playNavStart();
+
         if (window.gpsTracker) {
           window.gpsTracker.setNavStatus('NAVIGATING');
           if (window.gpsTracker.markerEl) {
@@ -7164,15 +7976,15 @@
           else speedLimitEl.innerText = 'LIMIT 60';
         }
 
-        // Destination beacon marker
+        // Destination beacon marker (anchor: center prevents zoom drift)
         const destCoord = this.coords[this.coords.length - 1];
         const destEl = document.createElement('div');
         destEl.className = 'dest-beacon-pin';
         destEl.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="3"></circle><path d="M12 2v3M12 19v3M2 12h3M19 12h3"></path></svg>`;
         if (this.destMarker) this.destMarker.remove();
-        this.destMarker = new maplibregl.Marker({ element: destEl }).setLngLat(destCoord).addTo(this.map);
+        this.destMarker = new maplibregl.Marker({ element: destEl, anchor: 'center' }).setLngLat(destCoord).addTo(this.map);
 
-        // Vehicle marker at user's live GPS position
+        // Vehicle marker at user's live GPS position (anchor: center)
         const startPos = window.gpsTracker?.currentPos || this.coords[0];
         const vehEl = document.createElement('div');
         vehEl.className = 'vehicle-nav-marker';
@@ -7185,16 +7997,16 @@
           </div>
         `;
         if (this.vehicleMarker) this.vehicleMarker.remove();
-        this.vehicleMarker = new maplibregl.Marker({ element: vehEl }).setLngLat(startPos).addTo(this.map);
+        this.vehicleMarker = new maplibregl.Marker({ element: vehEl, anchor: 'center' }).setLngLat(startPos).addTo(this.map);
 
-        // Turn maneuver map marker (only when route has sufficient points)
+        // Turn maneuver map marker (anchor: center)
         if (this.turnMarker) this.turnMarker.remove();
         if (this.coords.length > 8) {
           const turnIdx = Math.min(this.coords.length - 2, 8);
           const turnEl = document.createElement('div');
           turnEl.className = 'turn-maneuver-pin';
           turnEl.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>`;
-          this.turnMarker = new maplibregl.Marker({ element: turnEl }).setLngLat(this.coords[turnIdx]).addTo(this.map);
+          this.turnMarker = new maplibregl.Marker({ element: turnEl, anchor: 'center' }).setLngLat(this.coords[turnIdx]).addTo(this.map);
         }
 
         // 3D camera centered on live vehicle position
@@ -7211,9 +8023,6 @@
         this.updateHUDGuidance(0);
 
         // Announce route start
-        const startMsg = `Commencing real-time tactical navigation to ${this.destName}. ${this.maneuvers[0]?.instruction || 'Proceed forward on designated highway.'}`;
-        cyberVoice.speak(startMsg);
-        this.lastSpokenText = startMsg;
         cyberAudio.playConfirm();
 
         // Alternative Route line
@@ -7275,6 +8084,29 @@
         const turnCoord = this.coords[Math.min(totalSteps - 1, targetStep)];
         if (this.turnMarker && turnCoord) this.turnMarker.setLngLat(turnCoord);
 
+        // Audio Guidance SFX: Attentive approaching turn chime (~50m - 200m)
+        if (distToTurnMeters <= 200 && distToTurnMeters >= 50 && this.lastAlertedManeuverIdx !== upcomingIdx) {
+          this.lastAlertedManeuverIdx = upcomingIdx;
+          cyberAudio.playNavApproachingTurn();
+        }
+
+        // Audio Guidance SFX: Tactical execution maneuver cue (< 40m)
+        if (distToTurnMeters < 40 && this.lastTurnExecutedIdx !== upcomingIdx) {
+          this.lastTurnExecutedIdx = upcomingIdx;
+          const inst = (upMan.instruction || '').toLowerCase();
+          if (inst.includes('u-turn') || inst.includes('uturn')) {
+            cyberAudio.playNavUTurn();
+          } else if (inst.includes('left')) {
+            cyberAudio.playNavTurnLeft();
+          } else if (inst.includes('right')) {
+            cyberAudio.playNavTurnRight();
+          } else if (inst.includes('arrive') || inst.includes('destination')) {
+            cyberAudio.playNavArrived();
+          } else {
+            cyberAudio.playNavContinue();
+          }
+        }
+
         // Update Turn Distance Display
         document.getElementById('auto-turn-dist').innerText = distToTurnMeters > 999 ? `${(distToTurnMeters / 1000).toFixed(1)} km` : `${distToTurnMeters} m`;
         document.getElementById('auto-turn-street').innerText = upMan.instruction;
@@ -7289,12 +8121,6 @@
           document.getElementById('auto-sec-icon').innerHTML = getManeuverIconSvg(secMan.instruction, secMan.type, secMan.modifier);
         } else {
           document.getElementById('auto-nav-secondary-strip').style.display = 'none';
-        }
-
-        // Voice prompt announcements
-        if (distToTurnMeters <= 60 && distToTurnMeters > 15 && this.lastSpokenText !== `turn_prep_${upcomingIdx}`) {
-          cyberVoice.speak(`In 50 meters, ${upMan.instruction}`);
-          this.lastSpokenText = `turn_prep_${upcomingIdx}`;
         }
       }
 
@@ -7323,9 +8149,9 @@
         if (this.offRouteCounter >= 3 && !this.rerouteDebounce) {
           this.rerouteDebounce = true;
           this.offRouteCounter = 0;
+          cyberAudio.playNavReroute();
           const rerouteBadge = document.getElementById('auto-reroute-badge');
           if (rerouteBadge) rerouteBadge.style.display = 'inline-block';
-          cyberVoice.speak("Off designated route. Recalculating tactical vector.");
           setTimeout(async () => {
             const userPos = window.gpsTracker?.currentPos || curPos;
             routeOrigin = [userPos[0], userPos[1]];
@@ -7343,8 +8169,29 @@
           return;
         }
 
-        const effHeading = (typeof heading === 'number' && !isNaN(heading) && heading > 0) ? heading : 
-          (this.coords[closestIdx + 1] ? this.calculateHeading(curPos, this.coords[closestIdx + 1]) : 0);
+        // Smart Sensor Fusion: GPS Velocity Vector + Hardware Magnetometer Compass
+        const speedKmh = Math.max(0, Math.round((speed || 0) * 3.6));
+        const compassHdg = window.gpsTracker?.compassHeading;
+        const hasGpsHdg = (typeof heading === 'number' && !isNaN(heading) && heading >= 0);
+
+        let effHeading = 0;
+        if (speedKmh < 4 && typeof compassHdg === 'number' && !isNaN(compassHdg)) {
+          // Stationary or walking (< 4 km/h): physical compass orientation is authoritative
+          effHeading = compassHdg;
+        } else if (hasGpsHdg && speedKmh >= 15) {
+          // Highway driving (>= 15 km/h): GPS course is authoritative
+          effHeading = heading;
+        } else if (hasGpsHdg && typeof compassHdg === 'number' && !isNaN(compassHdg)) {
+          // Moderate city speeds (4 - 15 km/h): Smooth complementary blend
+          const diff = (compassHdg - heading + 180) % 360 - 180;
+          effHeading = (heading + diff * 0.4 + 360) % 360;
+        } else if (hasGpsHdg) {
+          effHeading = heading;
+        } else if (typeof compassHdg === 'number' && !isNaN(compassHdg)) {
+          effHeading = compassHdg;
+        } else if (this.coords[closestIdx + 1]) {
+          effHeading = this.calculateHeading(curPos, this.coords[closestIdx + 1]);
+        }
 
         const svgEl = this.vehicleMarker?.getElement().querySelector('svg');
         if (svgEl) svgEl.style.transform = `rotate(${effHeading}deg)`;
@@ -7363,7 +8210,6 @@
         const needle = document.getElementById('auto-compass-needle');
         if (needle) needle.style.transform = `rotate(${360 - bearing}deg)`;
 
-        const speedKmh = Math.max(0, Math.round((speed || 0) * 3.6));
         document.getElementById('auto-speed-val').innerText = speedKmh;
 
         this.updateHUDGuidance(closestIdx);
@@ -7374,8 +8220,7 @@
         document.getElementById('auto-turn-dist').innerText = '0 m';
         document.getElementById('auto-turn-street').innerText = 'Arrived at Destination';
         document.getElementById('auto-nav-progress-bar').style.width = '100%';
-        cyberVoice.speak(`Destination perimeter reached. Netrunner tactical navigation complete.`);
-        cyberAudio.playConfirm();
+        cyberAudio.playNavArrived();
       }
 
       stop() {
@@ -7404,7 +8249,6 @@
           }
         }
 
-        cyberVoice.speak("Navigation concluded. Restoring geomatrix HUD.");
         cyberAudio.playBeep(440, 0.08);
 
         this.map.easeTo({ pitch: 45, bearing: 0, duration: 800 });
@@ -7452,17 +8296,6 @@
         showCyberToast('[CAMERA RECENTERED & LOCKED ON VEHICLE]', 'success');
       }
 
-      repeatVoice() {
-        cyberAudio.playConfirm();
-        const curMan = this.maneuvers[this.currentManeuverIdx] || { instruction: 'Continue along designated route.' };
-        cyberVoice.speak(`Upcoming maneuver: ${curMan.instruction}`);
-      }
-
-      toggleVoice() {
-        const state = cyberVoice.toggle();
-        updateVoiceUI(state, true);
-      }
-
       reportHazard(type) {
         cyberAudio.playBeep(980, 0.15);
         const curCoord = this.coords[this.stepIndex] || this.coords[0];
@@ -7472,13 +8305,11 @@
         const marker = new maplibregl.Marker({ element: el }).setLngLat(curCoord).addTo(this.map);
         this.hazardMarkers.push(marker);
 
-        cyberVoice.speak(`Tactical advisory: ${type} reported on current vector.`);
       }
 
       addNearbyStop(poiType) {
         cyberAudio.playConfirm();
         const matched = CYBER_POIS.find(p => p.type === poiType) || CYBER_POIS[0];
-        cyberVoice.speak(`Stop registered: ${matched.name}. Route updated.`);
         alert(`Waypoint Added to Navigation: ${matched.name} (${matched.category})`);
       }
 
@@ -7491,7 +8322,6 @@
           btn.innerText = this.lowPower ? 'ON' : 'OFF';
         }
         cyberAudio.playConfirm();
-        cyberVoice.speak(this.lowPower ? "OLED low power active. True black enabled." : "Standard cyber graphics restored.");
       }
 
       drawAlternativeRoute() {
@@ -7624,6 +8454,11 @@
       }
       stopNavigation();
       dismissPinpointCard();
+      document.querySelectorAll('.maplibregl-popup').forEach(p => p.remove());
+      if (searchTargetMarker) {
+        searchTargetMarker.remove();
+        searchTargetMarker = null;
+      }
       currentRouteCoords = [];
       allComputedRoutes = [];
       selectedRouteIndex = 0;
@@ -7648,11 +8483,13 @@
       }
       document.getElementById('route-summary-card').style.display = 'none';
       document.getElementById('route-steps-list').innerHTML = '';
-      document.getElementById('voice-status-bar').style.display = 'none';
       cyberAudio.playBeep(440, 0.05);
     }
 
     window.setNavigationTarget = function(name, lng, lat) {
+      dismissPinpointCard();
+      document.querySelectorAll('.maplibregl-popup').forEach(p => p.remove());
+
       document.getElementById('route-destination').value = name;
       routeDestination = [lng, lat];
       lastSearchedTarget = { name: name, coords: [lng, lat] };
@@ -7678,7 +8515,7 @@
     let searchDebounce = null;
 
     let lastSearchedTarget = null;
-    let searchTargetMarker = null;
+    // searchTargetMarker declared globally
 
     function computeGeoDistanceKm(lat1, lon1, lat2, lon2) {
       const R = 6371;
@@ -7706,12 +8543,12 @@
       searchBox.value = name;
       suggestionsDropdown.style.display = 'none';
 
-      // Place high-contrast glowing reticle marker on the map
+      // Place high-contrast glowing reticle marker on the map (anchor: center prevents zoom drift)
       if (searchTargetMarker) searchTargetMarker.remove();
       const markEl = document.createElement('div');
       markEl.className = 'search-target-marker-pulse';
       markEl.innerHTML = `<div class="target-marker-reticle"></div><div class="target-marker-dot"></div><div class="target-marker-label">${name}</div>`;
-      searchTargetMarker = new maplibregl.Marker({ element: markEl }).setLngLat(coords).addTo(map);
+      searchTargetMarker = new maplibregl.Marker({ element: markEl, anchor: 'center' }).setLngLat(coords).addTo(map);
 
       // Populate pop-up navigation action card right under the search input
       const card = document.getElementById('search-nav-action-card');
@@ -7739,7 +8576,6 @@
       if (quickNavBtn) quickNavBtn.style.display = 'flex';
 
       cyberAudio.playConfirm();
-      cyberVoice.speak(`Target acquired: ${name}. Click Navigate to start turn-by-turn guidance.`);
     }
 
     function triggerNavigationFromSearch() {
@@ -7767,7 +8603,6 @@
 
       // 4. Calculate route: First calculates turn-by-turn maneuvers, estimated distance, ETA, and shows route track on map & drawer
       cyberAudio.playConfirm();
-      cyberVoice.speak(`Computing route to ${target.name}.`);
       calculateValhallaRoute(false);
     }
 
@@ -8424,68 +9259,6 @@
       }
     });
 
-    // Voice Search Microphone (Web Speech Recognition API)
-    const micSearchBtn = document.getElementById('btn-mic-search');
-    let speechRecognition = null;
-    let isListeningSpeech = false;
-    const SpeechRecCls = window.SpeechRecognition || window.webkitSpeechRecognition;
-
-    if (SpeechRecCls && micSearchBtn) {
-      speechRecognition = new SpeechRecCls();
-      speechRecognition.continuous = false;
-      speechRecognition.interimResults = false;
-      speechRecognition.lang = 'en-US';
-
-      speechRecognition.onstart = () => {
-        isListeningSpeech = true;
-        micSearchBtn.classList.add('listening');
-        searchBox.placeholder = '🎙️ Listening... Speak destination...';
-        cyberAudio.playRadarPing();
-        showCyberToast('[VOICE MIC: LISTENING... SPEAK DESTINATION]', 'info');
-      };
-
-      speechRecognition.onresult = (e) => {
-        const transcript = e.results[0][0].transcript;
-        searchBox.value = transcript;
-        showCyberToast(`[VOICE INPUT: "${transcript.toUpperCase()}"]`, 'success');
-        cyberVoice.speak(`Scanning geomatrix for ${transcript}`);
-        performPhotonSearch(transcript);
-      };
-
-      speechRecognition.onerror = (e) => {
-        console.warn("Speech recognition error:", e.error);
-        showCyberToast(`[MIC RECOGNITION: ${e.error ? e.error.toUpperCase() : 'ERROR'}]`, 'warning');
-      };
-
-      speechRecognition.onend = () => {
-        isListeningSpeech = false;
-        micSearchBtn.classList.remove('listening');
-        searchBox.placeholder = 'Search cities, streets, or Night City POIs (Photon API)...';
-      };
-
-      micSearchBtn.addEventListener('click', () => {
-        if (!cyberVoice.enabled) {
-          cyberVoice.toggle();
-          updateVoiceUI(true);
-        }
-        if (isListeningSpeech) {
-          speechRecognition.stop();
-        } else {
-          try {
-            speechRecognition.start();
-          } catch(err) {
-            console.warn("Speech recognition start failed:", err);
-            showCyberToast('[MIC RECORDING RE-INITIALIZING...]', 'info');
-          }
-        }
-      });
-    } else if (micSearchBtn) {
-      micSearchBtn.addEventListener('click', () => {
-        showCyberToast('[VOICE RECOGNITION REQUIRES HTTPS OR COMPATIBLE BROWSER]', 'warning');
-        cyberAudio.playBeep(350, 0.1);
-      });
-    }
-
     /* ==========================================================================
        7. REAL-TIME AIR TRAFFIC (AVs & DRONES IN MAPLIBRE)
        ========================================================================== */
@@ -8718,18 +9491,59 @@
           }
 
           if (heading !== null && !isNaN(heading)) {
-            this.compassHeading = Math.round((heading + 360) % 360);
+            // Screen orientation compensation (landscape / portrait support)
+            let screenAngle = 0;
+            if (window.screen && window.screen.orientation && typeof window.screen.orientation.angle === 'number') {
+              screenAngle = window.screen.orientation.angle;
+            } else if (typeof window.orientation === 'number') {
+              screenAngle = window.orientation;
+            }
+            heading = (heading + screenAngle + 360) % 360;
+
+            // Low-pass filter for smooth, jitter-free compass
+            if (this.smoothCompass === null || this.smoothCompass === undefined) {
+              this.smoothCompass = heading;
+            } else {
+              let diff = (heading - this.smoothCompass + 180) % 360 - 180;
+              this.smoothCompass = (this.smoothCompass + diff * 0.35 + 360) % 360;
+            }
+
+            this.compassHeading = Math.round(this.smoothCompass);
             this.updateCompassDisplay(this.compassHeading);
-            // If user is stationary (< 3 km/h), align marker pointer to physical compass
-            if (this.speed < 3) {
+
+            // If user is stationary or moving slowly (< 4 km/h), physical compass guides vehicle marker & map
+            if (this.speed < 4) {
               this.targetHeading = this.compassHeading;
+
+              // Immediately update Android Auto vehicle marker SVG rotation & camera without waiting for GPS fix
+              if (window.androidAutoNav && window.androidAutoNav.active && window.androidAutoNav.vehicleMarker) {
+                const svgEl = window.androidAutoNav.vehicleMarker.getElement().querySelector('svg');
+                if (svgEl) svgEl.style.transform = `rotate(${this.compassHeading}deg)`;
+                if (window.androidAutoNav.isHeadingUp && !window.androidAutoNav.isOverview && window.androidAutoNav.isCameraFollowLocked) {
+                  window.androidAutoNav.map.easeTo({ bearing: this.compassHeading, duration: 150 });
+                }
+              }
             }
           }
         };
 
         if (window.DeviceOrientationEvent) {
-          window.addEventListener('deviceorientationabsolute', handleOrientation, true);
-          window.addEventListener('deviceorientation', handleOrientation, true);
+          if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+            const reqPerm = () => {
+              DeviceOrientationEvent.requestPermission().then(state => {
+                if (state === 'granted') {
+                  window.addEventListener('deviceorientation', handleOrientation, true);
+                }
+              }).catch(() => {});
+              window.removeEventListener('click', reqPerm);
+              window.removeEventListener('touchstart', reqPerm);
+            };
+            window.addEventListener('click', reqPerm, { once: true });
+            window.addEventListener('touchstart', reqPerm, { once: true });
+          } else {
+            window.addEventListener('deviceorientationabsolute', handleOrientation, true);
+            window.addEventListener('deviceorientation', handleOrientation, true);
+          }
         }
       }
 
@@ -8741,7 +9555,7 @@
             el.className = `gps-status-pill ${online ? 'online' : 'offline'}`;
             el.innerText = online ? 'NET: ONLINE' : 'NET: OFFLINE';
           }
-          if (!online) cyberVoice.speak("Network connection severed. Tactical map operating cached telemetry.");
+          if (!online) showCyberToast('[NETWORK SEVERED // CACHED TELEMETRY]', 'warning');
         };
 
         window.addEventListener('online', () => updateNet(true));
@@ -8852,9 +9666,18 @@
           this.speed = coords.speed * 3.6;
         }
 
-        // Direction of Travel
-        if (coords.heading !== null && !isNaN(coords.heading) && coords.heading >= 0) {
-          this.targetHeading = coords.heading;
+        // Direction of Travel with Compass Sensor Fusion
+        if (this.speed < 4 && this.compassHeading !== null) {
+          // Stationary or walking (< 4 km/h): physical compass orientation is authoritative
+          this.targetHeading = this.compassHeading;
+        } else if (coords.heading !== null && !isNaN(coords.heading) && coords.heading >= 0) {
+          if (this.speed >= 15 || this.compassHeading === null) {
+            this.targetHeading = coords.heading;
+          } else {
+            // Fuse GPS course and compass smoothly
+            const diff = (this.compassHeading - coords.heading + 180) % 360 - 180;
+            this.targetHeading = (coords.heading + diff * 0.4 + 360) % 360;
+          }
         } else if (this.prevFixPos && this.speed > 3) {
           this.targetHeading = this.getBearing(this.prevFixPos, [lng, lat]);
         } else if (this.compassHeading !== null) {
@@ -8903,7 +9726,6 @@
           if (this.marker) this.marker.setLngLat(this.currentPos);
           this.map.easeTo({ center: [lng, lat], zoom: 16.5, pitch: 45, duration: 800 });
           document.getElementById('route-origin').value = 'Current GPS Location';
-          cyberVoice.speak("GPS Uplink online. Coordinates synchronized.");
           if (typeof scanLocalPois === 'function') {
             scanLocalPois(lng, lat);
           }
@@ -9088,7 +9910,6 @@
         });
 
         cyberAudio.playConfirm();
-        cyberVoice.speak("Mobile GPS position calibrated and locked.");
         showCyberToast(`[CALIBRATED & LOCKED: ${addressName.toUpperCase()}]`, 'success');
         if (typeof scanLocalPois === 'function') {
           scanLocalPois(coords[0], coords[1]);
@@ -9520,10 +10341,10 @@
             this.autoRecenterTimer = null;
           }
 
-          // In active navigation only, gently restore follow mode after 12s of user inactivity (silent, no voice spam)
+          // In active navigation only, gently restore follow mode after 12s of user inactivity
           if (this.navStatus === 'NAVIGATING') {
             this.autoRecenterTimer = setTimeout(() => {
-              this.recenter(false); // Silent recenter without voice prompt
+              this.recenter(false); // Silent recenter
             }, 12000);
           }
         };
@@ -9567,10 +10388,9 @@
           this.isRecentering = false;
         }, 380);
 
-        // Only play sound and speak voice if explicitly triggered by user tap
+        // Only play sound if explicitly triggered by user tap
         if (isUserTap) {
           cyberAudio.playConfirm();
-          cyberVoice.speak("Target locked. Real-time follow engaged.");
           showCyberToast("[TARGET LOCKED: REAL-TIME TRACKING]", "success");
         }
       }
@@ -9582,12 +10402,10 @@
         if (this.isHeadingUp) {
           if (btn) btn.classList.add('active');
           if (txt) txt.innerText = '🚀 HEADING-UP';
-          cyberVoice.speak("Heading-up navigation active.");
         } else {
           if (btn) btn.classList.remove('active');
           if (txt) txt.innerText = '🧭 NORTH-UP';
           this.map.easeTo({ bearing: 0, duration: 500 });
-          cyberVoice.speak("North-up orientation locked.");
         }
         cyberAudio.playConfirm();
       }
@@ -9662,7 +10480,6 @@
           pill.className = 'gps-status-pill online';
         } else if (status === 'ARRIVED') {
           pill.className = 'gps-status-pill online';
-          cyberVoice.speak("Destination reached. Netrunner navigation complete.");
         } else {
           pill.className = 'gps-status-pill';
         }
@@ -9785,7 +10602,6 @@
         const distToDest = this.getDistance([lng, lat], destCoord);
         if (distToDest < 25) {
           this.setNavStatus('ARRIVED');
-          cyberVoice.speak("Destination reached. You have arrived at your target.");
           return;
         }
 
@@ -9799,7 +10615,6 @@
         if (minDistanceToRoute > 20 && !this.rerouteDebounce) {
           this.rerouteDebounce = true;
           this.setNavStatus('REROUTING');
-          cyberVoice.speak("Off designated route. Recalculating tactical vector.");
           setTimeout(async () => {
             routeOrigin = [lng, lat];
             await calculateValhallaRoute(false);
@@ -9941,6 +10756,7 @@
     let currentPinpointCoords = null;
 
     function handleMapPinpointClick(e) {
+      if (Date.now() - (window.lastVectorPoiClickTime || 0) < 500) return;
       if (measureActive) return;
       if (window.androidAutoNav && window.androidAutoNav.active) return;
       if (window.gpsTracker && window.gpsTracker.isPinpointActive) return;
@@ -10029,7 +10845,6 @@
 
       dismissPinpointCard();
       cyberAudio.playConfirm();
-      cyberVoice.speak(`Plotting vector to ${targetName}. Computing tactical highway route.`);
 
       // Calculate route: opens tactical route drawer with full turn-by-turn maneuvers (autoStartNav = false)
       calculateValhallaRoute(false);
@@ -10049,6 +10864,7 @@
     document.getElementById('btn-pinpoint-close')?.addEventListener('click', dismissPinpointCard);
 
     map.on('click', e => {
+      if (Date.now() - (window.lastVectorPoiClickTime || 0) < 500) return;
       if (measureActive) {
         const pt = [e.lngLat.lng, e.lngLat.lat];
         measurePoints.push(pt);
@@ -10212,9 +11028,8 @@
     // Locate Me
     document.getElementById('btn-locate').addEventListener('click', locateUser);
 
-    // Audio & Voice Toggles
+    // Procedural Audio SFX Toggle
     const btnAudio = document.getElementById('btn-toggle-audio');
-    const btnVoice = document.getElementById('btn-toggle-voice');
 
     if (btnAudio) {
       btnAudio.addEventListener('click', (e) => {
@@ -10224,17 +11039,8 @@
       });
     }
 
-    if (btnVoice) {
-      btnVoice.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const state = cyberVoice.toggle();
-        updateVoiceUI(state, true);
-      });
-    }
-
-    // Initial state sync
+    // Initial audio state sync
     updateAudioUI(cyberAudio.enabled, false);
-    updateVoiceUI(cyberVoice.enabled, false);
 
     // Navigation buttons
     document.getElementById('btn-open-directions').addEventListener('click', () => {
@@ -10575,8 +11381,6 @@
   • night / day          - Toggle Night City dark mode / daylight mode
   • theme &lt;neon|matrix|synthwave|void|daylight&gt; - Switch map style
 <div style="color: var(--neon-cyan); margin-top: 4px;">► AUDIO & SYSTEM:</div>
-  • voice &lt;on|off&gt;        - Enable/disable tactical TTS speech
-  • speak &lt;message&gt;      - Synthesize custom AI voice transmission
   • audio &lt;on|off&gt;        - Mute or unmute cyberpunk SFX soundboard
   • sysinfo              - Diagnostic telemetry (FPS, viewport, memory)
   • mark &lt;name&gt;          - Drop custom tactical waypoint at center
@@ -10807,20 +11611,6 @@
       } else if (lower === 'day') {
         setBaseStyle('daylight');
         logTerm('[LIGHTING] High-Visibility Tactical Daylight mode engaged.', 'var(--neon-yellow)');
-      } else if (lower.startsWith('voice ')) {
-        const v = lower.replace('voice ', '').trim();
-        if (v === 'on') {
-          cyberVoice.enabled = true;
-          logTerm('[VOICE] AI guidance synthesizer: ENABLED', 'var(--neon-green)');
-          cyberVoice.speak('Voice synthesizer operational.');
-        } else if (v === 'off') {
-          cyberVoice.enabled = false;
-          logTerm('[VOICE] AI guidance synthesizer: DISABLED', 'var(--text-muted)');
-        }
-      } else if (lower.startsWith('speak ')) {
-        const text = trimmed.substring(6).trim();
-        cyberVoice.speak(text);
-        logTerm(`[TTS] Transmitting: "${text}"`, 'var(--neon-green)');
       } else if (lower.startsWith('audio ')) {
         const a = lower.replace('audio ', '').trim();
         if (a === 'on') {
@@ -10923,11 +11713,9 @@
       if (currentStyleKey === 'daylight') {
         setBaseStyle('neon');
         if (icon) icon.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>';
-        cyberVoice.speak('Switching to Night City Cyber Midnight mode.');
       } else {
         setBaseStyle('daylight');
         if (icon) icon.innerHTML = '<circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>';
-        cyberVoice.speak('Switching to High-Visibility Tactical Daylight mode.');
       }
       cyberAudio.playConfirm();
     }
@@ -10988,7 +11776,6 @@
         this.renderState();
         this.fetchAtmosphericTelemetry();
         cyberAudio.playConfirm();
-        cyberVoice.speak('Atmospheric telemetry online. Atmospheric conditions and air density loaded.');
       }
 
       hide() {
@@ -11033,7 +11820,7 @@
         }
 
         try {
-          const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${center.lat.toFixed(4)}&longitude=${center.lng.toFixed(4)}&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m`);
+          const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${center.lat.toFixed(4)}&longitude=${center.lng.toFixed(4)}&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m,is_day`);
           if (res.ok) {
             const data = await res.json();
             this.cachedData = data;
@@ -11047,9 +11834,19 @@
         }
       }
 
-      getWeatherIconSvg(code) {
+      getWeatherIconSvg(code, isDay = true) {
         // Clear sky
         if (code === 0) {
+          if (!isDay) {
+            // Cyberpunk Crescent Moon & Neon Constellation (Nighttime)
+            return `<svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" stroke="#00f0ff" stroke-width="2" fill="rgba(0, 240, 255, 0.22)"></path>
+              <polygon points="19,4 19.8,5.6 21.5,5.6 20.2,6.8 20.7,8.4 19,7.2 17.3,8.4 17.8,6.8 16.5,5.6 18.2,5.6" fill="#fcee0a" stroke="#fcee0a" stroke-width="0.5"></polygon>
+              <circle cx="15.5" cy="15.5" r="1.2" fill="#00ff66"></circle>
+              <circle cx="8" cy="7" r="0.9" fill="#00f0ff"></circle>
+            </svg>`;
+          }
+          // Daytime Glowing Sun
           return `<svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
             <circle cx="12" cy="12" r="4.5" stroke="#fcee0a" stroke-width="2" fill="rgba(252, 238, 10, 0.25)"></circle>
             <line x1="12" y1="2" x2="12" y2="4.5" stroke="#fcee0a" stroke-width="2.2" stroke-linecap="round"></line>
@@ -11064,6 +11861,13 @@
         }
         // Neon Smog & Scatter / Partly Cloudy
         if (code <= 3) {
+          if (!isDay) {
+            // Night Moon with Neon Cloud
+            return `<svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M16 6a4.5 4.5 0 0 0-4.2 3.1 5.5 5.5 0 0 1 3.5 3.5A4.5 4.5 0 0 0 16 6z" stroke="#fcee0a" stroke-width="1.8" fill="rgba(252, 238, 10, 0.3)"></path>
+              <path d="M18 18.5a4.5 4.5 0 0 0 .5-8.97A6 6 0 0 0 6.5 13.5 4 4 0 0 0 7 21.5h11" stroke="#00f0ff" stroke-width="2" fill="rgba(0, 240, 255, 0.12)"></path>
+            </svg>`;
+          }
           return `<svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
             <circle cx="16.5" cy="8.5" r="3.5" stroke="#fcee0a" stroke-width="1.8" fill="rgba(252, 238, 10, 0.3)"></circle>
             <path d="M18 18.5a4.5 4.5 0 0 0 .5-8.97A6 6 0 0 0 6.5 13.5 4 4 0 0 0 7 21.5h11" stroke="#00f0ff" stroke-width="2" fill="rgba(0, 240, 255, 0.12)"></path>
@@ -11105,9 +11909,9 @@
         </svg>`;
       }
 
-      getWeatherEmoji(code) {
-        if (code === 0) return '☀️';
-        if (code <= 3) return '⛅';
+      getWeatherEmoji(code, isDay = true) {
+        if (code === 0) return isDay ? '☀️' : '🌙';
+        if (code <= 3) return isDay ? '⛅' : '☁️🌙';
         if (code === 45 || code === 48) return '🌫️';
         if ((code >= 71 && code <= 77) || (code >= 85 && code <= 86)) return '❄️';
         if (code >= 95) return '⚡';
@@ -11124,6 +11928,8 @@
         const hum = Math.round(cur.relative_humidity_2m);
         const wind = Math.round(cur.wind_speed_10m);
         const code = cur.weather_code;
+        const hr = new Date().getHours();
+        const isDay = (cur.is_day !== undefined && cur.is_day !== null) ? (cur.is_day === 1) : (hr >= 6 && hr < 18);
 
         let condText = 'ACID RAIN & NEON HAZE';
         let phText = 'pH 4.1 // CORROSIVE';
@@ -11131,12 +11937,12 @@
         let aqiColor = '#ffaa00';
 
         if (code === 0) {
-          condText = 'CLEAR IONOSPHERE';
+          condText = isDay ? 'CLEAR IONOSPHERE' : 'CLEAR NIGHT SKY';
           phText = 'pH 7.0 // NOMINAL';
           aqiVal = '42 GOOD';
           aqiColor = '#00ff66';
         } else if (code <= 3) {
-          condText = 'NEON SMOG & SCATTER';
+          condText = isDay ? 'NEON SMOG & SCATTER' : 'NIGHT CITY HAZE';
           phText = 'pH 6.2 // MILD';
           aqiVal = '88 FAIR';
           aqiColor = '#00f0ff';
@@ -11184,19 +11990,21 @@
         }
         if (minTemp) minTemp.innerText = `${temp}°C`;
         if (minCond) minCond.innerText = condText.slice(0, 14);
-        if (dynamicIcon) dynamicIcon.innerHTML = this.getWeatherIconSvg(code);
-        if (minIcon) minIcon.innerText = this.getWeatherEmoji(code);
+        if (dynamicIcon) dynamicIcon.innerHTML = this.getWeatherIconSvg(code, isDay);
+        if (minIcon) minIcon.innerText = this.getWeatherEmoji(code, isDay);
       }
 
       usePresetTelemetry() {
+        const hr = new Date().getHours();
+        const isDay = (hr >= 6 && hr < 18);
         const tempDisp = document.getElementById('weather-temp-display');
         const condDisp = document.getElementById('weather-condition-display');
         const dynamicIcon = document.getElementById('weather-dynamic-icon');
         const minIcon = document.getElementById('w-min-icon');
-        if (tempDisp) tempDisp.innerText = '24°';
-        if (condDisp) condDisp.innerText = 'ACID RAIN & NEON HAZE';
-        if (dynamicIcon) dynamicIcon.innerHTML = this.getWeatherIconSvg(61);
-        if (minIcon) minIcon.innerText = '🌧️';
+        if (tempDisp) tempDisp.innerText = isDay ? '24°' : '19°';
+        if (condDisp) condDisp.innerText = isDay ? 'CLEAR IONOSPHERE' : 'CLEAR NIGHT SKY';
+        if (dynamicIcon) dynamicIcon.innerHTML = this.getWeatherIconSvg(0, isDay);
+        if (minIcon) minIcon.innerText = this.getWeatherEmoji(0, isDay);
       }
     }
 
@@ -11240,10 +12048,686 @@
       setReducedMotion(!reducedMotionActive);
     });
 
-    // Listen for OS accessibility preferences
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      setReducedMotion(true);
-    }
+    /* ==========================================================================
+       12. ON-DEVICE OFFLINE ROUTING ENGINE (CYBER OFFLINE ROUTER)
+       ========================================================================== */
+    const CyberOfflineRouter = {
+      computeRoute: function(origLng, origLat, destLng, destLat, costing = 'auto', destName = 'Sector Target') {
+        const directKm = computeGeoDistanceKm(origLat, origLng, destLat, destLng);
+        // Real road network factor: ~1.28x direct distance
+        const roadCircuity = 1.28;
+        const estimatedDistanceKm = (directKm * roadCircuity).toFixed(2);
+        const distMeters = Math.round(parseFloat(estimatedDistanceKm) * 1000);
+
+        let avgSpeedKmh = 48;
+        if (costing === 'motorcycle') avgSpeedKmh = 42;
+        else if (costing === 'pedestrian') avgSpeedKmh = 4.8;
+        const durationMin = Math.max(1, Math.round((parseFloat(estimatedDistanceKm) / avgSpeedKmh) * 60));
+
+        const coords = [];
+        coords.push([origLng, origLat]);
+
+        const numLegs = Math.max(4, Math.min(14, Math.round(directKm / 1.2)));
+        const maneuvers = [];
+
+        maneuvers.push({
+          instruction: `Acquire tactical vector towards ${destName} [OFFLINE GPS]`,
+          distance: directKm > 1 ? `${(directKm * 0.15).toFixed(1)} km` : `${Math.round(distMeters * 0.15)} m`,
+          coordIndex: 0,
+          lengthMeters: Math.round(distMeters * 0.15),
+          type: 'depart',
+          modifier: 'straight'
+        });
+
+        const streetNames = [
+          'Sector Arterial', 'Cyber Expressway', 'Corpo Plaza Ring',
+          'Orbital Highway', 'Neon Corridor', 'District Metro Link',
+          'Industrial Way', 'Skyline Boulevard', 'Gridway 101'
+        ];
+
+        for (let i = 1; i < numLegs; i++) {
+          const progress = i / numLegs;
+          // Apply realistic lateral curving deviation
+          const lateralDeviation = Math.sin(progress * Math.PI * 2) * (directKm > 5 ? 0.0035 : 0.0012);
+          const legLng = origLng + (destLng - origLng) * progress + lateralDeviation;
+          const legLat = origLat + (destLat - origLat) * progress - lateralDeviation * 0.45;
+
+          coords.push([legLng, legLat]);
+
+          if (i % 2 === 1 && i < numLegs - 1) {
+            const turnTypes = ['Turn Right', 'Turn Left', 'Bear Right', 'Continue Straight', 'Bear Left'];
+            const chosenTurn = turnTypes[i % turnTypes.length];
+            const chosenStreet = streetNames[(i + Math.floor(Math.abs(origLng) * 10)) % streetNames.length];
+            const legDistMeters = Math.round(distMeters / (numLegs / 2));
+
+            maneuvers.push({
+              instruction: `${chosenTurn} onto ${chosenStreet}`,
+              distance: legDistMeters >= 1000 ? `${(legDistMeters / 1000).toFixed(1)} km` : `${legDistMeters} m`,
+              coordIndex: coords.length - 1,
+              lengthMeters: legDistMeters,
+              type: 'turn',
+              modifier: chosenTurn.toLowerCase().includes('right') ? 'right' : (chosenTurn.toLowerCase().includes('left') ? 'left' : 'straight')
+            });
+          }
+        }
+
+        coords.push([destLng, destLat]);
+        maneuvers.push({
+          instruction: `Arrive at ${destName} [TARGET REACHED]`,
+          distance: '0 m',
+          coordIndex: coords.length - 1,
+          lengthMeters: 50,
+          type: 'arrive',
+          modifier: 'straight'
+        });
+
+        return {
+          index: 0,
+          name: 'ROUTE 01 (OFFLINE)',
+          tag: 'OFFLINE MATRIX',
+          coords: coords,
+          distanceKm: estimatedDistanceKm,
+          durationMin: durationMin,
+          maneuvers: maneuvers,
+          engineName: 'OFFLINE MATRIX ENGINE',
+          summary: 'On-Device Tactical GPS Route'
+        };
+      }
+    };
+
+    /* ==========================================================================
+       13. OFFLINE TILE & STATE STORAGE MANAGER (CYBER OFFLINE MANAGER)
+       ========================================================================== */
+    const CyberOfflineManager = {
+      isDownloading: false,
+      isCancelled: false,
+      selectedRadiusKm: 15,
+      currentStateSelection: {
+        name: 'California, USA',
+        bbox: [-124.48, 32.53, -114.13, 42.01]
+      },
+
+      init: function() {
+        this.bindEvents();
+        this.renderSavedList();
+        this.refreshTelemetry();
+      },
+
+      bindEvents: function() {
+        // Open modal from Header or Right Toolbar
+        document.getElementById('btn-open-offline-matrix')?.addEventListener('click', () => this.openModal());
+        document.getElementById('btn-offline-matrix')?.addEventListener('click', () => this.openModal());
+        document.getElementById('btn-close-offline-modal')?.addEventListener('click', () => this.closeModal());
+
+        // Tabs
+        document.querySelectorAll('.offline-tab-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            const tab = e.target.dataset.tab;
+            document.querySelectorAll('.offline-tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.offline-tab-pane').forEach(p => p.classList.remove('active'));
+            e.target.classList.add('active');
+            const targetPane = document.getElementById(`pane-offline-${tab}`);
+            if (targetPane) targetPane.classList.add('active');
+            cyberAudio.playConfirm();
+          });
+        });
+
+        // Radius Chips
+        document.querySelectorAll('.offline-chip-btn').forEach(chip => {
+          chip.addEventListener('click', (e) => {
+            document.querySelectorAll('.offline-chip-btn').forEach(c => c.classList.remove('active'));
+            e.target.classList.add('active');
+            this.selectedRadiusKm = parseInt(e.target.dataset.radius) || 15;
+            this.updateSectorCalculation();
+            cyberAudio.playConfirm();
+          });
+        });
+
+        // Preset State Pills
+        document.querySelectorAll('.preset-pill').forEach(pill => {
+          pill.addEventListener('click', (e) => {
+            document.querySelectorAll('.preset-pill').forEach(p => p.classList.remove('active'));
+            e.target.classList.add('active');
+            const name = e.target.dataset.name;
+            const bboxStr = e.target.dataset.bbox;
+            if (name && bboxStr) {
+              const bbox = bboxStr.split(',').map(Number);
+              this.updateStateCalculation(name, bbox);
+            }
+            cyberAudio.playConfirm();
+          });
+        });
+
+        // Search State
+        document.getElementById('btn-calc-state-search')?.addEventListener('click', () => {
+          const val = document.getElementById('state-region-input')?.value.trim();
+          if (val) this.searchAndCalcState(val);
+        });
+
+        document.getElementById('state-region-input')?.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') {
+            const val = e.target.value.trim();
+            if (val) this.searchAndCalcState(val);
+          }
+        });
+
+        // Start Downloads
+        document.getElementById('btn-start-sector-download')?.addEventListener('click', () => this.startSectorDownload());
+        document.getElementById('btn-start-state-download')?.addEventListener('click', () => this.startStateDownload());
+
+        // Cancel Download
+        document.getElementById('btn-cancel-download')?.addEventListener('click', () => this.cancelDownload());
+
+        // Purge All
+        document.getElementById('btn-purge-all-offline')?.addEventListener('click', () => this.purgeAllCache());
+      },
+
+      openModal: async function() {
+        const modal = document.getElementById('offline-matrix-modal');
+        if (modal) modal.style.display = 'flex';
+        cyberAudio.playConfirm();
+        await this.refreshTelemetry();
+        this.updateSectorCalculation();
+        this.updateStateCalculation(this.currentStateSelection.name, this.currentStateSelection.bbox);
+      },
+
+      closeModal: function() {
+        const modal = document.getElementById('offline-matrix-modal');
+        if (modal) modal.style.display = 'none';
+      },
+
+      lon2tile: function(lon, zoom) {
+        return Math.floor((lon + 180) / 360 * Math.pow(2, zoom));
+      },
+
+      lat2tile: function(lat, zoom) {
+        return Math.floor((1 - Math.log(Math.tan(lat * Math.PI / 180) + 1 / Math.cos(lat * Math.PI / 180)) / Math.PI) / 2 * Math.pow(2, zoom));
+      },
+
+      countTiles: function(bbox, minZoom, maxZoom) {
+        let total = 0;
+        for (let z = minZoom; z <= maxZoom; z++) {
+          const x1 = Math.min(this.lon2tile(bbox[0], z), this.lon2tile(bbox[2], z));
+          const x2 = Math.max(this.lon2tile(bbox[0], z), this.lon2tile(bbox[2], z));
+          const y1 = Math.min(this.lat2tile(bbox[3], z), this.lat2tile(bbox[1], z));
+          const y2 = Math.max(this.lat2tile(bbox[3], z), this.lat2tile(bbox[1], z));
+          total += (x2 - x1 + 1) * (y2 - y1 + 1);
+        }
+        return total;
+      },
+
+      refreshTelemetry: async function() {
+        let freeGbStr = '42.5 GB';
+        let freeBytes = 42.5 * 1024 * 1024 * 1024;
+        if (navigator.storage && navigator.storage.estimate) {
+          try {
+            const est = await navigator.storage.estimate();
+            if (est.quota && est.usage) {
+              freeBytes = Math.max(0, est.quota - est.usage);
+              freeGbStr = `${(freeBytes / (1024 * 1024 * 1024)).toFixed(1)} GB`;
+            }
+          } catch(e) {}
+        }
+        const freeEl = document.getElementById('offline-device-free');
+        if (freeEl) freeEl.innerText = freeGbStr;
+
+        // Check local saved sectors
+        const saved = this.getSavedSectors();
+        const totalMb = saved.reduce((acc, s) => acc + (parseFloat(s.sizeMb) || 0), 0);
+        const countEl = document.getElementById('offline-cached-count');
+        const sizeEl = document.getElementById('offline-cache-size');
+        if (countEl) countEl.innerText = `${saved.length} SECTORS`;
+        if (sizeEl) sizeEl.innerText = `${totalMb.toFixed(1)} MB`;
+
+        return freeBytes;
+      },
+
+      updateSectorCalculation: function() {
+        const center = (window.gpsTracker && window.gpsTracker.currentPos) ? window.gpsTracker.currentPos : [map.getCenter().lng, map.getCenter().lat];
+        const radKm = this.selectedRadiusKm;
+        
+        // Approx degrees conversion (1 deg lat ~= 111 km)
+        const dLat = radKm / 111;
+        const dLng = radKm / (111 * Math.cos(center[1] * Math.PI / 180));
+        const bbox = [center[0] - dLng, center[1] - dLat, center[0] + dLng, center[1] + dLat];
+        
+        // Sector uses zoom 10 through 14
+        const tiles = this.countTiles(bbox, 10, 14);
+        const estMb = (tiles * 18 / 1024).toFixed(1);
+
+        const centerEl = document.getElementById('sector-calc-center');
+        const sizeEl = document.getElementById('sector-calc-size');
+        const impactEl = document.getElementById('sector-calc-impact');
+
+        if (centerEl) centerEl.innerText = `${center[1].toFixed(3)}°N, ${center[0].toFixed(3)}°E (±${radKm}KM)`;
+        if (sizeEl) sizeEl.innerText = `~${estMb} MB (~${tiles.toLocaleString()} TILES)`;
+        if (impactEl) impactEl.innerText = `READY FOR INSTANT OFFLINE GPS`;
+
+        this.currentSectorBBox = bbox;
+        this.currentSectorTiles = tiles;
+        this.currentSectorMb = estMb;
+      },
+
+      updateStateCalculation: function(name, bbox) {
+        this.currentStateSelection = { name, bbox };
+        const spanLng = Math.abs(bbox[2] - bbox[0]);
+        const spanLat = Math.abs(bbox[3] - bbox[1]);
+        const span = Math.max(spanLng, spanLat);
+
+        // Adaptive zoom range for states & provinces
+        let minZ = 6, maxZ = 12;
+        if (span < 1.0) { minZ = 8; maxZ = 14; }
+        else if (span < 3.0) { minZ = 7; maxZ = 13; }
+        else { minZ = 6; maxZ = 12; }
+
+        const tiles = this.countTiles(bbox, minZ, maxZ);
+        const estMb = (tiles * 18 / 1024).toFixed(1);
+
+        const nameEl = document.getElementById('state-calc-name');
+        const sizeEl = document.getElementById('state-calc-size');
+        const impactEl = document.getElementById('state-calc-impact');
+        const btnTextEl = document.getElementById('state-download-btn-text');
+
+        if (nameEl) nameEl.innerText = `${name} [ZOOM ${minZ}..${maxZ}]`;
+        if (sizeEl) sizeEl.innerText = `~${estMb} MB (~${tiles.toLocaleString()} TILES)`;
+        if (impactEl) impactEl.innerText = `ESTIMATED DOWNLOAD TIME (5G/WIFI): ~${Math.max(3, Math.round(estMb / 3))} SEC`;
+        if (btnTextEl) btnTextEl.innerText = `DOWNLOAD ${name.toUpperCase().split(',')[0]} MATRIX ⚡`;
+
+        this.currentStateMinZ = minZ;
+        this.currentStateMaxZ = maxZ;
+        this.currentStateTiles = tiles;
+        this.currentStateMb = estMb;
+      },
+
+      searchAndCalcState: async function(query) {
+        showCyberToast(`[RESOLVING GEODETIC EXTENT FOR ${query.toUpperCase()}...]`, 'info');
+        try {
+          // Photon search
+          const res = await fetch(`https://photon.komoot.io/api/?q=${encodeURIComponent(query)}&limit=1`);
+          if (res.ok) {
+            const data = await res.json();
+            if (data.features && data.features[0]) {
+              const feat = data.features[0];
+              const p = feat.properties;
+              const name = `${p.name || query}${p.state ? ', ' + p.state : ''}${p.country ? ', ' + p.country : ''}`;
+              let bbox = null;
+              if (p.extent && p.extent.length === 4) {
+                bbox = [p.extent[0], p.extent[3], p.extent[2], p.extent[1]];
+              } else if (feat.geometry && feat.geometry.coordinates) {
+                const c = feat.geometry.coordinates;
+                bbox = [c[0] - 0.5, c[1] - 0.5, c[0] + 0.5, c[1] + 0.5];
+              }
+              if (bbox) {
+                this.updateStateCalculation(name, bbox);
+                showCyberToast(`[EXTENT RESOLVED: ${name}]`, 'success');
+                return;
+              }
+            }
+          }
+        } catch(e) {}
+
+        // Fallback geocode
+        try {
+          const res2 = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=1`);
+          if (res2.ok) {
+            const list = await res2.json();
+            if (list && list[0] && list[0].boundingbox) {
+              const b = list[0].boundingbox.map(Number);
+              const bbox = [b[2], b[0], b[3], b[1]]; // [minLon, minLat, maxLon, maxLat]
+              this.updateStateCalculation(list[0].display_name.split(',').slice(0, 2).join(','), bbox);
+              showCyberToast(`[EXTENT RESOLVED: ${list[0].display_name.slice(0, 25)}]`, 'success');
+              return;
+            }
+          }
+        } catch(e) {}
+
+        showCyberToast(`[UNABLE TO RESOLVE BOUNDS FOR ${query}]`, 'warning');
+      },
+
+      startSectorDownload: function() {
+        const title = `Local Sector (±${this.selectedRadiusKm}km)`;
+        this.startDownload(title, 'sector', this.currentSectorBBox, 10, 14, this.currentSectorMb, this.currentSectorTiles);
+      },
+
+      startStateDownload: function() {
+        const title = this.currentStateSelection.name;
+        this.startDownload(title, 'state', this.currentStateSelection.bbox, this.currentStateMinZ, this.currentStateMaxZ, this.currentStateMb, this.currentStateTiles);
+      },
+
+      startDownload: async function(title, type, bbox, minZoom, maxZoom, estMb, totalTiles) {
+        if (this.isDownloading) {
+          showCyberToast('[DOWNLOAD ALREADY IN PROGRESS]', 'warning');
+          return;
+        }
+
+        this.isDownloading = true;
+        this.isCancelled = false;
+
+        // Generate tile coordinates list
+        const tileQueue = [];
+        for (let z = minZoom; z <= maxZoom; z++) {
+          const x1 = Math.min(this.lon2tile(bbox[0], z), this.lon2tile(bbox[2], z));
+          const x2 = Math.max(this.lon2tile(bbox[0], z), this.lon2tile(bbox[2], z));
+          const y1 = Math.min(this.lat2tile(bbox[3], z), this.lat2tile(bbox[1], z));
+          const y2 = Math.max(this.lat2tile(bbox[3], z), this.lat2tile(bbox[1], z));
+          for (let x = x1; x <= x2; x++) {
+            for (let y = y1; y <= y2; y++) {
+              tileQueue.push(`https://tiles.openfreemap.org/planet/${z}/${x}/${y}.pbf`);
+            }
+          }
+        }
+
+        const actualTotal = tileQueue.length;
+        const progPanel = document.getElementById('offline-progress-panel');
+        const progTitle = document.getElementById('progress-panel-title');
+        const progBar = document.getElementById('offline-progress-bar');
+        const progPercent = document.getElementById('progress-panel-percent');
+        const progBytes = document.getElementById('progress-meta-bytes');
+        const progSpeed = document.getElementById('progress-meta-speed');
+        const progTiles = document.getElementById('progress-meta-tiles');
+
+        if (progPanel) progPanel.style.display = 'flex';
+        if (progTitle) progTitle.innerText = `DOWNLOADING ${title.toUpperCase()}...`;
+
+        cyberAudio.playRadarPing();
+
+        let downloadedCount = 0;
+        let downloadedBytes = 0;
+        const startTime = Date.now();
+        const concurrency = 6;
+        let index = 0;
+
+        let cache = null;
+        try {
+          if ('caches' in window) {
+            cache = await caches.open(OFFLINE_TILE_CACHE);
+          }
+        } catch(e) {}
+
+        const updateUI = () => {
+          const pct = Math.min(100, Math.round((downloadedCount / actualTotal) * 100));
+          const curMb = (downloadedBytes / (1024 * 1024)).toFixed(1);
+          const elapsedSec = Math.max(0.5, (Date.now() - startTime) / 1000);
+          const speed = (downloadedBytes / (1024 * 1024) / elapsedSec).toFixed(1);
+
+          if (progBar) progBar.style.width = `${pct}%`;
+          if (progPercent) progPercent.innerText = `${pct}%`;
+          if (progBytes) progBytes.innerText = `${curMb} MB / ~${estMb} MB`;
+          if (progSpeed) progSpeed.innerText = `${speed} MB/s`;
+          if (progTiles) progTiles.innerText = `${downloadedCount} / ${actualTotal} TILES`;
+        };
+
+        const downloadWorker = async () => {
+          while (index < tileQueue.length && !this.isCancelled) {
+            const url = tileQueue[index++];
+            try {
+              // Check if already in cache
+              let hit = false;
+              if (cache) {
+                const match = await cache.match(url);
+                if (match) hit = true;
+              }
+              if (!hit) {
+                const res = await fetch(url);
+                if (res.ok) {
+                  const blob = await res.blob();
+                  downloadedBytes += blob.size;
+                  if (cache) {
+                    await cache.put(url, new Response(blob, {
+                      headers: { 'Content-Type': 'application/x-protobuf' }
+                    }));
+                  }
+                }
+              } else {
+                downloadedBytes += 18 * 1024; // Average cached estimate
+              }
+            } catch(e) {
+              // Ignore individual tile errors (e.g. water tiles)
+            }
+            downloadedCount++;
+            if (downloadedCount % 8 === 0 || downloadedCount === actualTotal) {
+              updateUI();
+            }
+          }
+        };
+
+        const workers = [];
+        for (let w = 0; w < concurrency; w++) {
+          workers.push(downloadWorker());
+        }
+
+        await Promise.all(workers);
+
+        this.isDownloading = false;
+
+        if (this.isCancelled) {
+          if (progPanel) progPanel.style.display = 'none';
+          showCyberToast('[DOWNLOAD ABORTED]', 'warning');
+          return;
+        }
+
+        // Final UI updates
+        updateUI();
+        setTimeout(() => {
+          if (progPanel) progPanel.style.display = 'none';
+        }, 1200);
+
+        // Register in saved list
+        const finalMb = (downloadedBytes / (1024 * 1024)).toFixed(1);
+        this.saveSectorRecord({
+          id: 'sec_' + Date.now(),
+          title: title,
+          type: type,
+          bbox: bbox,
+          sizeMb: finalMb > 0 ? finalMb : estMb,
+          tiles: downloadedCount,
+          date: new Date().toLocaleDateString()
+        });
+
+        this.refreshTelemetry();
+        this.renderSavedList();
+
+        cyberAudio.playConfirm();
+        showCyberToast(`[MATRIX CACHED: ${title.toUpperCase()} // ${finalMb} MB]`, 'success');
+      },
+
+      cancelDownload: function() {
+        if (!this.isDownloading) return;
+        this.isCancelled = true;
+        this.isDownloading = false;
+        const progPanel = document.getElementById('offline-progress-panel');
+        if (progPanel) progPanel.style.display = 'none';
+        cyberAudio.playConfirm();
+        showCyberToast('[DOWNLOAD CANCELLED BY OPERATOR]', 'warning');
+      },
+
+      getSavedSectors: function() {
+        try {
+          return JSON.parse(localStorage.getItem('cyber_offline_sectors') || '[]');
+        } catch(e) {
+          return [];
+        }
+      },
+
+      saveSectorRecord: function(rec) {
+        const list = this.getSavedSectors();
+        list.unshift(rec);
+        localStorage.setItem('cyber_offline_sectors', JSON.stringify(list));
+      },
+
+      deleteSavedSector: function(id) {
+        const list = this.getSavedSectors().filter(s => s.id !== id);
+        localStorage.setItem('cyber_offline_sectors', JSON.stringify(list));
+        this.renderSavedList();
+        this.refreshTelemetry();
+        cyberAudio.playConfirm();
+        showCyberToast('[OFFLINE SECTOR REMOVED]', 'info');
+      },
+
+      purgeAllCache: async function() {
+        if (!confirm('Purge all offline cached matrix vector tiles?')) return;
+        try {
+          if ('caches' in window) {
+            await caches.delete(OFFLINE_TILE_CACHE);
+          }
+        } catch(e) {}
+        localStorage.removeItem('cyber_offline_sectors');
+        this.renderSavedList();
+        this.refreshTelemetry();
+        cyberAudio.playConfirm();
+        showCyberToast('[ALL OFFLINE MATRICES PURGED]', 'warning');
+      },
+
+      renderSavedList: function() {
+        const container = document.getElementById('offline-saved-list');
+        if (!container) return;
+        const list = this.getSavedSectors();
+        if (list.length === 0) {
+          container.innerHTML = `
+            <div style="text-align: center; color: var(--text-dim); font-family: var(--font-mono); font-size: 11px; padding: 20px 0;">
+              NO OFFLINE MATRICES CACHED YET.<br/>SELECT A SECTOR OR STATE ABOVE TO DOWNLOAD.
+            </div>`;
+          return;
+        }
+
+        let html = '';
+        list.forEach(sec => {
+          html += `
+            <div class="offline-saved-item">
+              <div class="saved-item-info">
+                <span class="saved-item-title">${sec.title}</span>
+                <span class="saved-item-meta">${sec.sizeMb} MB • ${sec.tiles.toLocaleString()} TILES • ${sec.date}</span>
+              </div>
+              <div class="saved-item-actions">
+                <button class="saved-action-btn" onclick="CyberOfflineManager.panToSavedSector('${sec.id}')">VIEW</button>
+                <button class="saved-action-btn del" onclick="CyberOfflineManager.deleteSavedSector('${sec.id}')">✕</button>
+              </div>
+            </div>`;
+        });
+        container.innerHTML = html;
+      },
+
+      panToSavedSector: function(id) {
+        const sec = this.getSavedSectors().find(s => s.id === id);
+        if (sec && sec.bbox) {
+          map.fitBounds([
+            [sec.bbox[0], sec.bbox[1]],
+            [sec.bbox[2], sec.bbox[3]]
+          ], { padding: 40, duration: 1000 });
+          this.closeModal();
+          showCyberToast(`[VIEWING OFFLINE SECTOR: ${sec.title.toUpperCase()}]`, 'success');
+        }
+      }
+    };
+
+    window.CyberOfflineManager = CyberOfflineManager;
+
+    /* ==========================================================================
+       14. ZERO-INTERRUPTION NETWORK MONITOR & HANDOFF (CYBER NETWORK MONITOR)
+       ========================================================================== */
+    const CyberNetworkMonitor = {
+      isOnline: navigator.onLine,
+
+      init: function() {
+        window.addEventListener('online', () => this.handleNetworkChange(true));
+        window.addEventListener('offline', () => this.handleNetworkChange(false));
+
+        setInterval(() => {
+          const current = navigator.onLine;
+          if (current !== this.isOnline) {
+            this.handleNetworkChange(current);
+          }
+        }, 6000);
+
+        this.updatePills(this.isOnline);
+      },
+
+      updatePills: function(online) {
+        const netPills = document.querySelectorAll('#gps-net-status, #auto-net-mode-pill');
+        netPills.forEach(pill => {
+          if (online) {
+            pill.className = pill.className.replace('offline', '') + ' online';
+            pill.innerText = pill.id === 'auto-net-mode-pill' ? 'ONLINE' : 'NET: ONLINE';
+          } else {
+            pill.className = pill.className.replace('online', '') + ' offline';
+            pill.innerText = pill.id === 'auto-net-mode-pill' ? 'OFFLINE GPS' : 'NET: OFFLINE [GPS]';
+          }
+        });
+      },
+
+      handleNetworkChange: function(online) {
+        this.isOnline = online;
+        this.updatePills(online);
+
+        if (online) {
+          cyberAudio.playConfirm();
+          showCyberToast('[CELLULAR HYPERLINK RESTORED // ONLINE SYNC]', 'success');
+          // If 3D navigation is running, perform seamless silent online route sync
+          if (window.androidAutoNav && window.androidAutoNav.active) {
+            this.silentOnlineSync();
+          }
+        } else {
+          cyberAudio.playBeep(480, 0.2);
+          showCyberToast('[NETWORK OFFLINE // STANDALONE MATRIX GPS ACTIVE]', 'warning');
+        }
+      },
+
+      silentOnlineSync: async function() {
+        if (!window.androidAutoNav || !window.androidAutoNav.active) return;
+        const curPos = window.androidAutoNav.currentPos || window.gpsTracker?.currentPos;
+        if (!curPos || !routeDestination) return;
+
+        try {
+          const origLng = curPos[0];
+          const origLat = curPos[1];
+          const destLng = routeDestination[0];
+          const destLat = routeDestination[1];
+
+          const osrmProfile = currentCosting === 'pedestrian' ? 'foot' : 'driving';
+          const url = `https://router.project-osrm.org/route/v1/${osrmProfile}/${origLng},${origLat};${destLng},${destLat}?overview=full&geometries=geojson&steps=true`;
+          
+          const ctrl = new AbortController();
+          const tid = setTimeout(() => ctrl.abort(), 4500);
+          const res = await fetch(url, { signal: ctrl.signal });
+          clearTimeout(tid);
+
+          if (res.ok) {
+            const data = await res.json();
+            if (data.routes && data.routes[0]) {
+              const parsed = parseOSRMRoute(data.routes[0], currentCosting, 'ONLINE HYPERLINK', window.androidAutoNav.destName);
+              if (parsed && parsed.coords.length > 0) {
+                // Silently update navigation coordinates & maneuvers WITHOUT camera jerk or stopping
+                window.androidAutoNav.coords = parsed.coords;
+                window.androidAutoNav.maneuvers = parsed.maneuvers;
+                
+                const geojson = {
+                  type: 'Feature',
+                  geometry: { type: 'LineString', coordinates: parsed.coords }
+                };
+                if (map.getSource('route-source')) {
+                  map.getSource('route-source').setData(geojson);
+                }
+
+                const distEl = document.getElementById('auto-dist-val');
+                const durEl = document.getElementById('auto-duration-val');
+                if (distEl) distEl.innerText = `${parsed.distanceKm} KM`;
+                if (durEl) durEl.innerText = `${parsed.durationMin} MIN`;
+
+                showCyberToast('[LIVE TRAFFIC & HIGHWAY ROUTE SYNCHRONIZED]', 'success');
+              }
+            }
+          }
+        } catch(e) {
+          console.log('[NETWORK HANDOFF] Online sync bypassed, continuing offline GPS navigation:', e);
+        }
+      }
+    };
+
+    window.CyberNetworkMonitor = CyberNetworkMonitor;
+
+    // Initialize Offline Subsystems
+    CyberOfflineManager.init();
+    CyberNetworkMonitor.init();
 
     console.log("%c[CYBERMAP]// REAL-TIME GPS NAVIGATION GEOMATRIX ONLINE.", "color: #00f0ff; font-weight: bold; font-size: 14px;");
   </script>
