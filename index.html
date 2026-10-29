@@ -27,7 +27,7 @@
       
       --neon-yellow: #fcee0a;
       --neon-cyan: #00f0ff;
-      --neon-pink: #ff0055;
+      --neon-pink: #ff0055; 
       --neon-green: #00ff66;
       --neon-purple: #9d00ff;
       --neon-amber: #ffaa00;
@@ -859,37 +859,40 @@
       100% { transform: translateY(-12px); }
     }
 
-    /* Target Reticle Map Marker */
+    /* Target Reticle Map Marker (Zero-Drift Geo-Anchor) */
     .search-target-marker-pulse {
-      position: relative;
-      width: 44px;
-      height: 44px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      pointer-events: none;
+      position: absolute !important;
+      width: 0 !important;
+      height: 0 !important;
+      top: 0 !important;
+      left: 0 !important;
+      pointer-events: none !important;
       box-sizing: border-box;
+      will-change: transform;
     }
     .target-marker-reticle {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 44px;
-      height: 44px;
+      position: absolute !important;
+      top: -22px !important;
+      left: -22px !important;
+      width: 44px !important;
+      height: 44px !important;
       box-sizing: border-box;
       border: 2px dashed var(--neon-cyan);
       border-radius: 50%;
       animation: rotateReticle 6s linear infinite;
       pointer-events: none;
+      transform-origin: 22px 22px;
     }
     @keyframes rotateReticle {
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
     .target-marker-dot {
-      position: relative;
-      width: 10px;
-      height: 10px;
+      position: absolute !important;
+      top: -5px !important;
+      left: -5px !important;
+      width: 10px !important;
+      height: 10px !important;
       background: var(--neon-yellow);
       border: 2px solid #000;
       border-radius: 50%;
@@ -898,11 +901,10 @@
       pointer-events: none;
     }
     .target-marker-label {
-      position: absolute;
-      top: 100%;
-      left: 50%;
-      transform: translateX(-50%);
-      margin-top: 6px;
+      position: absolute !important;
+      top: 26px !important;
+      left: 0 !important;
+      transform: translateX(-50%) !important;
       background: rgba(8, 12, 22, 0.95);
       border: 1px solid var(--neon-cyan);
       color: #fff;
@@ -1602,6 +1604,14 @@
       color: #000;
       border-color: var(--neon-cyan);
       box-shadow: var(--glow-cyan);
+    }
+
+    @keyframes cyber-spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .cyber-spinning {
+      animation: cyber-spin 0.6s cubic-bezier(0.4, 0, 0.2, 1) infinite !important;
     }
 
     .map-icon-btn[data-tip]::after {
@@ -2340,8 +2350,8 @@
       position: absolute;
       width: 44px;
       height: 44px;
-      border: 1.5px solid rgba(0, 240, 255, 0.45);
-      background: radial-gradient(circle, rgba(0, 240, 255, 0.25) 0%, rgba(0, 240, 255, 0.02) 70%, transparent 100%);
+      border: 1.5px solid rgba(0, 85, 255, 0.65);
+      background: radial-gradient(circle, rgba(0, 85, 255, 0.32) 0%, rgba(0, 40, 180, 0.05) 70%, transparent 100%);
       border-radius: 50%;
       pointer-events: none;
       animation: haloPulse 2.5s infinite ease-out;
@@ -2354,10 +2364,10 @@
     .cyber-user-core {
       width: 14px;
       height: 14px;
-      background: var(--neon-cyan);
+      background: #0044ff;
       border: 2px solid #ffffff;
       border-radius: 50%;
-      box-shadow: 0 0 14px var(--neon-cyan), 0 0 28px var(--neon-cyan);
+      box-shadow: 0 0 14px #0044ff, 0 0 28px #0033cc;
       position: relative;
       z-index: 2;
     }
@@ -2365,7 +2375,7 @@
       position: absolute;
       width: 32px;
       height: 32px;
-      border: 1.5px dashed rgba(0, 240, 255, 0.7);
+      border: 1.5px dashed rgba(0, 100, 255, 0.7);
       border-radius: 50%;
       animation: spinTarget 8s linear infinite;
       z-index: 1;
@@ -2385,8 +2395,7 @@
       z-index: 3;
     }
     .cyber-user-arrow svg {
-      filter: drop-shadow(0 0 8px var(--neon-cyan));
-      transform: translateY(-8px);
+      filter: drop-shadow(0 0 10px #0044ff) drop-shadow(0 0 22px rgba(0, 85, 255, 0.85));
     }
     .cyber-user-heading-cone {
       display: none;
@@ -4317,8 +4326,20 @@
       50% { transform: scale(1.15); box-shadow: 0 0 30px var(--neon-yellow); }
     }
 
-    /* Destination beacon pin on the map */
+    /* Destination beacon pin on the map (Zero-Drift Geo-Anchor) */
     .dest-beacon-pin {
+      position: absolute !important;
+      top: 0 !important;
+      left: 0 !important;
+      width: 0 !important;
+      height: 0 !important;
+      pointer-events: none !important;
+      will-change: transform;
+    }
+    .dest-beacon-pin-inner {
+      position: absolute;
+      top: -19px;
+      left: -19px;
       width: 38px;
       height: 38px;
       background: var(--neon-pink);
@@ -4330,9 +4351,9 @@
       align-items: center;
       justify-content: center;
       animation: destBeaconPulse 2s infinite ease-in-out;
-      position: relative;
+      transform-origin: center;
     }
-    .dest-beacon-pin::before {
+    .dest-beacon-pin-inner::before {
       content: '';
       position: absolute;
       top: -4px;
@@ -4352,6 +4373,39 @@
     @keyframes destBeaconPulse {
       0%, 100% { transform: scale(1); }
       50% { transform: scale(1.18); }
+    }
+
+    
+    /* Vehicle Navigation Arrow Marker (Cyberpunk Blue Hexagonal Pinpointer) */
+    .vehicle-nav-marker {
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+      position: relative;
+    }
+    .vehicle-nav-halo {
+      position: absolute;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(0, 85, 255, 0.75);
+      background: radial-gradient(circle, rgba(0, 85, 255, 0.35) 0%, transparent 70%);
+      animation: vehPulse 2s ease-in-out infinite;
+    }
+    @keyframes vehPulse {
+      0%, 100% { transform: scale(0.95); opacity: 0.6; }
+      50% { transform: scale(1.22); opacity: 0.95; }
+    }
+    .vehicle-heading-arrow {
+      width: 36px;
+      height: 36px;
+      filter: drop-shadow(0 0 10px #0044ff) drop-shadow(0 0 22px rgba(0, 80, 255, 0.85));
+      z-index: 2;
+      transition: transform 0.12s cubic-bezier(0.2, 0.8, 0.2, 1);
+      transform-origin: center center;
     }
 
     /* Hazard map marker */
@@ -5225,6 +5279,14 @@
        ========================================================================== -->
   <aside class="map-controls-right">
     <div class="map-btn-group">
+      <button class="map-icon-btn" id="btn-refresh-app" data-tip="Refresh App / Reload Matrix" style="border-color: rgba(0, 240, 255, 0.35);">
+        <svg class="refresh-svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--neon-cyan)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="23 4 23 10 17 10"></polyline>
+          <polyline points="1 20 1 14 7 14"></polyline>
+          <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+        </svg>
+      </button>
+
       <button class="map-icon-btn" id="btn-locate" data-tip="Locate Netrunner (GPS)">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="7"></circle><line x1="12" y1="1" x2="12" y2="5"></line><line x1="12" y1="19" x2="12" y2="23"></line><line x1="1" y1="12" x2="5" y2="12"></line><line x1="19" y1="12" x2="23" y2="12"></line></svg>
       </button>
@@ -5271,10 +5333,6 @@
 
       <button class="map-icon-btn" id="btn-zoom-out" data-tip="Zoom Out (-)">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-      </button>
-
-      <button class="map-icon-btn" id="btn-reset-north" data-tip="Reset Bearing to North">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 19 21 12 17 5 21 12 2"></polygon></svg>
       </button>
     </div>
   </aside>
@@ -5732,7 +5790,7 @@
 
       <!-- Compass / Heading Mode Toggle (North-Up vs Heading-Up) -->
       <button class="auto-rail-btn" id="btn-auto-heading-toggle" title="Switch North-Up / Heading-Up">
-        <svg id="auto-compass-needle" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--neon-yellow)" stroke-width="2"><polygon points="12 2 19 21 12 17 5 21 12 2"></polygon></svg>
+        <svg id="auto-compass-needle" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0055ff" stroke-width="2.2" style="filter: drop-shadow(0 0 8px #0044ff);"><polygon points="12 2 19 21 12 17 5 21 12 2" fill="rgba(0, 68, 255, 0.45)"></polygon></svg>
         <span id="auto-heading-label">HEAD-UP</span>
       </button>
 
@@ -5750,6 +5808,16 @@
           <path id="sfx-wave-2" d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
         </svg>
         <span id="auto-sfx-rail-label">SFX ON</span>
+      </button>
+
+      <!-- Navigation Refresh / Reload Button -->
+      <button class="auto-rail-btn" id="btn-auto-refresh" title="Refresh App / Reload Matrix">
+        <svg class="refresh-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--neon-cyan)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="23 4 23 10 17 10"></polyline>
+          <polyline points="1 20 1 14 7 14"></polyline>
+          <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+        </svg>
+        <span>REFRESH</span>
       </button>
 
       <!-- Zoom Controls -->
@@ -5882,6 +5950,13 @@
         <div class="auto-settings-list">
           <div class="auto-setting-row">
             <div>
+              <div class="auto-setting-title">TACTICAL SIMULATION DRIVE (50 KM/H)</div>
+              <div class="auto-setting-sub">Preview live route navigation with road-snapping, azimuth locking and 3D camera follow.</div>
+            </div>
+            <button class="auto-toggle-btn" id="btn-toggle-sim-drive">START SIM</button>
+          </div>
+          <div class="auto-setting-row">
+            <div>
               <div class="auto-setting-title">OLED LOW-POWER BATTERY SAVER</div>
               <div class="auto-setting-sub">Disables CRT scanlines, dims ambient glow, uses true pure black for AMOLED screens.</div>
             </div>
@@ -5964,8 +6039,8 @@
         <div class="offline-field-group">
           <label class="offline-label">SELECT SECTOR RADIUS</label>
           <div class="offline-radius-chips">
-            <button class="offline-chip-btn active" data-radius="15">15 KM (LOCAL)</button>
-            <button class="offline-chip-btn" data-radius="25">25 KM (DISTRICT)</button>
+            <button class="offline-chip-btn" data-radius="10">10 KM (TACTICAL)</button>
+            <button class="offline-chip-btn active" data-radius="20">20 KM (RECOMMENDED)</button>
             <button class="offline-chip-btn" data-radius="50">50 KM (METROPOLIS)</button>
           </div>
         </div>
@@ -5978,17 +6053,17 @@
           </div>
           <div class="calc-row">
             <span>ESTIMATED PAYLOAD:</span>
-            <strong id="sector-calc-size" style="color: var(--neon-cyan);">~4.8 MB (~260 TILES)</strong>
+            <strong id="sector-calc-size" style="color: var(--neon-cyan);">~12.4 MB (~680 TILES)</strong>
           </div>
           <div class="calc-row">
             <span>STORAGE IMPACT:</span>
-            <span id="sector-calc-impact" style="color: var(--neon-green); font-size: 11px;">0.01% OF FREE STORAGE</span>
+            <span id="sector-calc-impact" style="color: var(--neon-green); font-size: 11px;">0.02% OF FREE STORAGE</span>
           </div>
         </div>
 
         <button class="cyber-action-btn-neon" id="btn-start-sector-download">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-          <span>DOWNLOAD LOCAL SECTOR ⚡</span>
+          <span id="sector-download-btn-text">DOWNLOAD LOCAL SECTOR (±20 KM) ⚡</span>
         </button>
       </div>
 
@@ -6689,16 +6764,24 @@
     // Vector Map Tile POI & Land Click Interactivity
     function setupVectorMapPoiClickHandlers() {
       const vectorLayers = [
+        'poi_marker_core',
+        'poi_marker_glow',
+        'poi_health_medical',
+        'poi_fuel_energy',
+        'poi_transit_transport',
         'poi_malls_shops',
         'poi_food_dining',
         'poi_business_finance',
-        'poi_health_medical',
+        'poi_civic_public',
+        'poi_education_worship',
         'poi_lodging_tourism',
+        'poi_other',
         'label_suburb_neighbourhood',
         'label_city',
         'label_town',
         'label_village',
-        'label_other'
+        'label_other',
+        'building'
       ];
 
       vectorLayers.forEach(layerId => {
@@ -6809,9 +6892,10 @@
 
       const themes = {
         neon: {
-          buildingFill: '#8b0000',
-          buildingOutline: '#ff1744',
-          buildingLine: '#dc143c',
+          buildingFill: '#dc143c',
+          buildingOutline: '#ff2a55',
+          buildingLine: '#ff2a55',
+          buildingOpacity: 0.40,
           motorwayCasing: '#4c1d95',
           motorwayLine: '#a855f7',
           trunkCasing: '#4c1d95',
@@ -6862,18 +6946,13 @@
           if (type === 'fill') {
             try {
               mapInstance.setPaintProperty(id, 'fill-color', t.buildingFill);
-              mapInstance.setPaintProperty(id, 'fill-opacity', 0.85);
+              mapInstance.setPaintProperty(id, 'fill-opacity', id.includes('interior') ? 0.18 : (t.buildingOpacity || 0.40));
               mapInstance.setPaintProperty(id, 'fill-outline-color', t.buildingOutline);
             } catch(e) {}
           } else if (type === 'line') {
             try {
               mapInstance.setPaintProperty(id, 'line-color', t.buildingLine);
-              mapInstance.setPaintProperty(id, 'line-opacity', 0.80);
-            } catch(e) {}
-          } else if (type === 'fill-extrusion') {
-            try {
-              mapInstance.setPaintProperty(id, 'fill-extrusion-color', t.buildingFill);
-              mapInstance.setPaintProperty(id, 'fill-extrusion-opacity', 0.85);
+              mapInstance.setPaintProperty(id, 'line-opacity', 0.90);
             } catch(e) {}
           }
         }
@@ -6954,7 +7033,8 @@
       applyCyberpunkCustomTheme(map);
       setupVectorMapPoiClickHandlers();
       if (currentRouteCoords && currentRouteCoords.length > 0) {
-        drawRouteOnMap(currentRouteCoords, allComputedRoutes);
+        const alts = (allComputedRoutes || []).filter((_, i) => i !== selectedRouteIndex);
+        drawRouteOnMap(currentRouteCoords, alts);
       }
       if (window.gpsTracker && window.gpsTracker.initTrailLayer) {
         window.gpsTracker.initTrailLayer();
@@ -7212,6 +7292,31 @@
       };
     }
 
+    // High-Precision Human-Readable Tactical Duration Formatting (<60m -> X MIN, >=60m -> Xh Ym)
+    function formatDuration(minutes) {
+      const m = Math.max(1, Math.round(minutes));
+      if (m < 60) {
+        return `${m} MIN`;
+      }
+      const hrs = Math.floor(m / 60);
+      const rem = m % 60;
+      return rem === 0 ? `${hrs}h` : `${hrs}h ${rem}m`;
+    }
+
+    function formatDurationDiff(diffMinutes) {
+      const d = Math.round(diffMinutes);
+      if (d === 0) return '';
+      const sign = d > 0 ? '+' : '-';
+      const absD = Math.abs(d);
+      if (absD < 60) return ` (${sign}${absD}m)`;
+      const hrs = Math.floor(absD / 60);
+      const rem = absD % 60;
+      return rem === 0 ? ` (${sign}${hrs}h)` : ` (${sign}${hrs}h ${rem}m)`;
+    }
+
+    window.formatDuration = formatDuration;
+    window.formatDurationDiff = formatDurationDiff;
+
     async function calculateValhallaRoute(autoStartNav = false, isReroute = false) {
       cyberAudio.playRadarPing();
       // Only stop navigation if this is a fresh route calculation, NOT an in-flight reroute!
@@ -7353,8 +7458,8 @@
         console.warn("[ROUTER] Valhalla request failed, trying OSRM:", vErr);
       }
 
-      // Strategy B: OSRM Highway with alternatives=true
-      if (candidateRoutes.length === 0) {
+      // Strategy B: OSRM Highway with alternatives=true (used as fallback or to discover genuine divergent road alternatives)
+      if (candidateRoutes.length <= 1) {
         try {
           const osrmProfile = currentCosting === 'pedestrian' ? 'foot' : (currentCosting === 'motorcycle' ? 'driving' : 'driving');
           const osrmUrl = `https://router.project-osrm.org/route/v1/${osrmProfile}/${origLng},${origLat};${destLng},${destLat}?overview=full&geometries=geojson&steps=true&alternatives=true`;
@@ -7366,17 +7471,41 @@
           if (res.ok) {
             const data = await res.json();
             if (data.routes && data.routes.length > 0) {
-              data.routes.forEach((r, idx) => {
-                const parsed = parseOSRMRoute(r, currentCosting, 'OSRM HIGHWAY', destInputVal);
-                if (parsed && parsed.coords.length > 0) {
-                  candidateRoutes.push({
-                    ...parsed,
-                    index: idx,
-                    name: `ROUTE 0${idx + 1}`,
-                    tag: idx === 0 ? (routeOptimization === 'shortest' ? 'SHORTEST' : 'RECOMMENDED') : (idx === 1 ? 'FASTEST' : 'SCENIC')
-                  });
-                }
-              });
+              if (candidateRoutes.length === 0) {
+                data.routes.forEach((r, idx) => {
+                  const parsed = parseOSRMRoute(r, currentCosting, 'OSRM HIGHWAY', destInputVal);
+                  if (parsed && parsed.coords.length > 0) {
+                    candidateRoutes.push({
+                      ...parsed,
+                      index: idx,
+                      name: `ROUTE 0${idx + 1}`,
+                      tag: idx === 0 ? (routeOptimization === 'shortest' ? 'SHORTEST' : 'RECOMMENDED') : (idx === 1 ? 'FASTEST' : 'SCENIC')
+                    });
+                  }
+                });
+              } else {
+                // Check if OSRM discovered a genuine alternative road corridor that diverges from Valhalla's route
+                const baseRoute = candidateRoutes[0];
+                data.routes.forEach((r) => {
+                  if (candidateRoutes.length < 3) {
+                    const parsed = parseOSRMRoute(r, currentCosting, 'OSRM HIGHWAY', destInputVal);
+                    if (parsed && parsed.coords.length > 5) {
+                      const distDiff = Math.abs(parseFloat(parsed.distanceKm) - parseFloat(baseRoute.distanceKm));
+                      const midA = baseRoute.coords[Math.floor(baseRoute.coords.length / 2)];
+                      const midB = parsed.coords[Math.floor(parsed.coords.length / 2)];
+                      const midGap = (midA && midB) ? computeGeoDistanceKm(midA[1], midA[0], midB[1], midB[0]) : 0;
+                      if (distDiff > 0.4 || midGap > 0.25) {
+                        candidateRoutes.push({
+                          ...parsed,
+                          index: candidateRoutes.length,
+                          name: `ROUTE 0${candidateRoutes.length + 1}`,
+                          tag: 'ALTERNATE ROAD'
+                        });
+                      }
+                    }
+                  }
+                });
+              }
             }
           }
         } catch (osrmErr) {
@@ -7401,36 +7530,14 @@
         candidateRoutes.sort((a, b) => a.durationMin - b.durationMin);
       }
 
-      // Ensure at least 2 distinct routes exist for comparison if route has sufficient distance
-      if (candidateRoutes.length === 1 && candidateRoutes[0].coords.length > 5 && parseFloat(candidateRoutes[0].distanceKm) > 0.35) {
-        const base = candidateRoutes[0];
-        const altCoords = base.coords.map((pt, i) => {
-          const factor = Math.sin((i / base.coords.length) * Math.PI) * 0.0035;
-          return [pt[0] + factor, pt[1] - factor * 0.4];
-        });
-        const altDist = (parseFloat(base.distanceKm) * 1.12).toFixed(2);
-        const altDuration = Math.max(1, Math.round(base.durationMin * 1.18));
-        candidateRoutes.push({
-          index: 1,
-          name: 'ROUTE 02',
-          tag: 'BYPASS VECTOR',
-          coords: altCoords,
-          distanceKm: altDist,
-          durationMin: altDuration,
-          maneuvers: base.maneuvers.map(m => ({ ...m })),
-          engineName: base.engineName,
-          summary: 'via Alternate Sector Corridor'
-        });
-      }
-
-      // Re-index names
+      // Re-index names and assign clean real-world tags (100% genuine road routes, zero fake bypass vectors)
       candidateRoutes.forEach((r, idx) => {
         r.index = idx;
         r.name = `ROUTE 0${idx + 1}`;
         if (idx === 0) {
-          r.tag = routeOptimization === 'shortest' ? 'SHORTEST' : (avoidTolls ? 'TOLL-FREE' : 'FASTEST');
-        } else if (idx === 1 && !r.tag.includes('BYPASS')) {
-          r.tag = routeOptimization === 'shortest' ? 'SECONDARY' : 'SHORTEST';
+          r.tag = routeOptimization === 'shortest' ? 'SHORTEST' : (avoidTolls ? 'TOLL-FREE' : 'RECOMMENDED');
+        } else {
+          r.tag = r.tag || (routeOptimization === 'shortest' ? 'SECONDARY' : 'ALTERNATE');
         }
       });
 
@@ -7451,7 +7558,27 @@
       if (window.androidAutoNav && window.androidAutoNav.active) {
         window.androidAutoNav.coords = currentRouteCoords;
         window.androidAutoNav.maneuvers = currentManeuvers;
+        window.androidAutoNav.activeSegmentIdx = 0;
+        window.androidAutoNav.lastAlertedManeuverIdx = -1;
+        window.androidAutoNav.lastTurnExecutedIdx = -1;
+
+        // 1. Immediately redraw the route line on the map with new rerouted coordinates!
+        drawRouteOnMap(currentRouteCoords, []);
+
+        // 2. Update destination beacon if exists
+        if (window.androidAutoNav.destMarker && currentRouteCoords.length > 0) {
+          window.androidAutoNav.destMarker.setLngLat(currentRouteCoords[currentRouteCoords.length - 1]);
+        }
+
+        // 3. Update HUD guidance telemetry
         window.androidAutoNav.updateHUDGuidance(0);
+
+        // 4. Update HUD bottom metrics
+        const distEl = document.getElementById('auto-dist-val');
+        const durEl = document.getElementById('auto-duration-val');
+        if (distEl) distEl.innerText = `${sel.distanceKm} KM`;
+        if (durEl) durEl.innerText = formatDuration(sel.durationMin);
+
         const rerouteBadge = document.getElementById('auto-reroute-badge');
         if (rerouteBadge) rerouteBadge.style.display = 'none';
         showCyberToast('[ROUTE RECALCULATED: LIVE GUIDANCE UPDATED]', 'success');
@@ -7461,7 +7588,7 @@
       // Update UI Telemetry & Directions Drawer
       document.getElementById('route-summary-card').style.display = 'flex';
       document.getElementById('route-dist-val').innerText = `${sel.distanceKm} KM`;
-      document.getElementById('route-eta-val').innerText = `${sel.durationMin} MIN`;
+      document.getElementById('route-eta-val').innerText = formatDuration(sel.durationMin);
       document.getElementById('route-engine-val').innerText = sel.engineName;
 
       const drawer = document.getElementById('directions-drawer');
@@ -7472,12 +7599,12 @@
       const mPrevPill = document.getElementById('mobile-preview-pill');
       if (mPrevPill) mPrevPill.innerText = `${sel.name} • ${sel.tag || 'RECOMMENDED'}`;
       const mPrevStats = document.getElementById('mobile-preview-metrics');
-      if (mPrevStats) mPrevStats.innerText = `${sel.distanceKm} KM • ${sel.durationMin} MIN`;
+      if (mPrevStats) mPrevStats.innerText = `${sel.distanceKm} KM • ${formatDuration(sel.durationMin)}`;
 
       const mReopenTitle = document.getElementById('reopen-pill-title');
       if (mReopenTitle) mReopenTitle.innerText = `${sel.name} (${sel.tag || 'RECOMMENDED'})`;
       const mReopenSub = document.getElementById('reopen-pill-sub');
-      if (mReopenSub) mReopenSub.innerText = `${sel.distanceKm} KM • ${sel.durationMin} MIN`;
+      if (mReopenSub) mReopenSub.innerText = `${sel.distanceKm} KM • ${formatDuration(sel.durationMin)}`;
 
       const reopenPill = document.getElementById('mobile-route-reopen-pill');
       if (reopenPill) reopenPill.style.display = 'none';
@@ -7522,7 +7649,7 @@
       // Mode summary notification
       const modeLabel = currentCosting === 'pedestrian' ? 'Walking path' : (currentCosting === 'motorcycle' ? 'Motorcycle vector' : 'Highway route');
       cyberAudio.playConfirm();
-      showCyberToast(`[${modeLabel.toUpperCase()}: ${sel.distanceKm} KM • ${sel.durationMin} MIN]`, 'neon');
+      showCyberToast(`[${modeLabel.toUpperCase()}: ${sel.distanceKm} KM • ${formatDuration(sel.durationMin)}]`, 'neon');
 
       if (autoStartNav && sel.coords && sel.coords.length > 1) {
         startRealtimeNavigation();
@@ -7550,7 +7677,7 @@
           if (idx !== selectedRouteIndex) {
             const actDur = allComputedRoutes[selectedRouteIndex].durationMin;
             const diff = rt.durationMin - actDur;
-            diffText = diff > 0 ? ` (+${diff}m)` : (diff < 0 ? ` (${diff}m)` : '');
+            diffText = formatDurationDiff(diff);
           }
 
           card.innerHTML = `
@@ -7558,7 +7685,7 @@
               <span>${rt.name}</span>
               <span class="alt-route-badge">${rt.tag}</span>
             </div>
-            <div class="alt-route-time">${rt.durationMin} MIN<span style="font-size: 10px; font-weight: normal; color: var(--neon-cyan);">${diffText}</span></div>
+            <div class="alt-route-time">${formatDuration(rt.durationMin)}<span style="font-size: 10px; font-weight: normal; color: var(--neon-cyan);">${diffText}</span></div>
             <div class="alt-route-dist">${rt.distanceKm} KM • ${rt.summary || 'Corridor'}</div>
           `;
 
@@ -7566,7 +7693,7 @@
             if (idx !== selectedRouteIndex) {
               applySelectedRoute(idx, false);
               cyberAudio.playConfirm();
-              showCyberToast(`[${rt.name} ACTIVATED: ${rt.distanceKm} KM • ${rt.durationMin} MIN]`, 'neon');
+              showCyberToast(`[${rt.name} ACTIVATED: ${rt.distanceKm} KM • ${formatDuration(rt.durationMin)}]`, 'neon');
             }
           });
 
@@ -7585,94 +7712,44 @@
       }
     }
 
-    let routeAnimFrame = null;
-    let routeAnimStep = 0;
-    function startRouteAnimation() {
-      if (routeAnimFrame) cancelAnimationFrame(routeAnimFrame);
-      if (document.body.classList.contains('reduced-motion')) return;
-
-      function step() {
-        if (!map || !map.getLayer('route-pulse')) return;
-        routeAnimStep = (routeAnimStep + 0.08) % 6;
-        const d1 = Math.max(0.1, (routeAnimStep % 3));
-        const d2 = Math.max(0.1, 3 - d1);
-        try {
-          map.setPaintProperty('route-pulse', 'line-dasharray', [d1, d2, 2]);
-        } catch(e) {}
-        routeAnimFrame = requestAnimationFrame(step);
-      }
-      routeAnimFrame = requestAnimationFrame(step);
+    function clearMainRouteLayers() {
+      if (map.getLayer('route-core')) map.removeLayer('route-core');
+      if (map.getLayer('route-pulse')) map.removeLayer('route-pulse');
+      if (map.getLayer('route-glow')) map.removeLayer('route-glow');
+      if (map.getSource('route-source')) map.removeSource('route-source');
     }
 
     function drawRouteOnMap(activeCoords, alternates = []) {
+      // 1. Completely clear prior layers and sources so the active and alternate routes are always 100% fresh
       clearAlternativeMapRoutes();
+      clearMainRouteLayers();
 
-      // 1. Render Active Selected Route (Laser Yellow)
-      const geojson = {
-        type: 'Feature',
-        geometry: {
-          type: 'LineString',
-          coordinates: activeCoords
+      if (!activeCoords || activeCoords.length < 2) return;
+
+      // Clone coordinates to prevent mutation bugs
+      let coords = activeCoords.map(pt => [pt[0], pt[1]]);
+
+      // Ensure initial route segment connects seamlessly to user's origin
+      if (routeOrigin && Array.isArray(routeOrigin) && routeOrigin.length === 2) {
+        const firstPt = coords[0];
+        const startGapKm = computeGeoDistanceKm(firstPt[1], firstPt[0], routeOrigin[1], routeOrigin[0]);
+        if (startGapKm > 0.003 && startGapKm < 2.0) {
+          coords.unshift([routeOrigin[0], routeOrigin[1]]);
         }
-      };
-
-      if (map.getSource('route-source')) {
-        map.getSource('route-source').setData(geojson);
-        if (map.getLayer('route-glow')) map.setPaintProperty('route-glow', 'line-color', '#fcee0a');
-        if (map.getLayer('route-pulse')) map.setPaintProperty('route-pulse', 'line-color', '#ffd700');
-        if (map.getLayer('route-core')) map.setPaintProperty('route-core', 'line-color', '#ffffff');
-      } else {
-        map.addSource('route-source', {
-          type: 'geojson',
-          data: geojson
-        });
-
-        // 1. Glowing outer laser (Neon Yellow Glow)
-        map.addLayer({
-          id: 'route-glow',
-          type: 'line',
-          source: 'route-source',
-          layout: { 'line-join': 'round', 'line-cap': 'round' },
-          paint: {
-            'line-color': '#fcee0a',
-            'line-width': 12,
-            'line-opacity': 0.75,
-            'line-blur': 4
-          }
-        });
-
-        // 2. Flowing cyber energy pulse (Electric Yellow Pulse)
-        map.addLayer({
-          id: 'route-pulse',
-          type: 'line',
-          source: 'route-source',
-          layout: { 'line-join': 'round', 'line-cap': 'round' },
-          paint: {
-            'line-color': '#ffd700',
-            'line-width': 7,
-            'line-dasharray': [0, 3, 2],
-            'line-opacity': 0.95
-          }
-        });
-
-        // 3. Sharp bright core laser
-        map.addLayer({
-          id: 'route-core',
-          type: 'line',
-          source: 'route-source',
-          layout: { 'line-join': 'round', 'line-cap': 'round' },
-          paint: {
-            'line-color': '#ffffff',
-            'line-width': 2.8,
-            'line-opacity': 1.0
-          }
-        });
       }
 
-      startRouteAnimation();
+      // Ensure final route segment connects seamlessly to target destination
+      if (routeDestination && Array.isArray(routeDestination) && routeDestination.length === 2) {
+        const lastPt = coords[coords.length - 1];
+        const gapKm = computeGeoDistanceKm(lastPt[1], lastPt[0], routeDestination[1], routeDestination[0]);
+        if (gapKm > 0.003 && gapKm < 2.5) {
+          coords.push([routeDestination[0], routeDestination[1]]);
+        }
+      }
 
-      // 2. Render Interactive Alternative Routes on Map (Neon Cyan / Purple Dashed Corridors)
+      // 2. Render Interactive Alternative Routes FIRST (so they are positioned UNDER the active route)
       alternates.forEach((alt, k) => {
+        if (!alt || !alt.coords || alt.coords.length < 2) return;
         const altGeojson = {
           type: 'Feature',
           geometry: {
@@ -7681,7 +7758,14 @@
           }
         };
         const altColor = k === 0 ? '#00f0ff' : '#9d00ff';
-        map.addSource(`alt-route-src-${k}`, { type: 'geojson', data: altGeojson });
+        map.addSource(`alt-route-src-${k}`, {
+          type: 'geojson',
+          data: altGeojson,
+          tolerance: 0,
+          buffer: 256,
+          lineMetrics: true,
+          maxzoom: 24
+        });
         map.addLayer({
           id: `alt-route-glow-${k}`,
           type: 'line',
@@ -7689,9 +7773,22 @@
           layout: { 'line-join': 'round', 'line-cap': 'round' },
           paint: {
             'line-color': altColor,
-            'line-width': 8,
-            'line-opacity': 0.45,
-            'line-blur': 3
+            'line-width': [
+              'interpolate', ['linear'], ['zoom'],
+              3, 3.5,
+              6, 4.8,
+              9, 6.5,
+              12, 8.5,
+              15, 11,
+              18, 13
+            ],
+            'line-opacity': 0.5,
+            'line-blur': [
+              'interpolate', ['linear'], ['zoom'],
+              3, 0.5,
+              9, 1.5,
+              15, 3
+            ]
           }
         });
         map.addLayer({
@@ -7701,7 +7798,15 @@
           layout: { 'line-join': 'round', 'line-cap': 'round' },
           paint: {
             'line-color': altColor,
-            'line-width': 3.5,
+            'line-width': [
+              'interpolate', ['linear'], ['zoom'],
+              3, 1.8,
+              6, 2.4,
+              9, 3.0,
+              12, 3.8,
+              15, 4.6,
+              18, 5.2
+            ],
             'line-dasharray': [3, 2],
             'line-opacity': 0.85
           }
@@ -7712,13 +7817,103 @@
         map.on('click', `alt-route-core-${k}`, () => {
           applySelectedRoute(alt.index, false);
           cyberAudio.playConfirm();
-          showCyberToast(`[${alt.name} ACTIVATED: ${alt.distanceKm} KM • ${alt.durationMin} MIN]`, 'neon');
+          showCyberToast(`[${alt.name} ACTIVATED: ${alt.distanceKm} KM • ${formatDuration(alt.durationMin)}]`, 'neon');
         });
       });
 
-      // 3. Anchor destination reticle marker precisely at the active route endpoint
-      if (activeCoords && activeCoords.length > 0) {
-        const finalDestCoord = activeCoords[activeCoords.length - 1];
+      // 3. Render Active Selected Route ON TOP (Vibrant Cyberpunk Laser Yellow)
+      const geojson = {
+        type: 'Feature',
+        geometry: {
+          type: 'LineString',
+          coordinates: coords
+        }
+      };
+
+      map.addSource('route-source', {
+        type: 'geojson',
+        data: geojson,
+        tolerance: 0,
+        buffer: 256,
+        lineMetrics: true,
+        maxzoom: 24
+      });
+
+      // Tier 1: Outer Neon Yellow Glow (Wide, bright ambient aura)
+      map.addLayer({
+        id: 'route-glow',
+        type: 'line',
+        source: 'route-source',
+        layout: { 'line-join': 'round', 'line-cap': 'round' },
+        paint: {
+          'line-color': '#fcee0a',
+          'line-width': [
+            'interpolate', ['linear'], ['zoom'],
+            3, 5.0,
+            6, 7.0,
+            9, 9.5,
+            12, 12.5,
+            15, 15.5,
+            18, 18.0
+          ],
+          'line-opacity': 0.85,
+          'line-blur': [
+            'interpolate', ['linear'], ['zoom'],
+            3, 0.5,
+            8, 1.2,
+            12, 2.5,
+            16, 4.0
+          ]
+        }
+      });
+
+      // Tier 2: Electric Gold Laser Pulse Beam (Solid, bold, high-contrast)
+      map.addLayer({
+        id: 'route-pulse',
+        type: 'line',
+        source: 'route-source',
+        layout: { 'line-join': 'round', 'line-cap': 'round' },
+        paint: {
+          'line-color': '#ffd700',
+          'line-width': [
+            'interpolate', ['linear'], ['zoom'],
+            3, 3.0,
+            6, 4.5,
+            9, 6.2,
+            12, 8.2,
+            15, 10.5,
+            18, 12.5
+          ],
+          'line-opacity': 0.95
+        }
+      });
+
+      // Tier 3: Razor-Sharp White Core Laser (High-precision center energy)
+      map.addLayer({
+        id: 'route-core',
+        type: 'line',
+        source: 'route-source',
+        layout: { 'line-join': 'round', 'line-cap': 'round' },
+        paint: {
+          'line-color': '#ffffff',
+          'line-width': [
+            'interpolate', ['linear'], ['zoom'],
+            3, 1.8,
+            6, 2.4,
+            9, 3.2,
+            12, 4.0,
+            15, 4.8,
+            18, 5.6
+          ],
+          'line-opacity': 1.0
+        }
+      });
+
+      // 4. Anchor destination reticle marker precisely at the active route endpoint / target destination
+      if (coords && coords.length > 0) {
+        const finalDestCoord = (routeDestination && Array.isArray(routeDestination) && routeDestination.length === 2)
+          ? [routeDestination[0], routeDestination[1]]
+          : coords[coords.length - 1];
         const destName = document.getElementById('route-destination')?.value || lastSearchedTarget?.name || 'Destination';
         if (searchTargetMarker) {
           searchTargetMarker.setLngLat(finalDestCoord);
@@ -7728,17 +7923,16 @@
           const markEl = document.createElement('div');
           markEl.className = 'search-target-marker-pulse';
           markEl.innerHTML = `<div class="target-marker-reticle"></div><div class="target-marker-dot"></div><div class="target-marker-label">${destName}</div>`;
-          searchTargetMarker = new maplibregl.Marker({ element: markEl, anchor: 'center' }).setLngLat(finalDestCoord).addTo(map);
+          searchTargetMarker = new maplibregl.Marker({ element: markEl, anchor: 'center', pitchAlignment: 'map', rotationAlignment: 'map' }).setLngLat(finalDestCoord).addTo(map);
         }
       }
 
       // Smooth camera bounds fit covering active + alternate routes
-      let allCoords = [...activeCoords];
-      alternates.forEach(alt => { allCoords = allCoords.concat(alt.coords); });
+      let allCoords = [...coords];
+      alternates.forEach(alt => { if (alt && alt.coords) allCoords = allCoords.concat(alt.coords); });
       const bounds = allCoords.reduce((b, coord) => b.extend(coord), new maplibregl.LngLatBounds(allCoords[0], allCoords[0]));
 
       if (window.innerWidth <= 768) {
-        // Generous bottom padding to frame the route perfectly in the visible map above the bottom sheet
         map.fitBounds(bounds, {
           padding: { top: 60, bottom: 250, left: 24, right: 24 },
           duration: 1200
@@ -7775,13 +7969,18 @@
         this.stepIndex = 0;
         this.currentManeuverIdx = 0;
         this.timer = null;
+        this.animFrameId = null;
         this.isHeadingUp = true;
         this.isOverview = false;
         this.isSimulating = false;
+        this.simTimer = null;
+        this.simStepIdx = 0;
         this.isCameraFollowLocked = true;
         this.isProgrammaticEasing = false;
         this.autoRecenterTimer = null;
         this.currentPos = null;
+        this.targetPos = null;
+        this.targetSpeedKmh = 0;
         this.lowPower = false;
         this.hazardAlerts = true;
         this.altRoutes = true;
@@ -7792,10 +7991,42 @@
         this.lastSpokenText = "";
         this.lastAlertedManeuverIdx = -1;
         this.lastTurnExecutedIdx = -1;
+        this.tacticalVectorActive = false;
+        this.lastTrimTime = 0;
+
+        // CoMaps-Grade Road-Snapping & Azimuth Locking
+        this.activeSegmentIdx = 0;
+        this.snappedPos = null;
+        this.snappedHeading = null;
+        this.smoothHeading = null;
+        this.isSnapped = true;
+        this.lastCameraUpdateTime = 0;
+        this.offRouteCounter = 0;
+        this.rerouteDebounce = false;
+
         this.bindDom();
       }
 
       bindDom() {
+        // Listen for manual user pan, drag or wheel during active navigation
+        const handleManualMapExplore = (source, e) => {
+          if (!this.active || this.isOverview) return;
+          if (source !== 'zoom-btn' && (!e || !e.originalEvent)) return;
+          if (this.isProgrammaticEasing) return;
+
+          if (this.isCameraFollowLocked) {
+            this.isCameraFollowLocked = false;
+            document.getElementById('btn-auto-recenter')?.classList.add('pulse-warn');
+            showCyberToast('[MAP UNLOCKED // TAP RECENTER TO LOCK]', 'info');
+          }
+          clearTimeout(this.autoRecenterTimer);
+          this.autoRecenterTimer = setTimeout(() => {
+            if (this.active && !this.isCameraFollowLocked) {
+              this.recenter();
+            }
+          }, 4500); // 4.5s auto-recenter for vehicle safety
+        };
+
         document.getElementById('btn-auto-nav-exit')?.addEventListener('click', () => this.stop());
         document.getElementById('btn-auto-overview')?.addEventListener('click', () => this.toggleOverview());
         document.getElementById('btn-auto-heading-toggle')?.addEventListener('click', () => this.toggleHeading());
@@ -7815,35 +8046,16 @@
           this.map.zoomOut();
         });
 
-        // Listen for manual user pan, drag, pinch, scroll or zoom during active navigation
-        const handleManualMapExplore = (source, e) => {
-          if (!this.active || this.isOverview || this.isProgrammaticEasing) return;
-          if (e && !e.originalEvent && source !== 'zoom-btn') return;
-
-          if (this.isCameraFollowLocked) {
-            this.isCameraFollowLocked = false;
-            document.getElementById('btn-auto-recenter')?.classList.add('pulse-warn');
-            showCyberToast('[MAP UNLOCKED // ZOOM & PAN FREELY]', 'info');
-          }
-          clearTimeout(this.autoRecenterTimer);
-          this.autoRecenterTimer = setTimeout(() => {
-            if (this.active && !this.isCameraFollowLocked) {
-              this.recenter();
-            }
-          }, 15000);
-        };
-
         this.map.on('dragstart', (e) => handleManualMapExplore('drag', e));
         this.map.on('zoomstart', (e) => handleManualMapExplore('zoom', e));
-        this.map.on('rotatestart', (e) => handleManualMapExplore('rotate', e));
-        this.map.on('pitchstart', (e) => handleManualMapExplore('pitch', e));
         this.map.on('wheel', (e) => handleManualMapExplore('wheel', e));
-        this.map.on('touchstart', (e) => {
-          if (e.points && e.points.length > 1) handleManualMapExplore('pinch', e);
-        });
         this.map.on('moveend', () => {
           this.isProgrammaticEasing = false;
         });
+
+        // Keep vehicle arrow in sync with map canvas rotation on every frame of camera ease
+        this.map.on('rotate', () => this.syncMarkerScreenRotation());
+        this.map.on('move', () => this.syncMarkerScreenRotation());
 
         // Modals
         document.getElementById('btn-auto-hazard')?.addEventListener('click', () => {
@@ -7890,6 +8102,21 @@
           e.target.innerText = this.hazardAlerts ? 'ON' : 'OFF';
           cyberAudio.playConfirm();
         });
+        document.getElementById('btn-toggle-sim-drive')?.addEventListener('click', (e) => {
+          if (this.isSimulating) {
+            if (this.simTimer) clearInterval(this.simTimer);
+            this.isSimulating = false;
+            e.target.innerText = 'START SIM';
+            e.target.classList.remove('active');
+            showCyberToast('[SIMULATION DRIVE HALTED]', 'info');
+          } else {
+            this.startSimulation(50);
+            e.target.innerText = 'STOP SIM';
+            e.target.classList.add('active');
+            document.getElementById('auto-settings-modal').style.display = 'none';
+          }
+          cyberAudio.playConfirm();
+        });
         document.getElementById('btn-toggle-alt-routes')?.addEventListener('click', (e) => {
           this.altRoutes = !this.altRoutes;
           e.target.classList.toggle('active', this.altRoutes);
@@ -7900,23 +8127,173 @@
       }
 
       updateSfxUI(isEnabled) {
-        const btn = document.getElementById('btn-auto-sfx-toggle');
         const label = document.getElementById('auto-sfx-rail-label');
-        const wave1 = document.getElementById('sfx-wave-1');
-        const wave2 = document.getElementById('sfx-wave-2');
-        if (!btn) return;
-        if (isEnabled) {
-          btn.classList.add('active');
-          btn.classList.remove('muted');
-          if (label) label.innerText = 'SFX ON';
-          if (wave1) wave1.style.display = '';
-          if (wave2) wave2.style.display = '';
-        } else {
-          btn.classList.remove('active');
-          btn.classList.add('muted');
-          if (label) label.innerText = 'MUTED';
-          if (wave1) wave1.style.display = 'none';
-          if (wave2) wave2.style.display = 'none';
+        const btn = document.getElementById('btn-auto-sfx-toggle');
+        const w1 = document.getElementById('sfx-wave-1');
+        const w2 = document.getElementById('sfx-wave-2');
+        if (label) label.innerText = isEnabled ? 'SFX ON' : 'MUTED';
+        if (btn) btn.classList.toggle('active', isEnabled);
+        if (w1) w1.style.display = isEnabled ? 'block' : 'none';
+        if (w2) w2.style.display = isEnabled ? 'block' : 'none';
+      }
+
+      // CoMaps-Grade Orthogonal Vector Road-Snapping (Map Matching)
+      projectPointOntoSegment(P, A, B) {
+        const latMid = (A[1] + B[1]) * 0.5 * Math.PI / 180;
+        const cosLat = Math.cos(latMid);
+        
+        // Convert to local Cartesian meter displacement relative to A
+        const dx = (B[0] - A[0]) * cosLat * 111320;
+        const dy = (B[1] - A[1]) * 110540;
+        const px = (P[0] - A[0]) * cosLat * 111320;
+        const py = (P[1] - A[1]) * 110540;
+        
+        const L2 = dx * dx + dy * dy;
+        let t = 0;
+        if (L2 > 0.0001) {
+          t = (px * dx + py * dy) / L2;
+          t = Math.max(0, Math.min(1, t));
+        }
+        
+        const projLng = A[0] + t * (B[0] - A[0]);
+        const projLat = A[1] + t * (B[1] - A[1]);
+        
+        const perpX = px - t * dx;
+        const perpY = py - t * dy;
+        const distMeters = Math.sqrt(perpX * perpX + perpY * perpY);
+        
+        return {
+          point: [projLng, projLat],
+          distance: distMeters,
+          t: t
+        };
+      }
+
+      snapToRoute(rawPos, rawHeading, speedKmh) {
+        if (!this.coords || this.coords.length < 2) {
+          return { snappedPos: rawPos, heading: rawHeading || 0, isSnapped: false, segmentIdx: 0, distanceToRoute: 0 };
+        }
+
+        const totalSegments = this.coords.length - 1;
+        // Search window centered around current active segment to prevent backward leaping
+        const searchStart = Math.max(0, this.activeSegmentIdx - 1);
+        const searchEnd = Math.min(totalSegments - 1, this.activeSegmentIdx + 12);
+
+        let bestDist = Infinity;
+        let bestProj = null;
+        let bestIdx = this.activeSegmentIdx;
+
+        for (let i = searchStart; i <= searchEnd; i++) {
+          const segStart = this.coords[i];
+          const segEnd = this.coords[i + 1];
+          const proj = this.projectPointOntoSegment(rawPos, segStart, segEnd);
+
+          // Continuous forward progression penalty
+          let penalty = Math.abs(i - this.activeSegmentIdx) * 1.5;
+
+          // Directional consistency check (CoMaps / Organic Maps algorithm):
+          // If driving fast, apply heavy penalty to opposite-direction segments (switchbacks/divided roads)
+          const segBearing = this.calculateHeading(segStart, segEnd);
+          if (speedKmh >= 6 && typeof rawHeading === 'number' && !isNaN(rawHeading) && rawHeading >= 0) {
+            const hDiff = Math.abs((segBearing - rawHeading + 180) % 360 - 180);
+            if (hDiff > 70) {
+              penalty += 60;
+            }
+          }
+
+          const effectiveDist = proj.distance + penalty;
+
+          if (effectiveDist < bestDist) {
+            bestDist = effectiveDist;
+            bestProj = proj;
+            bestIdx = i;
+          }
+        }
+
+        // Snap corridor tolerance: 38m in city, 55m at high speeds (> 60 km/h)
+        const snapThreshold = speedKmh > 60 ? 55 : 38;
+
+        if (bestProj && bestProj.distance <= snapThreshold) {
+          this.activeSegmentIdx = bestIdx;
+          this.isSnapped = true;
+
+          // Road segment vector azimuth (bearing)
+          const segBearing = this.calculateHeading(this.coords[bestIdx], this.coords[bestIdx + 1]);
+
+          // When moving on the road (>= 4 km/h), lock bearing 100% to the road segment!
+          // Completely eliminates magnetic engine interference and compass vibration flutter.
+          let resolvedHeading = segBearing;
+          if (speedKmh < 4) {
+            // When stopped at red light / stationary:
+            // Use sensor compass if available, otherwise stay locked to road
+            const compHdg = window.gpsTracker?.compassHeading;
+            if (typeof compHdg === 'number' && !isNaN(compHdg)) {
+              resolvedHeading = compHdg;
+            }
+          }
+
+          return {
+            snappedPos: bestProj.point,
+            heading: resolvedHeading,
+            segmentBearing: segBearing,
+            distanceToRoute: bestProj.distance,
+            isSnapped: true,
+            segmentIdx: bestIdx
+          };
+        }
+
+        // Off-route: vehicle has genuinely deviated from the road corridor
+        this.isSnapped = false;
+        return {
+          snappedPos: rawPos,
+          heading: (typeof rawHeading === 'number' && !isNaN(rawHeading) && rawHeading >= 0) ? rawHeading : (window.gpsTracker?.compassHeading || 0),
+          segmentBearing: null,
+          distanceToRoute: bestDist,
+          isSnapped: false,
+          segmentIdx: bestIdx
+        };
+      }
+
+      smoothHeadingDampened(current, target, deadbandDeg = 3.0, alpha = 0.22) {
+        if (current === null || current === undefined || isNaN(current)) return target;
+        let diff = (target - current + 180) % 360 - 180;
+        
+        // Deadband filter: ignore micro-fluctuations from engine vibration or hand jitter
+        if (Math.abs(diff) < deadbandDeg) {
+          return current;
+        }
+        
+        return (current + diff * alpha + 360) % 360;
+      }
+
+      syncMarkerScreenRotation() {
+        if (!this.vehicleMarker || typeof this.smoothHeading !== 'number') return;
+        const currentMapBearing = this.map ? this.map.getBearing() : 0;
+        const screenHeading = this.isHeadingUp
+          ? (this.smoothHeading - currentMapBearing + 360) % 360
+          : this.smoothHeading;
+
+        const svgEl = this.vehicleMarker.getElement().querySelector('.vehicle-heading-arrow') || this.vehicleMarker.getElement().querySelector('svg');
+        if (svgEl) {
+          svgEl.style.transform = `rotate(${screenHeading}deg)`;
+        }
+
+        // Floating rail compass needle always points to Magnetic North (or target destination in Tactical Vector Mode)
+        const needle = document.getElementById('auto-compass-needle');
+        if (needle) {
+          if (this.tacticalVectorActive && this.coords && this.coords.length > 0) {
+            const destCoord = this.coords[this.coords.length - 1];
+            const curPt = this.currentPos || this.coords[0];
+            const destBearing = this.calculateHeading(curPt, destCoord);
+            const targetRotation = (destBearing - currentMapBearing + 360) % 360;
+            needle.style.transform = `rotate(${targetRotation}deg)`;
+            needle.style.stroke = 'var(--neon-pink)';
+            needle.style.filter = 'drop-shadow(0 0 6px var(--neon-pink))';
+          } else {
+            needle.style.transform = `rotate(${360 - currentMapBearing}deg)`;
+            needle.style.stroke = '#0055ff';
+            needle.style.filter = 'drop-shadow(0 0 8px #0044ff)';
+          }
         }
       }
 
@@ -7932,6 +8309,17 @@
         this.currentManeuverIdx = 0;
         this.lastAlertedManeuverIdx = -1;
         this.lastTurnExecutedIdx = -1;
+
+        // Reset road-snapping state
+        this.activeSegmentIdx = 0;
+        this.snappedPos = null;
+        this.snappedHeading = null;
+        this.smoothHeading = null;
+        this.isSnapped = true;
+        this.lastCameraUpdateTime = 0;
+        this.offRouteCounter = 0;
+        this.rerouteDebounce = false;
+
         this.isOverview = false;
         this.isHeadingUp = true;
         this.isSimulating = false;
@@ -7958,8 +8346,10 @@
         this.updateSfxUI(!cyberAudio.navSfxMuted);
         cyberAudio.playNavStart();
 
+        // Mute general GPS follow so only NavEngine controls the camera
         if (window.gpsTracker) {
           window.gpsTracker.setNavStatus('NAVIGATING');
+          window.gpsTracker.isFollowEnabled = false;
           if (window.gpsTracker.markerEl) {
             window.gpsTracker.markerEl.style.display = 'none';
           }
@@ -7976,25 +8366,34 @@
           else speedLimitEl.innerText = 'LIMIT 60';
         }
 
-        // Destination beacon marker (anchor: center prevents zoom drift)
+        // Destination beacon marker (zero-drift geo-pinning)
         const destCoord = this.coords[this.coords.length - 1];
         const destEl = document.createElement('div');
         destEl.className = 'dest-beacon-pin';
-        destEl.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="3"></circle><path d="M12 2v3M12 19v3M2 12h3M19 12h3"></path></svg>`;
+        destEl.innerHTML = `<div class="dest-beacon-pin-inner"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="3"></circle><path d="M12 2v3M12 19v3M2 12h3M19 12h3"></path></svg></div>`;
         if (this.destMarker) this.destMarker.remove();
-        this.destMarker = new maplibregl.Marker({ element: destEl, anchor: 'center' }).setLngLat(destCoord).addTo(this.map);
+        this.destMarker = new maplibregl.Marker({ element: destEl, anchor: 'center', pitchAlignment: 'map', rotationAlignment: 'map' }).setLngLat(destCoord).addTo(this.map);
 
         // Vehicle marker at user's live GPS position (anchor: center)
         const startPos = window.gpsTracker?.currentPos || this.coords[0];
+        this.currentPos = [startPos[0], startPos[1]];
+        this.targetPos = [startPos[0], startPos[1]];
         const vehEl = document.createElement('div');
         vehEl.className = 'vehicle-nav-marker';
         vehEl.innerHTML = `
-          <div style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; pointer-events: none;">
-            <div style="position: absolute; width: 38px; height: 38px; border-radius: 50%; border: 1.5px solid rgba(0,240,255,0.6); background: radial-gradient(circle, rgba(0,240,255,0.25) 0%, transparent 70%);"></div>
-            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" style="filter: drop-shadow(0 0 10px #00f0ff); z-index: 2;">
-              <polygon points="12,2 20,18 12,14 4,18" fill="#00f0ff" stroke="#ffffff" stroke-width="1.8" stroke-linejoin="round"></polygon>
-            </svg>
-          </div>
+          <div class="vehicle-nav-halo"></div>
+          <svg class="vehicle-heading-arrow" viewBox="0 0 36 36" fill="none">
+            <!-- Outer Glow & Main Electric Dark Blue Arrowhead -->
+            <polygon points="18,3 32,31 18,24 4,31" fill="#003cd6" stroke="#00d4ff" stroke-width="1.8" stroke-linejoin="round"></polygon>
+            <!-- Left Wing: Deep Saturated Electric Dark Blue Shadow -->
+            <polygon points="18,3 18,24 4,31" fill="#002288"></polygon>
+            <!-- Right Wing: Vibrant Electric Dark Blue Body -->
+            <polygon points="18,3 32,31 18,24" fill="#0047ff"></polygon>
+            <!-- Centerline Cyber Stealth Spine -->
+            <polygon points="18,7 23,23 18,20.5 13,23" fill="#001040" stroke="#00f0ff" stroke-width="1" stroke-linejoin="round"></polygon>
+            <!-- Glowing Apex Core Beacon -->
+            <circle cx="18" cy="15" r="2.2" fill="#00f0ff"></circle>
+          </svg>
         `;
         if (this.vehicleMarker) this.vehicleMarker.remove();
         this.vehicleMarker = new maplibregl.Marker({ element: vehEl, anchor: 'center' }).setLngLat(startPos).addTo(this.map);
@@ -8009,24 +8408,129 @@
           this.turnMarker = new maplibregl.Marker({ element: turnEl, anchor: 'center' }).setLngLat(this.coords[turnIdx]).addTo(this.map);
         }
 
-        // 3D camera centered on live vehicle position
+        // 3D glanceable camera with driver lookahead perspective
         const startHeading = (window.gpsTracker?.heading && window.gpsTracker.heading > 0) ? window.gpsTracker.heading : this.calculateHeading(this.coords[0], this.coords[1]);
+        this.smoothHeading = startHeading;
+        const lookaheadY = this.isHeadingUp ? window.innerHeight * 0.20 : 0;
         this.map.easeTo({
           center: startPos,
           zoom: 17.2,
-          pitch: 55,
-          bearing: startHeading,
-          duration: 1200
+          pitch: this.isHeadingUp ? 55 : 0,
+          bearing: this.isHeadingUp ? startHeading : 0,
+          offset: [0, lookaheadY],
+          duration: 1000
         });
+
+        // Ensure complete route geometry is initially drawn on map
+        drawRouteOnMap(this.coords);
+        this.tacticalVectorActive = false;
+        this.removeTacticalVectorLine();
 
         // Initialize HUD telemetry display
         this.updateHUDGuidance(0);
+        this.trimRouteBehindVehicle(startPos, 0);
+
+        // Launch 60fps smoothing render loop
+        this.startRenderLoop();
 
         // Announce route start
         cyberAudio.playConfirm();
 
         // Alternative Route line
         if (this.altRoutes) this.drawAlternativeRoute();
+      }
+
+      trimRouteBehindVehicle(currentPos, segmentIdx) {
+        if (!this.active || !this.coords || this.coords.length < 2) return;
+        const source = this.map.getSource('route-source');
+        if (!source) return;
+
+        const curPoint = currentPos || this.currentPos;
+        if (!curPoint) return;
+
+        const segIdx = typeof segmentIdx === 'number' ? segmentIdx : (this.activeSegmentIdx || 0);
+
+        // Dynamic Route Slicing: Only forward path ahead of the vehicle is illuminated in yellow
+        const remainingCoords = [curPoint];
+        const nextIdx = Math.max(0, Math.min(segIdx + 1, this.coords.length));
+        for (let i = nextIdx; i < this.coords.length; i++) {
+          remainingCoords.push(this.coords[i]);
+        }
+
+        if (remainingCoords.length >= 2) {
+          source.setData({
+            type: 'Feature',
+            geometry: {
+              type: 'LineString',
+              coordinates: remainingCoords
+            }
+          });
+        }
+      }
+
+      startRenderLoop() {
+        if (this.animFrameId) cancelAnimationFrame(this.animFrameId);
+        const render = () => {
+          if (!this.active) return;
+
+          // 60fps smooth position interpolation along road centerline
+          if (this.targetPos && this.currentPos) {
+            this.currentPos[0] += (this.targetPos[0] - this.currentPos[0]) * 0.20;
+            this.currentPos[1] += (this.targetPos[1] - this.currentPos[1]) * 0.20;
+
+            if (this.vehicleMarker) {
+              this.vehicleMarker.setLngLat(this.currentPos);
+            }
+
+            // Continuous micro-trim so the yellow line disappears smoothly beneath the vehicle arrow
+            const now = Date.now();
+            if (now - (this.lastTrimTime || 0) > 90) {
+              this.lastTrimTime = now;
+              this.trimRouteBehindVehicle(this.currentPos, this.activeSegmentIdx);
+            }
+          }
+
+          // Keep marker and needle aligned with viewport bearing
+          this.syncMarkerScreenRotation();
+
+          // Camera follow throttled to 220ms intervals
+          if (!this.isOverview && this.isCameraFollowLocked && this.currentPos) {
+            const now = Date.now();
+            if (now - this.lastCameraUpdateTime > 220) {
+              this.lastCameraUpdateTime = now;
+              this.updateCameraFollowStep();
+            }
+          }
+
+          this.animFrameId = requestAnimationFrame(render);
+        };
+        this.animFrameId = requestAnimationFrame(render);
+      }
+
+      updateCameraFollowStep() {
+        if (!this.active || this.isOverview || !this.isCameraFollowLocked || !this.currentPos) return;
+
+        const speedKmh = this.targetSpeedKmh || 0;
+        let targetZoom = 17.3;
+        if (speedKmh > 75) targetZoom = 15.6;
+        else if (speedKmh > 40) targetZoom = 16.5;
+
+        const lookaheadY = this.isHeadingUp ? window.innerHeight * 0.20 : 0;
+        const targetBearing = this.isHeadingUp ? (this.smoothHeading || 0) : 0;
+        const targetPitch = this.isHeadingUp ? 55 : 0;
+
+        this.isProgrammaticEasing = true;
+        this.map.easeTo({
+          center: this.currentPos,
+          zoom: targetZoom,
+          pitch: targetPitch,
+          bearing: targetBearing,
+          offset: [0, lookaheadY],
+          duration: 380,
+          easing: t => t * (2 - t)
+        });
+
+        setTimeout(() => { this.isProgrammaticEasing = false; }, 400);
       }
 
       updateHUDGuidance(currStepIdx) {
@@ -8036,9 +8540,13 @@
         const progressBar = document.getElementById('auto-nav-progress-bar');
         if (progressBar) progressBar.style.width = `${Math.round(progress * 100)}%`;
 
-        // Remaining distance along route
+        // Remaining distance along route from current vehicle position
         let remMeters = 0;
-        for (let i = currStepIdx; i < totalSteps - 1; i++) {
+        const curPt = this.currentPos || this.coords[currStepIdx];
+        if (this.coords[currStepIdx + 1]) {
+          remMeters += this.getDistance(curPt, this.coords[currStepIdx + 1]);
+        }
+        for (let i = currStepIdx + 1; i < totalSteps - 1; i++) {
           remMeters += this.getDistance(this.coords[i], this.coords[i + 1]);
         }
         const remKm = (remMeters / 1000).toFixed(1);
@@ -8055,7 +8563,7 @@
         }
         const remMin = Math.max(1, Math.round((remMeters / 1000) / (effectiveSpeedKmh / 60)));
         document.getElementById('auto-dist-val').innerText = `${remKm} KM`;
-        document.getElementById('auto-duration-val').innerText = `${remMin} MIN`;
+        document.getElementById('auto-duration-val').innerText = formatDuration(remMin);
 
         const etaDate = new Date(Date.now() + remMin * 60000);
         const etaH = etaDate.getHours();
@@ -8126,22 +8634,30 @@
 
       updateLivePosition(lng, lat, speed, heading) {
         if (!this.active) return;
-        const curPos = [lng, lat];
-        if (this.vehicleMarker) this.vehicleMarker.setLngLat(curPos);
-
-        // Find closest point on route coords
-        let minD = Infinity;
-        let closestIdx = 0;
-        for (let i = 0; i < this.coords.length; i++) {
-          const d = this.getDistance(curPos, this.coords[i]);
-          if (d < minD) { minD = d; closestIdx = i; }
+        const rawPos = [lng, lat];
+        
+        let speedKmh = 0;
+        if (typeof speed === 'number' && !isNaN(speed) && speed > 0) {
+          speedKmh = speed > 100 ? speed : speed * 3.6;
+        } else if (window.gpsTracker && typeof window.gpsTracker.speed === 'number') {
+          speedKmh = window.gpsTracker.speed;
         }
+        speedKmh = Math.max(0, Math.round(speedKmh));
+        this.targetSpeedKmh = speedKmh;
 
-        // Automatic Rerouting: realistic threshold (50m+) and requires 3 consecutive fixes
-        // to prevent normal GPS drift/jitter from triggering false reroutes
-        const offRouteThreshold = Math.max(50, (window.gpsTracker?.accuracy || 15) * 1.5);
-        if (minD > offRouteThreshold) {
-          this.offRouteCounter = (this.offRouteCounter || 0) + 1;
+        // 1. CoMaps-Grade Orthogonal Snap-to-Route Map Matching
+        const snap = this.snapToRoute(rawPos, heading, speedKmh);
+        this.targetPos = snap.snappedPos;
+        if (!this.currentPos) this.currentPos = [snap.snappedPos[0], snap.snappedPos[1]];
+
+        // 2. Off-Route & Automatic Reroute Detection (requires 3 consecutive fixes beyond 45m)
+        if (!snap.isSnapped) {
+          const offRouteThreshold = Math.max(45, (window.gpsTracker?.accuracy || 15) * 1.5);
+          if (snap.distanceToRoute > offRouteThreshold) {
+            this.offRouteCounter = (this.offRouteCounter || 0) + 1;
+          } else {
+            this.offRouteCounter = 0;
+          }
         } else {
           this.offRouteCounter = 0;
         }
@@ -8151,68 +8667,148 @@
           this.offRouteCounter = 0;
           cyberAudio.playNavReroute();
           const rerouteBadge = document.getElementById('auto-reroute-badge');
-          if (rerouteBadge) rerouteBadge.style.display = 'inline-block';
+          if (rerouteBadge) {
+            rerouteBadge.innerText = 'REROUTING...';
+            rerouteBadge.style.display = 'inline-block';
+            rerouteBadge.style.background = '';
+            rerouteBadge.style.border = '';
+            rerouteBadge.style.color = '';
+          }
           setTimeout(async () => {
-            const userPos = window.gpsTracker?.currentPos || curPos;
+            const userPos = window.gpsTracker?.currentPos || rawPos;
             routeOrigin = [userPos[0], userPos[1]];
-            await calculateValhallaRoute(false, true);
-            if (rerouteBadge) rerouteBadge.style.display = 'none';
+            
+            let recalculated = false;
+            if (navigator.onLine) {
+              try {
+                await calculateValhallaRoute(false, true);
+                recalculated = true;
+                this.disableTacticalVectorMode();
+              } catch(e) {
+                console.warn('[NAV] Online recalculation failed:', e);
+              }
+            }
+
+            if (!recalculated) {
+              try {
+                await calculateValhallaRoute(false, true);
+                if (allComputedRoutes && allComputedRoutes.length > 0) {
+                  recalculated = true;
+                }
+              } catch(e) {}
+
+              // If completely offline or off-route with no network, engage Tactical Vector Mode
+              if (!navigator.onLine || !recalculated) {
+                this.enableTacticalVectorMode();
+              }
+            }
+
+            if (rerouteBadge && !this.tacticalVectorActive) rerouteBadge.style.display = 'none';
             this.rerouteDebounce = false;
-          }, 1000);
+          }, 800);
           return;
         }
 
-        // Check arrival
+        // 3. Check Destination Arrival (< 22m from destination coordinate)
         const destCoord = this.coords[this.coords.length - 1];
-        if (this.getDistance(curPos, destCoord) < 25) {
+        if (this.getDistance(this.targetPos, destCoord) < 22) {
           this.onArrived();
           return;
         }
 
-        // Smart Sensor Fusion: GPS Velocity Vector + Hardware Magnetometer Compass
-        const speedKmh = Math.max(0, Math.round((speed || 0) * 3.6));
-        const compassHdg = window.gpsTracker?.compassHeading;
-        const hasGpsHdg = (typeof heading === 'number' && !isNaN(heading) && heading >= 0);
+        // 4. Vibration-Dampened Angular Smoothing (Road-Bearing Lock + Deadband Filter)
+        const deadband = speedKmh >= 4 ? 2.0 : 5.0;
+        const alpha = speedKmh >= 15 ? 0.35 : (speedKmh >= 4 ? 0.25 : 0.12);
+        this.smoothHeading = this.smoothHeadingDampened(this.smoothHeading, snap.heading, deadband, alpha);
 
-        let effHeading = 0;
-        if (speedKmh < 4 && typeof compassHdg === 'number' && !isNaN(compassHdg)) {
-          // Stationary or walking (< 4 km/h): physical compass orientation is authoritative
-          effHeading = compassHdg;
-        } else if (hasGpsHdg && speedKmh >= 15) {
-          // Highway driving (>= 15 km/h): GPS course is authoritative
-          effHeading = heading;
-        } else if (hasGpsHdg && typeof compassHdg === 'number' && !isNaN(compassHdg)) {
-          // Moderate city speeds (4 - 15 km/h): Smooth complementary blend
-          const diff = (compassHdg - heading + 180) % 360 - 180;
-          effHeading = (heading + diff * 0.4 + 360) % 360;
-        } else if (hasGpsHdg) {
-          effHeading = heading;
-        } else if (typeof compassHdg === 'number' && !isNaN(compassHdg)) {
-          effHeading = compassHdg;
-        } else if (this.coords[closestIdx + 1]) {
-          effHeading = this.calculateHeading(curPos, this.coords[closestIdx + 1]);
+        // 5. Update Speed Display & Turn-by-Turn Guidance HUD
+        const speedValEl = document.getElementById('auto-speed-val');
+        if (speedValEl) speedValEl.innerText = speedKmh;
+
+        this.updateHUDGuidance(snap.segmentIdx);
+
+        // 6. Dynamic Route Slicing: Trim yellow route line behind vehicle as it moves over it
+        this.trimRouteBehindVehicle(snap.snappedPos, snap.segmentIdx);
+      }
+
+      enableTacticalVectorMode() {
+        this.tacticalVectorActive = true;
+        const destCoord = this.coords && this.coords.length > 0 ? this.coords[this.coords.length - 1] : routeDestination;
+        const curPt = this.currentPos || (window.gpsTracker?.currentPos) || [0, 0];
+        if (!destCoord || !curPt[0]) return;
+
+        const bearing = Math.round(this.calculateHeading(curPt, destCoord));
+        const distKm = (this.getDistance(curPt, destCoord) / 1000).toFixed(1);
+
+        const badge = document.getElementById('auto-reroute-badge');
+        if (badge) {
+          badge.innerText = 'TACTICAL VECTOR';
+          badge.style.display = 'inline-block';
+          badge.style.background = 'rgba(255, 0, 85, 0.3)';
+          badge.style.border = '1px solid var(--neon-pink)';
+          badge.style.color = 'var(--neon-pink)';
         }
 
-        const svgEl = this.vehicleMarker?.getElement().querySelector('svg');
-        if (svgEl) svgEl.style.transform = `rotate(${effHeading}deg)`;
+        const turnDist = document.getElementById('auto-turn-dist');
+        const turnStreet = document.getElementById('auto-turn-street');
+        const turnIcon = document.getElementById('auto-turn-icon');
+        if (turnDist) turnDist.innerText = `${distKm} km`;
+        if (turnStreet) turnStreet.innerText = `DIRECT VECTOR // BEARING ${bearing}° TO ${this.destName.toUpperCase()}`;
+        if (turnIcon) {
+          turnIcon.innerHTML = `<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--neon-pink)" stroke-width="2.5"><circle cx="12" cy="12" r="9"></circle><polygon points="12,6 16,14 12,12 8,14"></polygon></svg>`;
+        }
 
-        this.currentPos = curPos;
+        this.drawTacticalVectorLine(curPt, destCoord);
+        cyberAudio.playWarning();
+        showCyberToast('[OFFLINE // TACTICAL VECTOR COMPASS ENGAGED]', 'warning');
+      }
 
-        if (!this.isOverview && this.isCameraFollowLocked) {
-          if (this.isHeadingUp) {
-            this.map.easeTo({ center: curPos, bearing: effHeading, pitch: 55, duration: 400 });
-          } else {
-            this.map.easeTo({ center: curPos, bearing: 0, pitch: 0, duration: 400 });
+      disableTacticalVectorMode() {
+        if (!this.tacticalVectorActive) return;
+        this.tacticalVectorActive = false;
+        const badge = document.getElementById('auto-reroute-badge');
+        if (badge) {
+          badge.style.display = 'none';
+          badge.style.background = '';
+          badge.style.border = '';
+          badge.style.color = '';
+        }
+        this.removeTacticalVectorLine();
+      }
+
+      drawTacticalVectorLine(startPt, endPt) {
+        const geojson = {
+          type: 'Feature',
+          geometry: {
+            type: 'LineString',
+            coordinates: [startPt, endPt]
           }
+        };
+        if (this.map.getSource('tactical-vector-src')) {
+          this.map.getSource('tactical-vector-src').setData(geojson);
+        } else {
+          this.map.addSource('tactical-vector-src', { type: 'geojson', data: geojson });
+          this.map.addLayer({
+            id: 'tactical-vector-line',
+            type: 'line',
+            source: 'tactical-vector-src',
+            paint: {
+              'line-color': '#ff0055',
+              'line-width': 3.5,
+              'line-dasharray': [2, 2],
+              'line-opacity': 0.95
+            }
+          });
         }
+      }
 
-        const bearing = this.map.getBearing();
-        const needle = document.getElementById('auto-compass-needle');
-        if (needle) needle.style.transform = `rotate(${360 - bearing}deg)`;
-
-        document.getElementById('auto-speed-val').innerText = speedKmh;
-
-        this.updateHUDGuidance(closestIdx);
+      removeTacticalVectorLine() {
+        if (this.map.getLayer('tactical-vector-line')) {
+          this.map.removeLayer('tactical-vector-line');
+        }
+        if (this.map.getSource('tactical-vector-src')) {
+          this.map.removeSource('tactical-vector-src');
+        }
       }
 
       onArrived() {
@@ -8221,11 +8817,29 @@
         document.getElementById('auto-turn-street').innerText = 'Arrived at Destination';
         document.getElementById('auto-nav-progress-bar').style.width = '100%';
         cyberAudio.playNavArrived();
+        if (this.simTimer) {
+          clearInterval(this.simTimer);
+          this.simTimer = null;
+          this.isSimulating = false;
+        }
       }
 
       stop() {
         this.active = false;
+        this.disableTacticalVectorMode();
         this.isCameraFollowLocked = true;
+        this.snappedPos = null;
+        this.smoothHeading = null;
+        this.isSnapped = false;
+        if (this.animFrameId) {
+          cancelAnimationFrame(this.animFrameId);
+          this.animFrameId = null;
+        }
+        if (this.simTimer) {
+          clearInterval(this.simTimer);
+          this.simTimer = null;
+          this.isSimulating = false;
+        }
         clearTimeout(this.autoRecenterTimer);
         document.getElementById('btn-auto-recenter')?.classList.remove('pulse-warn');
 
@@ -8240,6 +8854,11 @@
           this.map.removeSource('alt-route-source');
         }
 
+        // Restore full route geometry on map if route still exists
+        if (currentRouteCoords && currentRouteCoords.length > 1) {
+          drawRouteOnMap(currentRouteCoords);
+        }
+
         document.body.classList.remove('nav-mode-active');
         document.getElementById('android-auto-nav').style.display = 'none';
         if (window.gpsTracker) {
@@ -8251,7 +8870,7 @@
 
         cyberAudio.playBeep(440, 0.08);
 
-        this.map.easeTo({ pitch: 45, bearing: 0, duration: 800 });
+        this.map.easeTo({ pitch: 45, bearing: 0, offset: [0, 0], duration: 800 });
       }
 
       toggleOverview() {
@@ -8283,17 +8902,22 @@
         clearTimeout(this.autoRecenterTimer);
         document.getElementById('btn-auto-recenter')?.classList.remove('pulse-warn');
         document.getElementById('btn-auto-overview')?.classList.remove('active');
+
         const pos = this.currentPos || window.gpsTracker?.currentPos || this.coords[0];
-        const heading = (window.gpsTracker?.heading && window.gpsTracker.heading > 0) ? window.gpsTracker.heading : (this.coords[1] ? this.calculateHeading(this.coords[0], this.coords[1]) : 0);
+        const heading = (typeof this.smoothHeading === 'number') ? this.smoothHeading : (this.coords[1] ? this.calculateHeading(this.coords[0], this.coords[1]) : 0);
+        const lookaheadY = this.isHeadingUp ? window.innerHeight * 0.20 : 0;
+
         this.map.easeTo({
           center: pos,
           zoom: 17.2,
           pitch: this.isHeadingUp ? 55 : 0,
           bearing: this.isHeadingUp ? heading : 0,
-          duration: 800
+          offset: [0, lookaheadY],
+          duration: 650,
+          easing: t => t * (2 - t)
         });
-        setTimeout(() => { this.isProgrammaticEasing = false; }, 950);
-        showCyberToast('[CAMERA RECENTERED & LOCKED ON VEHICLE]', 'success');
+        setTimeout(() => { this.isProgrammaticEasing = false; }, 700);
+        showCyberToast('[CAMERA LOCKED // ROAD-ALIGNED]', 'success');
       }
 
       reportHazard(type) {
@@ -8304,7 +8928,6 @@
         el.innerHTML = `<span>⚠️</span><span>${type}</span>`;
         const marker = new maplibregl.Marker({ element: el }).setLngLat(curCoord).addTo(this.map);
         this.hazardMarkers.push(marker);
-
       }
 
       addNearbyStop(poiType) {
@@ -8325,30 +8948,51 @@
       }
 
       drawAlternativeRoute() {
-        if (!this.coords || this.coords.length < 4) return;
-        const altCoords = this.coords.map((c, i) => {
-          const offsetFactor = Math.sin((i / this.coords.length) * Math.PI) * 0.003;
-          return [c[0] + offsetFactor, c[1] - offsetFactor * 0.5];
-        });
+        // Render genuine alternative road route from allComputedRoutes if available
+        const altRoute = (typeof allComputedRoutes !== 'undefined' && allComputedRoutes.length > 1)
+          ? allComputedRoutes.find((r, idx) => idx !== selectedRouteIndex && r.coords && r.coords.length > 1)
+          : null;
+
+        if (!altRoute || !altRoute.coords || altRoute.coords.length < 2) {
+          if (this.map.getLayer('alt-route-line')) this.map.removeLayer('alt-route-line');
+          if (this.map.getSource('alt-route-source')) this.map.removeSource('alt-route-source');
+          return;
+        }
 
         const altGeojson = {
           type: 'Feature',
-          geometry: { type: 'LineString', coordinates: altCoords }
+          geometry: { type: 'LineString', coordinates: altRoute.coords }
         };
 
         if (this.map.getSource('alt-route-source')) {
           this.map.getSource('alt-route-source').setData(altGeojson);
+          if (this.map.getLayer('alt-route-line')) {
+            this.map.setLayoutProperty('alt-route-line', 'visibility', 'visible');
+          }
         } else {
-          this.map.addSource('alt-route-source', { type: 'geojson', data: altGeojson });
+          this.map.addSource('alt-route-source', {
+            type: 'geojson',
+            data: altGeojson,
+            tolerance: 0,
+            buffer: 256,
+            lineMetrics: true,
+            maxzoom: 24
+          });
           this.map.addLayer({
             id: 'alt-route-line',
             type: 'line',
             source: 'alt-route-source',
             layout: { 'line-join': 'round', 'line-cap': 'round' },
             paint: {
-              'line-color': '#9d00ff',
-              'line-width': 4,
-              'line-opacity': 0.65,
+              'line-color': '#00f0ff',
+              'line-width': [
+                'interpolate', ['linear'], ['zoom'],
+                3, 2.5,
+                8, 3.8,
+                12, 5.5,
+                16, 7
+              ],
+              'line-opacity': 0.75,
               'line-dasharray': [2, 2]
             }
           });
@@ -8419,6 +9063,49 @@
         }
         return `<line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/>`;
       }
+
+      startSimulation(speedKmh = 50) {
+        if (!this.coords || this.coords.length < 2) return;
+        if (this.simTimer) clearInterval(this.simTimer);
+        this.isSimulating = true;
+        this.simStepIdx = 0;
+        showCyberToast(`[RUNNING TACTICAL NAV SIMULATION: ${speedKmh} KM/H]`, 'neon');
+
+        const intervalMs = 200;
+        const metersPerSec = speedKmh / 3.6;
+        const metersPerStep = metersPerSec * (intervalMs / 1000);
+
+        let curSimPos = [this.coords[0][0], this.coords[0][1]];
+        let segIdx = 0;
+
+        this.simTimer = setInterval(() => {
+          if (!this.active || !this.isSimulating) {
+            clearInterval(this.simTimer);
+            return;
+          }
+
+          if (segIdx >= this.coords.length - 1) {
+            this.onArrived();
+            clearInterval(this.simTimer);
+            return;
+          }
+
+          const targetPt = this.coords[segIdx + 1];
+          const distToTarget = this.getDistance(curSimPos, targetPt);
+
+          if (distToTarget <= metersPerStep) {
+            curSimPos = [targetPt[0], targetPt[1]];
+            segIdx++;
+          } else {
+            const frac = metersPerStep / distToTarget;
+            curSimPos[0] += (targetPt[0] - curSimPos[0]) * frac;
+            curSimPos[1] += (targetPt[1] - curSimPos[1]) * frac;
+          }
+
+          const simHeading = (segIdx < this.coords.length - 1) ? this.calculateHeading(curSimPos, this.coords[segIdx + 1]) : 0;
+          this.updateLivePosition(curSimPos[0], curSimPos[1], metersPerSec, simHeading);
+        }, intervalMs);
+      }
     }
 
     const androidAutoNav = new AndroidAutoNavEngine(map);
@@ -8463,6 +9150,7 @@
       allComputedRoutes = [];
       selectedRouteIndex = 0;
       clearAlternativeMapRoutes();
+      clearMainRouteLayers();
 
       document.body.classList.remove('directions-drawer-open');
       const reopenPill = document.getElementById('mobile-route-reopen-pill');
@@ -8478,9 +9166,6 @@
       const altList = document.getElementById('alt-routes-list');
       if (altList) altList.innerHTML = '';
       if (window.gpsTracker) window.gpsTracker.setNavStatus('INACTIVE');
-      if (map.getSource('route-source')) {
-        map.getSource('route-source').setData({ type: 'FeatureCollection', features: [] });
-      }
       document.getElementById('route-summary-card').style.display = 'none';
       document.getElementById('route-steps-list').innerHTML = '';
       cyberAudio.playBeep(440, 0.05);
@@ -8543,12 +9228,12 @@
       searchBox.value = name;
       suggestionsDropdown.style.display = 'none';
 
-      // Place high-contrast glowing reticle marker on the map (anchor: center prevents zoom drift)
+      // Place high-contrast glowing reticle marker on the map (zero-drift geo-pinning)
       if (searchTargetMarker) searchTargetMarker.remove();
       const markEl = document.createElement('div');
       markEl.className = 'search-target-marker-pulse';
       markEl.innerHTML = `<div class="target-marker-reticle"></div><div class="target-marker-dot"></div><div class="target-marker-label">${name}</div>`;
-      searchTargetMarker = new maplibregl.Marker({ element: markEl, anchor: 'center' }).setLngLat(coords).addTo(map);
+      searchTargetMarker = new maplibregl.Marker({ element: markEl, anchor: 'center', pitchAlignment: 'map', rotationAlignment: 'map' }).setLngLat(coords).addTo(map);
 
       // Populate pop-up navigation action card right under the search input
       const card = document.getElementById('search-nav-action-card');
@@ -9426,14 +10111,22 @@
         this.arrowEl = document.createElement('div');
         this.arrowEl.className = 'cyber-user-arrow';
         this.arrowEl.innerHTML = `
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-            <polygon points="12,2 20,18 12,14 4,18" fill="#00f0ff" stroke="#ffffff" stroke-width="1.8" stroke-linejoin="round"/>
+          <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+            <!-- Outer Glow & Main Electric Dark Blue Arrowhead -->
+            <polygon points="18,3 32,31 18,24 4,31" fill="#003cd6" stroke="#00d4ff" stroke-width="1.8" stroke-linejoin="round"/>
+            <!-- Left Wing: Deep Saturated Electric Dark Blue Shadow -->
+            <polygon points="18,3 18,24 4,31" fill="#002288"/>
+            <!-- Right Wing: Vibrant Electric Dark Blue Body -->
+            <polygon points="18,3 32,31 18,24" fill="#0047ff"/>
+            <!-- Centerline Cyber Stealth Spine -->
+            <polygon points="18,7 23,23 18,20.5 13,23" fill="#001040" stroke="#00f0ff" stroke-width="1" stroke-linejoin="round"/>
+            <!-- Glowing Apex Core Beacon -->
+            <circle cx="18" cy="15" r="2.2" fill="#00f0ff"/>
           </svg>
         `;
 
         this.markerEl.appendChild(this.haloEl);
         this.markerEl.appendChild(ring);
-        this.markerEl.appendChild(core);
         this.markerEl.appendChild(this.arrowEl);
 
         this.marker = new maplibregl.Marker({ element: this.markerEl })
@@ -9500,29 +10193,25 @@
             }
             heading = (heading + screenAngle + 360) % 360;
 
-            // Low-pass filter for smooth, jitter-free compass
+            // Low-pass filter with deadband to eliminate micro-jitter and engine vibrations
+            // In CoMaps / Organic Maps: stationary mode applies strong 4.5° deadband with alpha=0.15
+            const compDeadband = (this.speed < 4) ? 4.5 : 2.5;
+            const compAlpha = (this.speed < 4) ? 0.15 : 0.28;
             if (this.smoothCompass === null || this.smoothCompass === undefined) {
               this.smoothCompass = heading;
             } else {
               let diff = (heading - this.smoothCompass + 180) % 360 - 180;
-              this.smoothCompass = (this.smoothCompass + diff * 0.35 + 360) % 360;
+              if (Math.abs(diff) > compDeadband) {
+                this.smoothCompass = (this.smoothCompass + diff * compAlpha + 360) % 360;
+              }
             }
 
             this.compassHeading = Math.round(this.smoothCompass);
             this.updateCompassDisplay(this.compassHeading);
 
-            // If user is stationary or moving slowly (< 4 km/h), physical compass guides vehicle marker & map
+            // Stationary or walking (< 4 km/h): physical compass guides vehicle marker orientation
             if (this.speed < 4) {
               this.targetHeading = this.compassHeading;
-
-              // Immediately update Android Auto vehicle marker SVG rotation & camera without waiting for GPS fix
-              if (window.androidAutoNav && window.androidAutoNav.active && window.androidAutoNav.vehicleMarker) {
-                const svgEl = window.androidAutoNav.vehicleMarker.getElement().querySelector('svg');
-                if (svgEl) svgEl.style.transform = `rotate(${this.compassHeading}deg)`;
-                if (window.androidAutoNav.isHeadingUp && !window.androidAutoNav.isOverview && window.androidAutoNav.isCameraFollowLocked) {
-                  window.androidAutoNav.map.easeTo({ bearing: this.compassHeading, duration: 150 });
-                }
-              }
             }
           }
         };
@@ -9716,7 +10405,9 @@
 
         // Feed live GPS into Android Auto HUD for real-time navigation
         if (window.androidAutoNav && window.androidAutoNav.active) {
-          window.androidAutoNav.updateLivePosition(lng, lat, coords.speed, coords.heading);
+          const effectiveSpeedMs = (typeof this.speed === 'number' && !isNaN(this.speed)) ? (this.speed / 3.6) : (coords.speed || 0);
+          const effectiveHeading = (typeof coords.heading === 'number' && !isNaN(coords.heading) && coords.heading >= 0) ? coords.heading : this.targetHeading;
+          window.androidAutoNav.updateLivePosition(lng, lat, effectiveSpeedMs, effectiveHeading);
         }
 
         // Auto fly to first fix if starting out or transitioning from IP fallback
@@ -10261,7 +10952,9 @@
           this.heading = (this.heading + diff * 0.15 + 360) % 360;
 
           if (this.arrowEl) {
-            this.arrowEl.style.transform = `rotate(${this.heading}deg)`;
+            const mapBrg = this.isHeadingUp ? this.map.getBearing() : 0;
+            const arrowAngle = (this.heading - mapBrg + 360) % 360;
+            this.arrowEl.style.transform = `rotate(${arrowAngle}deg)`;
           }
 
           // Mobile Navigation Camera Follow - Throttled to prevent GPU thrashing and recenter collision
@@ -10279,6 +10972,7 @@
 
       updateCameraFollow() {
         if (!this.map || this.isRecentering || this.isPinpointActive) return;
+        if (window.androidAutoNav && window.androidAutoNav.active) return; // Yield 100% camera authority to NavEngine
 
         // Dynamic speed-based zoom
         let targetZoom = 17.2;
@@ -10442,27 +11136,8 @@
           this.map.setLayoutProperty('gps-trail-core', 'visibility', vis);
         }
 
-        // Toggle yellow route trail layers on map (Task 7)
-        if (this.map.getLayer('route-glow')) {
-          this.map.setLayoutProperty('route-glow', 'visibility', vis);
-        }
-        if (this.map.getLayer('route-pulse')) {
-          this.map.setLayoutProperty('route-pulse', 'visibility', vis);
-        }
-        if (this.map.getLayer('route-core')) {
-          this.map.setLayoutProperty('route-core', 'visibility', vis);
-        }
-        for (let i = 0; i < 5; i++) {
-          if (this.map.getLayer(`alt-route-glow-${i}`)) {
-            this.map.setLayoutProperty(`alt-route-glow-${i}`, 'visibility', vis);
-          }
-          if (this.map.getLayer(`alt-route-core-${i}`)) {
-            this.map.setLayoutProperty(`alt-route-core-${i}`, 'visibility', vis);
-          }
-        }
-
         cyberAudio.playConfirm();
-        showCyberToast(this.isTrailEnabled ? '[TRAIL & ROUTE OVERLAY: ON]' : '[TRAIL & ROUTE OVERLAY: OFF]', 'info');
+        showCyberToast(this.isTrailEnabled ? '[GPS BREADCRUMB TRAIL: ON]' : '[GPS BREADCRUMB TRAIL: OFF]', 'info');
       }
 
       setNavStatus(status) {
@@ -10799,7 +11474,7 @@
 
       const defaultTitle = `SECTOR [${lat.toFixed(4)}, ${lng.toFixed(4)}]`;
       if (nameEl) nameEl.innerText = defaultTitle;
-      if (subEl) subEl.innerText = `Distance: ~${distKm.toFixed(1)} KM • ~${estMins} MIN DRIVE`;
+      if (subEl) subEl.innerText = `Distance: ~${distKm.toFixed(1)} KM • ~${formatDuration(estMins)} DRIVE`;
 
       if (card) {
         card.style.display = 'flex';
@@ -11016,7 +11691,7 @@
       cyberAudio.playConfirm();
     });
 
-    document.getElementById('btn-reset-north').addEventListener('click', () => {
+    document.getElementById('btn-reset-north')?.addEventListener('click', () => {
       map.easeTo({ bearing: 0, pitch: 0, duration: 800 });
       cyberAudio.playConfirm();
     });
@@ -11027,6 +11702,23 @@
 
     // Locate Me
     document.getElementById('btn-locate').addEventListener('click', locateUser);
+
+    // App Refresh (Side Toolbar & Navigation Rail)
+    function triggerAppRefresh() {
+      if (window.cyberAudio && window.cyberAudio.playConfirm) {
+        window.cyberAudio.playConfirm();
+      }
+      document.querySelectorAll('.refresh-svg').forEach(svg => svg.classList.add('cyber-spinning'));
+      if (typeof showCyberToast === 'function') {
+        showCyberToast('[RELOADING GEOMATRIX // REFRESHING APP]', 'info');
+      }
+      setTimeout(() => {
+        window.location.reload();
+      }, 350);
+    }
+
+    document.getElementById('btn-refresh-app')?.addEventListener('click', triggerAppRefresh);
+    document.getElementById('btn-auto-refresh')?.addEventListener('click', triggerAppRefresh);
 
     // Procedural Audio SFX Toggle
     const btnAudio = document.getElementById('btn-toggle-audio');
@@ -11091,7 +11783,7 @@
             const rTitle = document.getElementById('reopen-pill-title');
             if (rTitle) rTitle.innerText = `${sel.name} (${sel.tag || 'RECOMMENDED'})`;
             const rSub = document.getElementById('reopen-pill-sub');
-            if (rSub) rSub.innerText = `${sel.distanceKm} KM • ${sel.durationMin} MIN`;
+            if (rSub) rSub.innerText = `${sel.distanceKm} KM • ${formatDuration(sel.durationMin)}`;
           }
           reopenPill.style.display = 'flex';
         }
@@ -12141,7 +12833,7 @@
     const CyberOfflineManager = {
       isDownloading: false,
       isCancelled: false,
-      selectedRadiusKm: 15,
+      selectedRadiusKm: 20,
       currentStateSelection: {
         name: 'California, USA',
         bbox: [-124.48, 32.53, -114.13, 42.01]
@@ -12172,12 +12864,12 @@
           });
         });
 
-        // Radius Chips
+        // Radius Chips (10km Tactical, 20km Recommended, 50km Metropolis)
         document.querySelectorAll('.offline-chip-btn').forEach(chip => {
           chip.addEventListener('click', (e) => {
             document.querySelectorAll('.offline-chip-btn').forEach(c => c.classList.remove('active'));
             e.target.classList.add('active');
-            this.selectedRadiusKm = parseInt(e.target.dataset.radius) || 15;
+            this.selectedRadiusKm = parseInt(e.target.dataset.radius) || 20;
             this.updateSectorCalculation();
             cyberAudio.playConfirm();
           });
@@ -12234,6 +12926,58 @@
       closeModal: function() {
         const modal = document.getElementById('offline-matrix-modal');
         if (modal) modal.style.display = 'none';
+        this.clearSectorPreview();
+      },
+
+      showSectorPreview: function(bbox) {
+        if (!map || !bbox || bbox.length !== 4) return;
+        const polyGeojson = {
+          type: 'Feature',
+          geometry: {
+            type: 'Polygon',
+            coordinates: [[
+              [bbox[0], bbox[1]],
+              [bbox[2], bbox[1]],
+              [bbox[2], bbox[3]],
+              [bbox[0], bbox[3]],
+              [bbox[0], bbox[1]]
+            ]]
+          }
+        };
+
+        if (map.getSource('offline-preview-src')) {
+          map.getSource('offline-preview-src').setData(polyGeojson);
+        } else {
+          map.addSource('offline-preview-src', {
+            type: 'geojson',
+            data: polyGeojson
+          });
+          map.addLayer({
+            id: 'offline-preview-fill',
+            type: 'fill',
+            source: 'offline-preview-src',
+            paint: {
+              'fill-color': '#00f0ff',
+              'fill-opacity': 0.12
+            }
+          });
+          map.addLayer({
+            id: 'offline-preview-line',
+            type: 'line',
+            source: 'offline-preview-src',
+            paint: {
+              'line-color': '#00f0ff',
+              'line-width': 2,
+              'line-dasharray': [3, 2]
+            }
+          });
+        }
+      },
+
+      clearSectorPreview: function() {
+        if (map && map.getSource('offline-preview-src')) {
+          map.getSource('offline-preview-src').setData({ type: 'FeatureCollection', features: [] });
+        }
       },
 
       lon2tile: function(lon, zoom) {
@@ -12291,21 +13035,26 @@
         const dLng = radKm / (111 * Math.cos(center[1] * Math.PI / 180));
         const bbox = [center[0] - dLng, center[1] - dLat, center[0] + dLng, center[1] + dLat];
         
-        // Sector uses zoom 10 through 14
-        const tiles = this.countTiles(bbox, 10, 14);
+        // Sector uses zoom 10 through 15 (covers full road details and turn geometry)
+        const tiles = this.countTiles(bbox, 10, 15);
         const estMb = (tiles * 18 / 1024).toFixed(1);
 
         const centerEl = document.getElementById('sector-calc-center');
         const sizeEl = document.getElementById('sector-calc-size');
         const impactEl = document.getElementById('sector-calc-impact');
+        const btnTextEl = document.getElementById('sector-download-btn-text');
 
         if (centerEl) centerEl.innerText = `${center[1].toFixed(3)}°N, ${center[0].toFixed(3)}°E (±${radKm}KM)`;
         if (sizeEl) sizeEl.innerText = `~${estMb} MB (~${tiles.toLocaleString()} TILES)`;
         if (impactEl) impactEl.innerText = `READY FOR INSTANT OFFLINE GPS`;
+        if (btnTextEl) btnTextEl.innerText = `DOWNLOAD LOCAL SECTOR (±${radKm} KM) ⚡`;
 
         this.currentSectorBBox = bbox;
         this.currentSectorTiles = tiles;
         this.currentSectorMb = estMb;
+
+        // Visual radar boundary preview on map!
+        this.showSectorPreview(bbox);
       },
 
       updateStateCalculation: function(name, bbox) {
@@ -12337,6 +13086,9 @@
         this.currentStateMaxZ = maxZ;
         this.currentStateTiles = tiles;
         this.currentStateMb = estMb;
+
+        // Visual territory preview on map!
+        this.showSectorPreview(bbox);
       },
 
       searchAndCalcState: async function(query) {
@@ -12386,7 +13138,7 @@
 
       startSectorDownload: function() {
         const title = `Local Sector (±${this.selectedRadiusKm}km)`;
-        this.startDownload(title, 'sector', this.currentSectorBBox, 10, 14, this.currentSectorMb, this.currentSectorTiles);
+        this.startDownload(title, 'sector', this.currentSectorBBox, 10, 15, this.currentSectorMb, this.currentSectorTiles);
       },
 
       startStateDownload: function() {
@@ -12403,8 +13155,16 @@
         this.isDownloading = true;
         this.isCancelled = false;
 
-        // Generate tile coordinates list
-        const tileQueue = [];
+        // Foundational OpenFreeMap style metadata, glyph fonts, and sprite assets
+        const tileQueue = [
+          'https://tiles.openfreemap.org/planet',
+          'https://tiles.openfreemap.org/sprites/ofm_f384/ofm.json',
+          'https://tiles.openfreemap.org/sprites/ofm_f384/ofm.png',
+          'https://tiles.openfreemap.org/fonts/Noto%20Sans%20Regular/0-255.pbf',
+          'https://tiles.openfreemap.org/fonts/Noto%20Sans%20Bold/0-255.pbf'
+        ];
+
+        // Generate tile coordinates list across selected zoom levels
         for (let z = minZoom; z <= maxZoom; z++) {
           const x1 = Math.min(this.lon2tile(bbox[0], z), this.lon2tile(bbox[2], z));
           const x2 = Math.max(this.lon2tile(bbox[0], z), this.lon2tile(bbox[2], z));
@@ -12473,8 +13233,11 @@
                   const blob = await res.blob();
                   downloadedBytes += blob.size;
                   if (cache) {
+                    let cType = 'application/x-protobuf';
+                    if (url.includes('.json') || url.endsWith('/planet')) cType = 'application/json';
+                    else if (url.includes('.png')) cType = 'image/png';
                     await cache.put(url, new Response(blob, {
-                      headers: { 'Content-Type': 'application/x-protobuf' }
+                      headers: { 'Content-Type': cType }
                     }));
                   }
                 }
@@ -12614,6 +13377,7 @@
             [sec.bbox[0], sec.bbox[1]],
             [sec.bbox[2], sec.bbox[3]]
           ], { padding: 40, duration: 1000 });
+          this.showSectorPreview(sec.bbox);
           this.closeModal();
           showCyberToast(`[VIEWING OFFLINE SECTOR: ${sec.title.toUpperCase()}]`, 'success');
         }
@@ -12699,6 +13463,8 @@
                 // Silently update navigation coordinates & maneuvers WITHOUT camera jerk or stopping
                 window.androidAutoNav.coords = parsed.coords;
                 window.androidAutoNav.maneuvers = parsed.maneuvers;
+                window.androidAutoNav.activeSegmentIdx = 0;
+                window.androidAutoNav.disableTacticalVectorMode();
                 
                 const geojson = {
                   type: 'Feature',
@@ -12708,10 +13474,12 @@
                   map.getSource('route-source').setData(geojson);
                 }
 
+                window.androidAutoNav.updateHUDGuidance(0);
+
                 const distEl = document.getElementById('auto-dist-val');
                 const durEl = document.getElementById('auto-duration-val');
                 if (distEl) distEl.innerText = `${parsed.distanceKm} KM`;
-                if (durEl) durEl.innerText = `${parsed.durationMin} MIN`;
+                if (durEl) durEl.innerText = formatDuration(parsed.durationMin);
 
                 showCyberToast('[LIVE TRAFFIC & HIGHWAY ROUTE SYNCHRONIZED]', 'success');
               }
